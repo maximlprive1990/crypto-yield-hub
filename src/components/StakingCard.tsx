@@ -11,9 +11,11 @@ interface StakingCardProps {
   apy: string;
   icon: string;
   color: string;
+  walletAddress: string;
+  memo?: string;
 }
 
-const StakingCard = ({ name, symbol, network, apy, icon, color }: StakingCardProps) => {
+const StakingCard = ({ name, symbol, network, apy, icon, color, walletAddress, memo }: StakingCardProps) => {
   const [amount, setAmount] = useState("");
 
   return (
@@ -62,6 +64,19 @@ const StakingCard = ({ name, symbol, network, apy, icon, color }: StakingCardPro
           <div className="flex justify-between">
             <span className="text-muted-foreground">Estimation mensuelle:</span>
             <span className="font-semibold text-info">+{(parseFloat(apy) * 30).toFixed(0)}%</span>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Adresse de dépôt</label>
+          <div className="p-3 bg-secondary/30 rounded-lg border border-primary/20">
+            <p className="text-xs text-muted-foreground mb-1">Envoyez vos {symbol} à cette adresse:</p>
+            <p className="text-sm font-mono break-all text-primary">{walletAddress}</p>
+            {memo && (
+              <p className="text-xs text-warning mt-2">
+                <span className="font-semibold">Memo requis:</span> {memo}
+              </p>
+            )}
           </div>
         </div>
       </CardContent>

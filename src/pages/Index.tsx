@@ -11,7 +11,8 @@ const Index = () => {
       network: "Polygon Network",
       apy: "7",
       icon: "🔷",
-      color: "bg-purple-600"
+      color: "bg-purple-600",
+      walletAddress: "0x380060e81A820a1691fA58C84ba27c23ed1Eff77"
     },
     {
       name: "Bitcoin",
@@ -19,7 +20,8 @@ const Index = () => {
       network: "Bitcoin Network",
       apy: "5",
       icon: "₿",
-      color: "bg-orange-500"
+      color: "bg-orange-500",
+      walletAddress: "1LJWeugswr2GsqAZ7H8pFYZ7Q2uF8pAVb8"
     },
     {
       name: "TRON",
@@ -27,7 +29,8 @@ const Index = () => {
       network: "TRC20",
       apy: "6",
       icon: "🔺",
-      color: "bg-red-500"
+      color: "bg-red-500",
+      walletAddress: "TY4o9UKBz32xi8hexbv6XhccqGBqSk8oJ7"
     },
     {
       name: "Toncoin",
@@ -35,7 +38,9 @@ const Index = () => {
       network: "TON Network",
       apy: "4",
       icon: "💎",
-      color: "bg-blue-500"
+      color: "bg-blue-500",
+      walletAddress: "EQD14kgmngE0fNYVs7_9dw78V3rPhNt7_Ee-7X3ykDORQvMp",
+      memo: "492929"
     },
     {
       name: "Solana",
@@ -43,7 +48,8 @@ const Index = () => {
       network: "Solana Network",
       apy: "3",
       icon: "☀️",
-      color: "bg-purple-400"
+      color: "bg-purple-400",
+      walletAddress: "CWnduVqeRQrxqhGPNDnHTqHWM1dJLqCnojhMQS8FEUFB"
     },
     {
       name: "Dogecoin",
@@ -51,7 +57,8 @@ const Index = () => {
       network: "Dogecoin Network",
       apy: "1",
       icon: "🐕",
-      color: "bg-yellow-500"
+      color: "bg-yellow-500",
+      walletAddress: "DDVYeK8MiizfsnzLtigSAWfx6PH24puQze"
     }
   ];
 
