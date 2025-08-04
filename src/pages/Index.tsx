@@ -1,5 +1,6 @@
 import StakingCard from "@/components/StakingCard";
 import StatsCard from "@/components/StatsCard";
+import PaymentSection from "@/components/PaymentSection";
 import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-background.jpg";
 
@@ -189,6 +190,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Payment Section */}
+      <PaymentSection />
 
       {/* Footer */}
       <footer className="bg-card border-t border-primary/20 py-12 px-6">
