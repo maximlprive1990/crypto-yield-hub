@@ -10,10 +10,7 @@ const PaymentSection = () => {
   const [currency, setCurrency] = useState("USD");
   const [description, setDescription] = useState("Staking Payment");
   const [orderId, setOrderId] = useState("");
-
-  // IMPORTANT: Ces valeurs doivent être configurées côté serveur pour la sécurité
-  const MERCHANT_ID = ""; // Votre ID marchand Payeer
-  const SECRET_KEY = ""; // Cette clé NE DOIT PAS être stockée côté frontend
+  const [merchantId, setMerchantId] = useState("");
 
   const generateOrderId = () => {
     const newOrderId = 'ORDER_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -21,17 +18,12 @@ const PaymentSection = () => {
   };
 
   const handlePayment = () => {
-    if (!MERCHANT_ID || !SECRET_KEY) {
-      alert("Configuration Payeer manquante. Veuillez configurer vos clés d'API.");
+    if (!merchantId || !orderId || !amount) {
+      alert("Veuillez remplir tous les champs requis.");
       return;
     }
 
-    if (!orderId) {
-      generateOrderId();
-      return;
-    }
-
-    // Créer le formulaire dynamiquement
+    // Créer le formulaire Payeer exact
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = 'https://payeer.com/merchant/';
@@ -41,33 +33,24 @@ const PaymentSection = () => {
     const formattedAmount = parseFloat(amount).toFixed(2);
     const encodedDesc = btoa(description);
 
-    // Créer le hash pour la signature (côté frontend - NON SÉCURISÉ)
-    const hashArray = [
-      MERCHANT_ID,
-      orderId,
-      formattedAmount,
-      currency,
-      encodedDesc,
-      SECRET_KEY
-    ];
+    // Note: La signature doit être générée côté serveur avec votre clé secrète
+    const tempSign = "SIGNATURE_REQUIRED"; // À remplacer par la vraie signature
 
-    // Note: Cette implémentation côté frontend n'est PAS sécurisée
-    // En production, la signature doit être générée côté serveur
-    
+    // Créer les champs cachés exacts
     const fields = {
-      'm_shop': MERCHANT_ID,
+      'm_shop': merchantId,
       'm_orderid': orderId,
       'm_amount': formattedAmount,
       'm_curr': currency,
       'm_desc': encodedDesc,
-      'm_sign': 'SIGNATURE_TO_BE_GENERATED_SERVER_SIDE' // Doit être généré côté serveur
+      'm_sign': tempSign
     };
 
     // Ajouter les champs au formulaire
-    Object.entries(fields).forEach(([key, value]) => {
+    Object.entries(fields).forEach(([name, value]) => {
       const input = document.createElement('input');
       input.type = 'hidden';
-      input.name = key;
+      input.name = name;
       input.value = value.toString();
       form.appendChild(input);
     });
@@ -79,7 +62,7 @@ const PaymentSection = () => {
     submitBtn.value = 'send';
     form.appendChild(submitBtn);
 
-    // Ajouter le formulaire au DOM et le soumettre
+    // Ajouter au DOM et soumettre
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);
@@ -109,6 +92,17 @@ const PaymentSection = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="merchantId">ID Marchand Payeer</Label>
+                <Input
+                  id="merchantId"
+                  value={merchantId}
+                  onChange={(e) => setMerchantId(e.target.value)}
+                  placeholder="Votre ID marchand Payeer"
+                  className="bg-secondary/50 border-primary/20"
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="amount">Montant</Label>
                 <Input
@@ -170,7 +164,7 @@ const PaymentSection = () => {
                 size="lg" 
                 className="w-full"
                 onClick={handlePayment}
-                disabled={!amount || !orderId}
+                disabled={!amount || !orderId || !merchantId}
               >
                 Procéder au Paiement Payeer
               </Button>
@@ -188,13 +182,15 @@ const PaymentSection = () => {
               <CardContent>
                 <Alert>
                   <AlertDescription>
-                    <strong>Configuration requise:</strong>
+                    <strong>Formulaire Payeer généré:</strong>
                     <br />
-                    • ID Marchand Payeer: {MERCHANT_ID || "Non configuré"}
+                    • action: https://payeer.com/merchant/
                     <br />
-                    • Clé secrète: {SECRET_KEY ? "●●●●●●●●" : "Non configurée"}
+                    • method: POST
+                    <br />
+                    • Encodage: UTF-8
                     <br /><br />
-                    <strong>ATTENTION:</strong> Pour la sécurité, la génération de signature doit être faite côté serveur, pas côté frontend.
+                    <strong>IMPORTANT:</strong> La signature (m_sign) doit être générée côté serveur avec votre clé secrète Payeer.
                   </AlertDescription>
                 </Alert>
               </CardContent>
