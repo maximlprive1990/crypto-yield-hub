@@ -14,7 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      mining_sessions: {
+        Row: {
+          amount_mined: number
+          crypto_type: string
+          experience_gained: number
+          hashrate_used: number
+          id: string
+          session_end: string | null
+          session_start: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_mined?: number
+          crypto_type?: string
+          experience_gained?: number
+          hashrate_used?: number
+          id?: string
+          session_end?: string | null
+          session_start?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_mined?: number
+          crypto_type?: string
+          experience_gained?: number
+          hashrate_used?: number
+          id?: string
+          session_end?: string | null
+          session_start?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          deadspot_tokens: number | null
+          experience_points: number | null
+          hashrate_level: number | null
+          id: string
+          total_earnings: number | null
+          updated_at: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          created_at?: string
+          deadspot_tokens?: number | null
+          experience_points?: number | null
+          hashrate_level?: number | null
+          id?: string
+          total_earnings?: number | null
+          updated_at?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          created_at?: string
+          deadspot_tokens?: number | null
+          experience_points?: number | null
+          hashrate_level?: number | null
+          id?: string
+          total_earnings?: number | null
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
