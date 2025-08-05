@@ -1,10 +1,29 @@
 import StakingCard from "@/components/StakingCard";
 import StatsCard from "@/components/StatsCard";
 import PaymentSection from "@/components/PaymentSection";
+import ComingSoonSection from "@/components/ComingSoonSection";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { Navigate } from "react-router-dom";
 import heroBackground from "@/assets/hero-background.jpg";
 
 const Index = () => {
+  const { user, signOut, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
   const stakingPools = [
     {
       name: "Polygon",
@@ -115,6 +134,9 @@ const Index = () => {
             <Button variant="stake" size="xl">
               Explorer les Pools
             </Button>
+            <Button variant="ghost" size="sm" onClick={signOut} className="mt-4">
+              Se déconnecter
+            </Button>
           </div>
         </div>
       </section>
@@ -190,6 +212,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Coming Soon Section */}
+      <ComingSoonSection />
 
       {/* Payment Section */}
       <PaymentSection />
