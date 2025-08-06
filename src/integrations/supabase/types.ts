@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      deposits: {
+        Row: {
+          amount: number
+          created_at: string
+          crypto_type: string
+          id: string
+          status: string
+          transaction_id: string | null
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+          wallet_address: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          crypto_type: string
+          id?: string
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+          wallet_address: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          crypto_type?: string
+          id?: string
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+          wallet_address?: string
+        }
+        Relationships: []
+      }
       mining_sessions: {
         Row: {
           amount_mined: number
@@ -83,6 +122,45 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      staking_positions: {
+        Row: {
+          amount_staked: number
+          apy: number
+          created_at: string
+          crypto_type: string
+          id: string
+          last_reward_at: string | null
+          started_at: string
+          total_rewards: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_staked?: number
+          apy: number
+          created_at?: string
+          crypto_type: string
+          id?: string
+          last_reward_at?: string | null
+          started_at?: string
+          total_rewards?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_staked?: number
+          apy?: number
+          created_at?: string
+          crypto_type?: string
+          id?: string
+          last_reward_at?: string | null
+          started_at?: string
+          total_rewards?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

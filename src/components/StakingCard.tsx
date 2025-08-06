@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 interface StakingCardProps {
   name: string;
@@ -17,6 +20,53 @@ interface StakingCardProps {
 
 const StakingCard = ({ name, symbol, network, apy, icon, color, walletAddress, memo }: StakingCardProps) => {
   const [amount, setAmount] = useState("");
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleStake = async () => {
+    if (!user || !amount || parseFloat(amount) <= 0) return;
+
+    try {
+      // Créer un dépôt en attente
+      const { error: depositError } = await supabase
+        .from('deposits')
+        .insert({
+          user_id: user.id,
+          crypto_type: symbol,
+          amount: parseFloat(amount),
+          wallet_address: walletAddress,
+          status: 'pending'
+        });
+
+      if (depositError) throw depositError;
+
+      // Créer une position de staking
+      const { error: stakingError } = await supabase
+        .from('staking_positions')
+        .insert({
+          user_id: user.id,
+          crypto_type: symbol,
+          amount_staked: parseFloat(amount),
+          apy: parseFloat(apy)
+        });
+
+      if (stakingError) throw stakingError;
+
+      toast({
+        title: "Position créée",
+        description: `Votre position de staking de ${amount} ${symbol} a été créée. Effectuez le dépôt à l'adresse fournie.`,
+      });
+
+      setAmount("");
+    } catch (error) {
+      console.error('Error creating stake:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer la position de staking",
+        variant: "destructive"
+      });
+    }
+  };
 
   return (
     <Card className="relative overflow-hidden gradient-card border-primary/20 hover:shadow-glow transition-smooth animate-float group">
@@ -87,6 +137,7 @@ const StakingCard = ({ name, symbol, network, apy, icon, color, walletAddress, m
           size="lg" 
           className="w-full"
           disabled={!amount || parseFloat(amount) <= 0}
+          onClick={handleStake}
         >
           Staker {symbol}
         </Button>
