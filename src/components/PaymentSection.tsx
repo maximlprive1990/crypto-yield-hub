@@ -10,7 +10,7 @@ const PaymentSection = () => {
   const [currency, setCurrency] = useState("USD");
   const [description, setDescription] = useState("Staking Payment");
   const [orderId, setOrderId] = useState("");
-  const [merchantId, setMerchantId] = useState("");
+  const [merchantId, setMerchantId] = useState("2247945259");
 
   const generateOrderId = () => {
     const newOrderId = 'ORDER_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
