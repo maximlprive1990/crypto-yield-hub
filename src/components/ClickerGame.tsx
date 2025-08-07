@@ -60,16 +60,32 @@ const ClickerGame = () => {
     {
       id: "auto_regen",
       name: "Auto Regen",
-      description: "Régénération automatique d'énergie",
+      description: "Régénération automatique d'énergie accélérée",
       cost: 200,
-      effect: "+5 energy/sec",
+      effect: "+3 energy/sec",
+      owned: 0
+    },
+    {
+      id: "super_regen",
+      name: "Super Regen",
+      description: "Régénération d'énergie ultra rapide",
+      cost: 500,
+      effect: "+10 energy/sec",
       owned: 0
     }
   ]);
 
-  // Level up effect
+  // Auto energy regeneration (base)
   useEffect(() => {
-    const expNeeded = level * 100;
+    const interval = setInterval(() => {
+      setEnergy(prev => Math.min(prev + 1, maxEnergy));
+    }, 2000); // 1 energy every 2 seconds
+    return () => clearInterval(interval);
+  }, [maxEnergy]);
+
+  // Level up effect with progressive XP requirements
+  useEffect(() => {
+    const expNeeded = level * 150 + (level - 1) * 50; // Progressive increase
     if (expPoints >= expNeeded) {
       setLevel(prev => prev + 1);
       setMaxEnergy(prev => prev + 50);
@@ -93,12 +109,15 @@ const ClickerGame = () => {
     }
   }, [doubleClickTimer]);
 
-  // Auto energy regeneration
+  // Enhanced auto energy regeneration from power-ups
   useEffect(() => {
     const autoRegenOwned = powerUps.find(p => p.id === "auto_regen")?.owned || 0;
-    if (autoRegenOwned > 0) {
+    const superRegenOwned = powerUps.find(p => p.id === "super_regen")?.owned || 0;
+    const totalRegen = (autoRegenOwned * 3) + (superRegenOwned * 10);
+    
+    if (totalRegen > 0) {
       const interval = setInterval(() => {
-        setEnergy(prev => Math.min(prev + (autoRegenOwned * 5), maxEnergy));
+        setEnergy(prev => Math.min(prev + totalRegen, maxEnergy));
       }, 1000);
       return () => clearInterval(interval);
     }
@@ -195,7 +214,7 @@ const ClickerGame = () => {
         <Card className="gradient-card border-primary/20">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-info">{expPoints}</div>
-            <div className="text-sm text-muted-foreground">EXP Points</div>
+            <div className="text-sm text-muted-foreground">EXP ({level * 150 + (level - 1) * 50} needed)</div>
           </CardContent>
         </Card>
         
