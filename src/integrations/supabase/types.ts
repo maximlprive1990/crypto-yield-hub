@@ -131,36 +131,48 @@ export type Database = {
           apy: number
           created_at: string
           crypto_type: string
+          duration_days: number | null
+          end_date: string | null
           id: string
           last_reward_at: string | null
+          memo: string | null
           started_at: string
           total_rewards: number
           updated_at: string
           user_id: string
+          wallet_address: string | null
         }
         Insert: {
           amount_staked?: number
           apy: number
           created_at?: string
           crypto_type: string
+          duration_days?: number | null
+          end_date?: string | null
           id?: string
           last_reward_at?: string | null
+          memo?: string | null
           started_at?: string
           total_rewards?: number
           updated_at?: string
           user_id: string
+          wallet_address?: string | null
         }
         Update: {
           amount_staked?: number
           apy?: number
           created_at?: string
           crypto_type?: string
+          duration_days?: number | null
+          end_date?: string | null
           id?: string
           last_reward_at?: string | null
+          memo?: string | null
           started_at?: string
           total_rewards?: number
           updated_at?: string
           user_id?: string
+          wallet_address?: string | null
         }
         Relationships: []
       }

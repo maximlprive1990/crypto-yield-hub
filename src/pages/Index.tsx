@@ -5,6 +5,7 @@ import PaymentSection from "@/components/PaymentSection";
 import ComingSoonSection from "@/components/ComingSoonSection";
 import DepositTracker from "@/components/DepositTracker";
 import StakingTracker from "@/components/StakingTracker";
+import CustomStaking from "@/components/CustomStaking";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
@@ -254,6 +255,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Custom Staking Section */}
+      <CustomStaking />
 
       {/* Coming Soon Section */}
       <ComingSoonSection />
