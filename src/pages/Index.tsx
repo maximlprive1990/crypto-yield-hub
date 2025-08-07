@@ -1,5 +1,6 @@
 import StakingCard from "@/components/StakingCard";
 import StatsCard from "@/components/StatsCard";
+import ClickerGame from "@/components/ClickerGame";
 import PaymentSection from "@/components/PaymentSection";
 import ComingSoonSection from "@/components/ComingSoonSection";
 import DepositTracker from "@/components/DepositTracker";
@@ -157,8 +158,23 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Deposit and Staking Tracker */}
+      {/* Click Game Section */}
       <section className="py-20 px-6 bg-secondary/20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Mini-Jeu DeadSpot Click
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Cliquez pour gagner des DeadSpot coins et débloquer des power-ups! Toutes les 6 clicks, gagnez du DOGE et de l'expérience.
+            </p>
+          </div>
+          <ClickerGame />
+        </div>
+      </section>
+
+      {/* Deposit and Staking Tracker */}
+      <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
