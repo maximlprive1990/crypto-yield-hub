@@ -7,6 +7,7 @@ import DepositTracker from "@/components/DepositTracker";
 import StakingTracker from "@/components/StakingTracker";
 import CustomStaking from "@/components/CustomStaking";
 import MiningFarm from "@/components/MiningFarm";
+import RewardsSystem from "@/components/RewardsSystem";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
@@ -215,6 +216,30 @@ const Index = () => {
             setDeadspotCoins={() => {}} 
             diamonds={0} 
             setDiamonds={() => {}}
+          />
+        </div>
+      </section>
+
+      {/* Rewards System Section */}
+      <section className="py-20 px-6 bg-secondary/20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Système de Récompenses
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Gagnez de l'expérience de mining, réclamez vos bonus quotidiens et débloquez des récompenses de fidélité!
+            </p>
+          </div>
+          <RewardsSystem 
+            deadspotCoins={0}
+            setDeadspotCoins={() => {}}
+            diamonds={0}
+            setDiamonds={() => {}}
+            miningExp={0}
+            setMiningExp={() => {}}
+            level={1}
+            setLevel={() => {}}
           />
         </div>
       </section>
