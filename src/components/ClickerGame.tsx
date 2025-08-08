@@ -21,6 +21,7 @@ const ClickerGame = () => {
   
   // Game state
   const [deadspotCoins, setDeadspotCoins] = useState(0);
+  const [diamonds, setDiamonds] = useState(0);
   const [dogecoin, setDogecoin] = useState(0);
   const [expPoints, setExpPoints] = useState(0);
   const [level, setLevel] = useState(1);
@@ -143,13 +144,14 @@ const ClickerGame = () => {
     
     setDeadspotCoins(prev => prev + totalEarning);
 
-    // Every 6 clicks: dogecoin + exp
+    // Every 6 clicks: dogecoin + exp + diamonds
     if (clickCount % 6 === 5) {
       setDogecoin(prev => prev + 0.0000001);
       setExpPoints(prev => prev + 10);
+      setDiamonds(prev => prev + 0.1);
       toast({
         title: "Bonus!",
-        description: "0.0000001 DOGE + 10 EXP gagnés!",
+        description: "0.0000001 DOGE + 10 EXP + 0.1 💎 gagnés!",
       });
     }
   };
@@ -196,11 +198,18 @@ const ClickerGame = () => {
   return (
     <div className="space-y-6">
       {/* Game Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Card className="gradient-card border-primary/20">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-primary">{deadspotCoins.toFixed(3)}</div>
             <div className="text-sm text-muted-foreground">DeadSpot Coins</div>
+          </CardContent>
+        </Card>
+        
+        <Card className="gradient-card border-primary/20">
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-blue-400">{diamonds.toFixed(1)}</div>
+            <div className="text-sm text-muted-foreground">💎 Diamants</div>
           </CardContent>
         </Card>
         

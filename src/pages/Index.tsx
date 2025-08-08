@@ -6,6 +6,7 @@ import ComingSoonSection from "@/components/ComingSoonSection";
 import DepositTracker from "@/components/DepositTracker";
 import StakingTracker from "@/components/StakingTracker";
 import CustomStaking from "@/components/CustomStaking";
+import MiningFarm from "@/components/MiningFarm";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
@@ -195,6 +196,26 @@ const Index = () => {
             </p>
           </div>
           <ClickerGame />
+        </div>
+      </section>
+
+      {/* Mining Farm Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Ferme de Mining DeadSpot
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Achetez des mineurs avec vos DeadSpot coins et diamants pour miner automatiquement plusieurs cryptomonnaies!
+            </p>
+          </div>
+          <MiningFarm 
+            deadspotCoins={0} 
+            setDeadspotCoins={() => {}} 
+            diamonds={0} 
+            setDiamonds={() => {}}
+          />
         </div>
       </section>
 
