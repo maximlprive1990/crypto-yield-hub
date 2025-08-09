@@ -2,7 +2,10 @@ import StakingCard from "@/components/StakingCard";
 import StatsCard from "@/components/StatsCard";
 import ClickerGame from "@/components/ClickerGame";
 import PaymentSection from "@/components/PaymentSection";
-import ComingSoonSection from "@/components/ComingSoonSection";
+import PortfolioTracker from "@/components/PortfolioTracker";
+import ReferralSystem from "@/components/ReferralSystem";
+import SecurityCenter from "@/components/SecurityCenter";
+import NewsCenter from "@/components/NewsCenter";
 import DepositTracker from "@/components/DepositTracker";
 import StakingTracker from "@/components/StakingTracker";
 import CustomStaking from "@/components/CustomStaking";
@@ -305,8 +308,17 @@ const Index = () => {
       {/* Custom Staking Section */}
       <CustomStaking />
 
-      {/* Coming Soon Section */}
-      <ComingSoonSection />
+      {/* Portfolio Tracker Section */}
+      <PortfolioTracker />
+
+      {/* News Center Section */}
+      <NewsCenter />
+
+      {/* Referral System Section */}
+      <ReferralSystem />
+
+      {/* Security Center Section */}
+      <SecurityCenter />
 
       {/* Payment Section */}
       <PaymentSection />
