@@ -293,6 +293,43 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Features Section - Moved to top */}
+      <CollapsibleSection
+        title="Pourquoi Choisir CryptoStake Pro ?"
+        subtitle="Découvrez nos avantages"
+        defaultOpen={true}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all hover-scale">
+            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-3xl mx-auto mb-4 animate-scale-in">
+              🔒
+            </div>
+            <h3 className="text-xl font-bold mb-2">Sécurisé</h3>
+            <p className="text-muted-foreground">
+              Protocoles de sécurité avancés et audits réguliers pour protéger vos fonds
+            </p>
+          </div>
+          <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all hover-scale">
+            <div className="w-16 h-16 bg-success rounded-full flex items-center justify-center text-3xl mx-auto mb-4 animate-scale-in">
+              ⚡
+            </div>
+            <h3 className="text-xl font-bold mb-2">Rendements Élevés</h3>
+            <p className="text-muted-foreground">
+              Jusqu'à 7% de rendement quotidien avec nos algorithmes optimisés
+            </p>
+          </div>
+          <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all hover-scale">
+            <div className="w-16 h-16 bg-info rounded-full flex items-center justify-center text-3xl mx-auto mb-4 animate-scale-in">
+              🌐
+            </div>
+            <h3 className="text-xl font-bold mb-2">Multi-Blockchain</h3>
+            <p className="text-muted-foreground">
+              Support de 6 réseaux blockchain majeurs pour diversifier votre portefeuille
+            </p>
+          </div>
+        </div>
+      </CollapsibleSection>
+
       {/* Gaming & Features Access Section */}
       <CollapsibleSection
         title={t('gaming.title')}
@@ -476,41 +513,6 @@ const Index = () => {
         </div>
       </CollapsibleSection>
 
-      {/* Features Section */}
-      <CollapsibleSection
-        title="Pourquoi Choisir CryptoStake Pro ?"
-        subtitle="Découvrez nos avantages"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center p-6">
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-              🔒
-            </div>
-            <h3 className="text-xl font-bold mb-2">Sécurisé</h3>
-            <p className="text-muted-foreground">
-              Protocoles de sécurité avancés et audits réguliers pour protéger vos fonds
-            </p>
-          </div>
-          <div className="text-center p-6">
-            <div className="w-16 h-16 bg-success rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-              ⚡
-            </div>
-            <h3 className="text-xl font-bold mb-2">Rendements Élevés</h3>
-            <p className="text-muted-foreground">
-              Jusqu'à 7% de rendement quotidien avec nos algorithmes optimisés
-            </p>
-          </div>
-          <div className="text-center p-6">
-            <div className="w-16 h-16 bg-info rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-              🌐
-            </div>
-            <h3 className="text-xl font-bold mb-2">Multi-Blockchain</h3>
-            <p className="text-muted-foreground">
-              Support de 6 réseaux blockchain majeurs pour diversifier votre portefeuille
-            </p>
-          </div>
-        </div>
-      </CollapsibleSection>
 
       {/* Custom Staking Section */}
       <CollapsibleSection
