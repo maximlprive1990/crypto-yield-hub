@@ -3,6 +3,7 @@ import ClickerGame from "@/components/ClickerGame";
 import WithdrawalSection from "@/components/PaymentSection";
 import PortfolioTracker from "@/components/PortfolioTracker";
 import ReferralSystem from "@/components/ReferralSystem";
+import { ReferralLinksSection } from "@/components/ReferralLinksSection";
 import SecurityCenter from "@/components/SecurityCenter";
 import NewsCenter from "@/components/NewsCenter";
 import DepositTracker from "@/components/DepositTracker";
@@ -280,6 +281,8 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Referral Links Section */}
+      <ReferralLinksSection />
 
       {/* Gaming & Features Access Section */}
       <CollapsibleSection
