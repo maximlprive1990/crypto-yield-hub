@@ -1,5 +1,4 @@
 import StakingCard from "@/components/StakingCard";
-import StatsCard from "@/components/StatsCard";
 import ClickerGame from "@/components/ClickerGame";
 import PaymentSection from "@/components/PaymentSection";
 import PortfolioTracker from "@/components/PortfolioTracker";
