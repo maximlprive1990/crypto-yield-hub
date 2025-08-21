@@ -19,6 +19,7 @@ import VIPSystem from "@/components/VIPSystem";
 import BattlePassSystem from "@/components/BattlePassSystem";
 import DeadSpotShop from "@/components/DeadSpotShop";
 import PlatformStats from "@/components/PlatformStats";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
@@ -134,205 +135,193 @@ const Index = () => {
       </section>
 
       {/* Statistics Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Statistiques de la Plateforme
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Des chiffres réels qui témoignent de la croissance de notre communauté
-            </p>
-          </div>
-          
-          <PlatformStats />
-        </div>
-      </section>
+      <CollapsibleSection
+        title="Statistiques de la Plateforme"
+        subtitle="Des chiffres réels qui témoignent de la croissance de notre communauté"
+        defaultOpen={true}
+      >
+        <PlatformStats />
+      </CollapsibleSection>
 
       {/* Deposit and Staking Tracker */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Mes Dépôts et Positions
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Suivez vos dépôts et positions de staking en temps réel
-            </p>
+      <CollapsibleSection
+        title="Mes Dépôts et Positions"
+        subtitle="Suivez vos dépôts et positions de staking en temps réel"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          <div>
+            <h3 className="text-2xl font-bold mb-6">Dépôts</h3>
+            <DepositTracker />
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            <div>
-              <h3 className="text-2xl font-bold mb-6">Dépôts</h3>
-              <DepositTracker />
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold mb-6">Staking</h3>
-              <StakingTracker />
-            </div>
+          <div>
+            <h3 className="text-2xl font-bold mb-6">Staking</h3>
+            <StakingTracker />
           </div>
         </div>
-      </section>
+      </CollapsibleSection>
 
       {/* Click Game Section */}
-      <section className="py-20 px-6 bg-secondary/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Mini-Jeu DeadSpot Click
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Cliquez pour gagner des DeadSpot coins et débloquer des power-ups! Toutes les 6 clicks, gagnez du DOGE et de l'expérience.
-            </p>
-          </div>
-          <ClickerGame />
-        </div>
-      </section>
+      <CollapsibleSection
+        title="Mini-Jeu DeadSpot Click"
+        subtitle="Cliquez pour gagner des DeadSpot coins et débloquer des power-ups! Toutes les 6 clicks, gagnez du DOGE et de l'expérience."
+        className="bg-secondary/20"
+      >
+        <ClickerGame />
+      </CollapsibleSection>
 
       {/* Mining Farm Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Ferme de Mining DeadSpot
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Achetez des mineurs avec vos DeadSpot coins et diamants pour miner automatiquement plusieurs cryptomonnaies!
-            </p>
-          </div>
-          <MiningFarm 
-            deadspotCoins={0} 
-            setDeadspotCoins={() => {}} 
-            diamonds={0} 
-            setDiamonds={() => {}}
-          />
-        </div>
-      </section>
+      <CollapsibleSection
+        title="Ferme de Mining DeadSpot"
+        subtitle="Achetez des mineurs avec vos DeadSpot coins et diamants pour miner automatiquement plusieurs cryptomonnaies!"
+      >
+        <MiningFarm 
+          deadspotCoins={0} 
+          setDeadspotCoins={() => {}} 
+          diamonds={0} 
+          setDiamonds={() => {}}
+        />
+      </CollapsibleSection>
 
       {/* Rewards System Section */}
-      <section className="py-20 px-6 bg-secondary/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Système de Récompenses
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Gagnez de l'expérience de mining, réclamez vos bonus quotidiens et débloquez des récompenses de fidélité!
-            </p>
-          </div>
-          <RewardsSystem 
-            deadspotCoins={0}
-            setDeadspotCoins={() => {}}
-            diamonds={0}
-            setDiamonds={() => {}}
-            miningExp={0}
-            setMiningExp={() => {}}
-            level={1}
-            setLevel={() => {}}
-          />
-        </div>
-      </section>
+      <CollapsibleSection
+        title="Système de Récompenses"
+        subtitle="Gagnez de l'expérience de mining, réclamez vos bonus quotidiens et débloquez des récompenses de fidélité!"
+        className="bg-secondary/20"
+      >
+        <RewardsSystem 
+          deadspotCoins={0}
+          setDeadspotCoins={() => {}}
+          diamonds={0}
+          setDiamonds={() => {}}
+          miningExp={0}
+          setMiningExp={() => {}}
+          level={1}
+          setLevel={() => {}}
+        />
+      </CollapsibleSection>
 
       {/* VIP & Monetization Section */}
-      <section className="py-20 px-6 bg-secondary/20">
-        <div className="max-w-7xl mx-auto space-y-12">
+      <CollapsibleSection
+        title="VIP & Monétisation"
+        subtitle="Système VIP, Battle Pass et boutique DeadSpot"
+        className="bg-secondary/20"
+      >
+        <div className="space-y-12">
           <VIPSystem />
-          
           <BattlePassSystem />
-          
           <DeadSpotShop />
         </div>
-      </section>
+      </CollapsibleSection>
 
       {/* Gaming Features Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto space-y-12">
+      <CollapsibleSection
+        title="Fonctionnalités Gaming"
+        subtitle="Évènements, missions, classements, loot boxes et personnalisation"
+      >
+        <div className="space-y-12">
           <EventsSystem />
-          
           <MissionsSystem />
-          
           <LeaderboardSystem />
-          
           <LootBoxSystem />
-          
           <CustomizationSystem />
         </div>
-      </section>
+      </CollapsibleSection>
 
       {/* Staking Pools Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Pools de Staking Disponibles
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Choisissez parmi nos pools de staking optimisés pour maximiser vos rendements quotidiens
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {stakingPools.map((pool, index) => (
-              <StakingCard key={index} {...pool} />
-            ))}
-          </div>
+      <CollapsibleSection
+        title="Pools de Staking Disponibles"
+        subtitle="Choisissez parmi nos pools de staking optimisés pour maximiser vos rendements quotidiens"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {stakingPools.map((pool, index) => (
+            <StakingCard key={index} {...pool} />
+          ))}
         </div>
-      </section>
+      </CollapsibleSection>
 
       {/* Features Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            Pourquoi Choisir CryptoStake Pro ?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-                🔒
-              </div>
-              <h3 className="text-xl font-bold mb-2">Sécurisé</h3>
-              <p className="text-muted-foreground">
-                Protocoles de sécurité avancés et audits réguliers pour protéger vos fonds
-              </p>
+      <CollapsibleSection
+        title="Pourquoi Choisir CryptoStake Pro ?"
+        subtitle="Découvrez nos avantages"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="text-center p-6">
+            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+              🔒
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-success rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-                ⚡
-              </div>
-              <h3 className="text-xl font-bold mb-2">Rendements Élevés</h3>
-              <p className="text-muted-foreground">
-                Jusqu'à 7% de rendement quotidien avec nos algorithmes optimisés
-              </p>
+            <h3 className="text-xl font-bold mb-2">Sécurisé</h3>
+            <p className="text-muted-foreground">
+              Protocoles de sécurité avancés et audits réguliers pour protéger vos fonds
+            </p>
+          </div>
+          <div className="text-center p-6">
+            <div className="w-16 h-16 bg-success rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+              ⚡
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-info rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-                🌐
-              </div>
-              <h3 className="text-xl font-bold mb-2">Multi-Blockchain</h3>
-              <p className="text-muted-foreground">
-                Support de 6 réseaux blockchain majeurs pour diversifier votre portefeuille
-              </p>
+            <h3 className="text-xl font-bold mb-2">Rendements Élevés</h3>
+            <p className="text-muted-foreground">
+              Jusqu'à 7% de rendement quotidien avec nos algorithmes optimisés
+            </p>
+          </div>
+          <div className="text-center p-6">
+            <div className="w-16 h-16 bg-info rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+              🌐
             </div>
+            <h3 className="text-xl font-bold mb-2">Multi-Blockchain</h3>
+            <p className="text-muted-foreground">
+              Support de 6 réseaux blockchain majeurs pour diversifier votre portefeuille
+            </p>
           </div>
         </div>
-      </section>
+      </CollapsibleSection>
 
       {/* Custom Staking Section */}
-      <CustomStaking />
+      <CollapsibleSection
+        title="Staking Personnalisé"
+        subtitle="Personnalisez votre stratégie de staking"
+      >
+        <CustomStaking />
+      </CollapsibleSection>
 
       {/* Portfolio Tracker Section */}
-      <PortfolioTracker />
+      <CollapsibleSection
+        title="Suivi de Portefeuille"
+        subtitle="Analysez la performance de votre portefeuille"
+      >
+        <PortfolioTracker />
+      </CollapsibleSection>
 
       {/* News Center Section */}
-      <NewsCenter />
+      <CollapsibleSection
+        title="Centre d'Actualités"
+        subtitle="Restez informé des dernières nouvelles crypto"
+      >
+        <NewsCenter />
+      </CollapsibleSection>
 
       {/* Referral System Section */}
-      <ReferralSystem />
+      <CollapsibleSection
+        title="Système de Parrainage"
+        subtitle="Gagnez des récompenses en invitant vos amis"
+      >
+        <ReferralSystem />
+      </CollapsibleSection>
 
       {/* Security Center Section */}
-      <SecurityCenter />
+      <CollapsibleSection
+        title="Centre de Sécurité"
+        subtitle="Gérez la sécurité de votre compte"
+      >
+        <SecurityCenter />
+      </CollapsibleSection>
 
       {/* Payment Section */}
-      <PaymentSection />
+      <CollapsibleSection
+        title="Méthodes de Paiement"
+        subtitle="Gérez vos options de paiement et de retrait"
+      >
+        <PaymentSection />
+      </CollapsibleSection>
 
       {/* Footer */}
       <footer className="bg-card border-t border-primary/20 py-12 px-6">
