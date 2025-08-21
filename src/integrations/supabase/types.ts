@@ -1261,6 +1261,16 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_public_chat_messages: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string
+          id: string
+          is_own_message: boolean
+          message: string
+          username: string
+        }[]
+      }
       get_referral_stats: {
         Args: { p_user_id: string }
         Returns: Json
