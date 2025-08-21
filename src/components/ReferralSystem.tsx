@@ -4,19 +4,87 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Copy, Users, Gift, Star, Crown, Diamond } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+
+interface UserProfile {
+  user_id: string;
+  referral_code: string;
+  total_referrals: number;
+  total_referral_earnings: number;
+  monthly_referral_earnings: number;
+}
+
+interface Referral {
+  id: string;
+  referred_id: string;
+  earnings_generated: number;
+  status: string;
+  created_at: string;
+  profiles: {
+    username: string;
+  };
+}
 
 const ReferralSystem = () => {
   const { toast } = useToast();
-  const [referralCode] = useState('CRYPTO2024X7');
-  
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProfile();
+      fetchReferrals();
+    }
+  }, [user]);
+
+  const fetchUserProfile = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('user_id, referral_code, total_referrals, total_referral_earnings, monthly_referral_earnings')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!error && data) {
+      setProfile(data);
+    }
+    setLoading(false);
+  };
+
+  const fetchReferrals = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('referrals')
+      .select(`
+        id,
+        referred_id,
+        earnings_generated,
+        status,
+        created_at,
+        profiles!referrals_referred_id_fkey(username)
+      `)
+      .eq('referrer_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    if (!error && data) {
+      setReferrals(data);
+    }
+  };
+
   const referralStats = {
-    totalReferrals: 12,
-    activeReferrals: 8,
-    totalEarnings: 245.67,
-    thisMonthEarnings: 89.34,
-    nextTierProgress: 67
+    totalReferrals: profile?.total_referrals || 0,
+    activeReferrals: referrals.filter(r => r.status === 'active').length,
+    totalEarnings: Number(profile?.total_referral_earnings || 0),
+    thisMonthEarnings: Number(profile?.monthly_referral_earnings || 0),
+    nextTierProgress: Math.min((profile?.total_referrals || 0) * 20, 100)
   };
 
   const referralTiers = [
@@ -29,15 +97,19 @@ const ReferralSystem = () => {
   const currentTier = referralTiers.find(tier => referralStats.totalReferrals >= tier.referrals) || referralTiers[0];
   const nextTier = referralTiers.find(tier => referralStats.totalReferrals < tier.referrals);
 
-  const recentReferrals = [
-    { name: "User****123", joinDate: "2024-01-15", status: "Active", earnings: 25.50 },
-    { name: "Crypto****567", joinDate: "2024-01-12", status: "Active", earnings: 18.75 },
-    { name: "Stake****890", joinDate: "2024-01-10", status: "Inactive", earnings: 12.30 },
-    { name: "Moon****456", joinDate: "2024-01-08", status: "Active", earnings: 31.20 },
-  ];
+  if (loading) {
+    return (
+      <section className="py-20 px-6">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="animate-pulse">Chargement...</div>
+        </div>
+      </section>
+    );
+  }
 
   const copyReferralCode = () => {
-    navigator.clipboard.writeText(`https://cryptostake.pro/ref/${referralCode}`);
+    if (!profile?.referral_code) return;
+    navigator.clipboard.writeText(`https://cryptostake.pro/ref/${profile.referral_code}`);
     toast({
       title: "Lien copié!",
       description: "Votre lien de parrainage a été copié dans le presse-papiers.",
@@ -119,7 +191,7 @@ const ReferralSystem = () => {
             <CardContent className="space-y-4">
               <div className="flex gap-2">
                 <Input 
-                  value={`https://cryptostake.pro/ref/${referralCode}`}
+                  value={`https://cryptostake.pro/ref/${profile?.referral_code || ''}`}
                   readOnly
                   className="flex-1"
                 />
@@ -198,35 +270,43 @@ const ReferralSystem = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentReferrals.map((referral, index) => (
-                <div key={index} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
-                      <Users className="h-5 w-5 text-primary" />
+              {referrals.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">
+                  Aucun parrainage encore. Partagez votre lien pour commencer !
+                </p>
+              ) : (
+                referrals.map((referral) => (
+                  <div key={referral.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+                        <Users className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <div className="font-semibold">
+                          {referral.profiles?.username ? `${referral.profiles.username.substring(0, 4)}****${referral.profiles.username.slice(-3)}` : 'Utilisateur****'}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Inscrit le {new Date(referral.created_at).toLocaleDateString('fr-FR')}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-semibold">{referral.name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        Inscrit le {new Date(referral.joinDate).toLocaleDateString('fr-FR')}
+                    
+                    <div className="flex items-center gap-4">
+                      <Badge variant={referral.status === 'active' ? 'default' : 'secondary'}>
+                        {referral.status === 'active' ? 'Actif' : 'Inactif'}
+                      </Badge>
+                      <div className="text-right">
+                        <div className="font-semibold text-green-500">
+                          +${Number(referral.earnings_generated).toFixed(2)}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Gains générés
+                        </div>
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="flex items-center gap-4">
-                    <Badge variant={referral.status === 'Active' ? 'default' : 'secondary'}>
-                      {referral.status === 'Active' ? 'Actif' : 'Inactif'}
-                    </Badge>
-                    <div className="text-right">
-                      <div className="font-semibold text-green-500">
-                        +${referral.earnings}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Gains générés
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </CardContent>
         </Card>

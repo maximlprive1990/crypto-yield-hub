@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
@@ -96,7 +96,14 @@ export type Database = {
           experience_points: number | null
           hashrate_level: number | null
           id: string
+          last_active: string | null
+          loyalty_days: number | null
+          monthly_referral_earnings: number | null
+          referral_code: string
+          referred_by: string | null
           total_earnings: number | null
+          total_referral_earnings: number | null
+          total_referrals: number | null
           updated_at: string
           user_id: string
           username: string | null
@@ -107,7 +114,14 @@ export type Database = {
           experience_points?: number | null
           hashrate_level?: number | null
           id?: string
+          last_active?: string | null
+          loyalty_days?: number | null
+          monthly_referral_earnings?: number | null
+          referral_code?: string
+          referred_by?: string | null
           total_earnings?: number | null
+          total_referral_earnings?: number | null
+          total_referrals?: number | null
           updated_at?: string
           user_id: string
           username?: string | null
@@ -118,12 +132,75 @@ export type Database = {
           experience_points?: number | null
           hashrate_level?: number | null
           id?: string
+          last_active?: string | null
+          loyalty_days?: number | null
+          monthly_referral_earnings?: number | null
+          referral_code?: string
+          referred_by?: string | null
           total_earnings?: number | null
+          total_referral_earnings?: number | null
+          total_referrals?: number | null
           updated_at?: string
           user_id?: string
           username?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          earnings_generated: number | null
+          id: string
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          earnings_generated?: number | null
+          id?: string
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          earnings_generated?: number | null
+          id?: string
+          referral_code?: string
+          referred_id?: string
+          referrer_id?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
       staking_positions: {
         Row: {
