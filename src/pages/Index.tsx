@@ -33,6 +33,7 @@ const Index = () => {
   const { user, signOut, loading } = useAuth();
   const [showRPG, setShowRPG] = useState(false);
   const [showSpinWheel, setShowSpinWheel] = useState(false);
+  const [showFaucet, setShowFaucet] = useState(false);
   const [userZeroBalance, setUserZeroBalance] = useState(0);
 
   const handleZeroWin = (amount: number) => {
@@ -136,6 +137,28 @@ const Index = () => {
           </div>
         </div>
       )}
+
+      {/* Faucet ZERO Slide */}
+      {showFaucet && (
+        <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-auto">
+          <div className="container mx-auto p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl font-bold gradient-text">💧 Faucet ZERO</h2>
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowFaucet(false)}
+                className="text-2xl"
+              >
+                ✕
+              </Button>
+            </div>
+            <FaucetClaim 
+              onOpenRPG={() => setShowRPG(true)}
+              onOpenSpin={() => setShowSpinWheel(true)}
+            />
+          </div>
+        </div>
+      )}
       
       {/* Top Access Buttons */}
       <div className="fixed top-4 left-4 z-40 flex gap-2">
@@ -154,6 +177,14 @@ const Index = () => {
           className="shadow-glow"
         >
           🎰 Spin Wheel
+        </Button>
+        <Button 
+          variant="secondary" 
+          size="lg"
+          onClick={() => setShowFaucet(true)}
+          className="shadow-glow"
+        >
+          💧 Faucet ZERO
         </Button>
       </div>
 
@@ -194,19 +225,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* Faucet ZERO Section */}
-      <CollapsibleSection
-        title="💧 Faucet ZERO - Tokens Gratuits"
-        subtitle="Réclamez des ZERO tokens toutes les 15 minutes! Mining JavaScript actif dans cette section."
-        defaultOpen={true}
-        className="bg-secondary/20 border-primary/30"
-      >
-        <FaucetClaim 
-          onOpenRPG={() => setShowRPG(true)}
-          onOpenSpin={() => setShowSpinWheel(true)}
-        />
-      </CollapsibleSection>
 
       {/* Statistics Section */}
       <CollapsibleSection
