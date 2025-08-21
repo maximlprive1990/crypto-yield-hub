@@ -1043,6 +1043,10 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: Json
       }
+      generate_referral_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_latest_faucet_claim: {
         Args: { p_user_id: string }
         Returns: {
@@ -1053,6 +1057,10 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_referral_stats: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
       get_total_faucet_claims: {
         Args: { p_user_id: string }
         Returns: number
@@ -1060,6 +1068,10 @@ export type Database = {
       increment_deadspot: {
         Args: { amount: number }
         Returns: number
+      }
+      process_referral: {
+        Args: { p_referred_user_id: string; p_referrer_code: string }
+        Returns: Json
       }
       update_platform_stat: {
         Args: { increment_value: number; stat_name_param: string }
