@@ -1,1 +1,4 @@
 project_id = "wbavwtwslofcrpeuyqak"
+
+[functions.process-withdrawal]
+verify_jwt = true

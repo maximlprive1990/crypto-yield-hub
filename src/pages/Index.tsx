@@ -1,6 +1,6 @@
 import StakingCard from "@/components/StakingCard";
 import ClickerGame from "@/components/ClickerGame";
-import PaymentSection from "@/components/PaymentSection";
+import WithdrawalSection from "@/components/PaymentSection";
 import PortfolioTracker from "@/components/PortfolioTracker";
 import ReferralSystem from "@/components/ReferralSystem";
 import SecurityCenter from "@/components/SecurityCenter";
@@ -315,12 +315,12 @@ const Index = () => {
         <SecurityCenter />
       </CollapsibleSection>
 
-      {/* Payment Section */}
+      {/* Withdrawal Section */}
       <CollapsibleSection
-        title="Méthodes de Paiement"
-        subtitle="Gérez vos options de paiement et de retrait"
+        title="Système de Retrait"
+        subtitle="Demandez le retrait de vos fonds de manière sécurisée"
       >
-        <PaymentSection />
+        <WithdrawalSection />
       </CollapsibleSection>
 
       {/* Footer */}
