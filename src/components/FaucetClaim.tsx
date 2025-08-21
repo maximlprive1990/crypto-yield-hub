@@ -75,15 +75,17 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenRPG, onOpenSpin 
 
     try {
       // Use RPC to avoid TypeScript issues until types are regenerated
-      const { data, error } = await supabase.rpc('get_latest_faucet_claim', {
+      const { data, error } = await (supabase.rpc as any)('get_latest_faucet_claim', {
         p_user_id: user.id
       });
 
-      if (error && error.code !== 'PGRST116') {
-        console.log('No previous claims found');
+      if (error) {
+        console.log('No previous claims found:', error);
+        setCanClaim(true);
+        return;
       }
 
-      if (data && data.length > 0) {
+      if (data && Array.isArray(data) && data.length > 0) {
         const latest = data[0];
         const nextClaim = new Date(latest.next_claim_at);
         const now = new Date();
@@ -95,12 +97,12 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenRPG, onOpenSpin 
       }
 
       // Get total claimed
-      const { data: totalData } = await supabase.rpc('get_total_faucet_claims', {
+      const { data: totalData } = await (supabase.rpc as any)('get_total_faucet_claims', {
         p_user_id: user.id
       });
 
-      if (totalData) {
-        setTotalClaimed(totalData || 0);
+      if (totalData !== null && totalData !== undefined) {
+        setTotalClaimed(Number(totalData) || 0);
       }
     } catch (error) {
       console.error('Error checking claim status:', error);
@@ -117,38 +119,24 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenRPG, onOpenSpin 
       const amount = Math.random() * (0.03 - 0.00001) + 0.00001;
       const roundedAmount = Math.round(amount * 100000) / 100000;
       
-      const now = new Date();
-      const nextClaim = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
-
-      const { error } = await supabase
-        .from('faucet_claims')
-        .insert([{
-          user_id: user.id,
-          amount_claimed: roundedAmount,
-          claimed_at: now.toISOString(),
-          next_claim_at: nextClaim.toISOString()
-        }]);
+      // Use RPC function to handle claim creation and balance update
+      const { data, error } = await (supabase.rpc as any)('create_faucet_claim', {
+        p_user_id: user.id,
+        p_amount: roundedAmount
+      });
 
       if (error) throw error;
 
-      // Update profile with new ZERO balance
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ 
-          deadspot_tokens: supabase.rpc('increment_deadspot', { amount: roundedAmount })
-        })
-        .eq('user_id', user.id);
+      if (data && data.success) {
+        setCanClaim(false);
+        setNextClaimTime(new Date(data.next_claim_at));
+        setTotalClaimed(prev => prev + roundedAmount);
 
-      if (profileError) throw profileError;
-
-      setCanClaim(false);
-      setNextClaimTime(nextClaim);
-      setTotalClaimed(prev => prev + roundedAmount);
-
-      toast({
-        title: "🎉 Faucet Claim Réussi!",
-        description: `Vous avez reçu ${roundedAmount.toFixed(5)} ZERO tokens!`,
-      });
+        toast({
+          title: "🎉 Faucet Claim Réussi!",
+          description: `Vous avez reçu ${roundedAmount.toFixed(5)} ZERO tokens!`,
+        });
+      }
 
     } catch (error) {
       console.error('Error claiming from faucet:', error);

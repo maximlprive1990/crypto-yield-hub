@@ -27,6 +27,7 @@ import { RPGGame } from "@/components/RPGGame";
 import { SpinWheel } from "@/components/SpinWheel";
 import heroBackground from "@/assets/hero-background.jpg";
 import { useState } from "react";
+import { FaucetClaim } from "@/components/FaucetClaim";
 
 const Index = () => {
   const { user, signOut, loading } = useAuth();
@@ -194,6 +195,13 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Faucet ZERO Section */}
+      <section className="container mx-auto px-6 py-12">
+        <FaucetClaim 
+          onOpenRPG={() => setShowRPG(true)}
+          onOpenSpin={() => setShowSpinWheel(true)}
+        />
+      </section>
 
       {/* Statistics Section */}
       <CollapsibleSection

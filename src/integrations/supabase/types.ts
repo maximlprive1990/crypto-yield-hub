@@ -1015,6 +1015,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_faucet_claim: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: Json
+      }
+      get_latest_faucet_claim: {
+        Args: { p_user_id: string }
+        Returns: {
+          amount_claimed: number
+          claimed_at: string
+          id: string
+          next_claim_at: string
+          user_id: string
+        }[]
+      }
+      get_total_faucet_claims: {
+        Args: { p_user_id: string }
+        Returns: number
+      }
       increment_deadspot: {
         Args: { amount: number }
         Returns: number
