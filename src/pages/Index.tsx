@@ -349,6 +349,28 @@ const Index = () => {
         <WithdrawalSection />
       </CollapsibleSection>
 
+      {/* Contact Section */}
+      <section className="bg-secondary/10 border-t border-primary/10 py-8 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <h3 className="text-xl font-semibold mb-4 gradient-text">
+            📧 Contacter l'Auteur
+          </h3>
+          <p className="text-muted-foreground mb-4">
+            Si vous voulez contacter l'auteur du site pour quelconque idée, soumission, erreur et/ou problème :
+          </p>
+          <div className="p-4 bg-card rounded-lg border border-primary/20 inline-block">
+            <p className="text-lg font-medium">
+              📬 Email: <a 
+                href="mailto:maximlprive90@gmail.com" 
+                className="text-primary hover:text-primary/80 transition-colors underline"
+              >
+                maximlprive90@gmail.com
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-card border-t border-primary/20 py-12 px-6">
         <div className="max-w-7xl mx-auto text-center">
