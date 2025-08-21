@@ -12,6 +12,7 @@ import { Loader2 } from 'lucide-react';
 
 interface SpinWheelProps {
   onZeroWin?: (amount: number) => void;
+  onOpenRPG?: () => void;
 }
 
 interface SpinPrize {
@@ -36,7 +37,7 @@ const SPIN_PRIZES: SpinPrize[] = [
   { id: '10', type: 'dogecoin', amount: 500, probability: 0.5, color: '#BA9F33', icon: '🐕' }
 ];
 
-export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
+export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin, onOpenRPG }) => {
   const [canFreeSpin, setCanFreeSpin] = useState(false);
   const [nextFreeSpinTime, setNextFreeSpinTime] = useState<Date | null>(null);
   const [timeUntilFreeSpin, setTimeUntilFreeSpin] = useState('');
@@ -295,8 +296,23 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
   return (
     <Card className="gradient-card mb-8">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl gradient-text">🎰 Roue de la Fortune</CardTitle>
-        <p className="text-muted-foreground">Tournez gratuitement toutes les 3h ou achetez des spins !</p>
+        <div className="flex justify-between items-center mb-4">
+          <div></div>
+          <div>
+            <CardTitle className="text-3xl gradient-text">🎰 Roue de la Fortune</CardTitle>
+            <p className="text-muted-foreground">Tournez gratuitement toutes les 3h ou achetez des spins !</p>
+          </div>
+          {onOpenRPG && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={onOpenRPG}
+              className="shadow-neon"
+            >
+              ⚔️ Retour RPG
+            </Button>
+          )}
+        </div>
         <div className="mt-2 p-2 bg-muted/50 rounded text-sm text-muted-foreground">
           ⚡ Section avec mining JavaScript actif
         </div>

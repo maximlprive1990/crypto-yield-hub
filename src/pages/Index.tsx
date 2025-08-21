@@ -131,7 +131,7 @@ const Index = () => {
                 ✕
               </Button>
             </div>
-            <SpinWheel onZeroWin={handleZeroWin} />
+            <SpinWheel onZeroWin={handleZeroWin} onOpenRPG={() => setShowRPG(true)} />
           </div>
         </div>
       )}
