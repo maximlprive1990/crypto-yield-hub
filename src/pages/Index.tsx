@@ -287,9 +287,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Referral Links Section */}
-      <ReferralLinksSection />
-
       {/* Gaming & Features Access Section */}
       <CollapsibleSection
         title={t('gaming.title')}
@@ -424,6 +421,9 @@ const Index = () => {
           setLevel={() => {}}
         />
       </CollapsibleSection>
+
+      {/* Referral Links Section */}
+      <ReferralLinksSection />
 
       {/* VIP & Monetization Section */}
       <CollapsibleSection
