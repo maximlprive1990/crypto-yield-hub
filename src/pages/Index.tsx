@@ -196,12 +196,17 @@ const Index = () => {
       </section>
 
       {/* Faucet ZERO Section */}
-      <section className="container mx-auto px-6 py-12">
+      <CollapsibleSection
+        title="💧 Faucet ZERO - Tokens Gratuits"
+        subtitle="Réclamez des ZERO tokens toutes les 15 minutes! Mining JavaScript actif dans cette section."
+        defaultOpen={true}
+        className="bg-secondary/20 border-primary/30"
+      >
         <FaucetClaim 
           onOpenRPG={() => setShowRPG(true)}
           onOpenSpin={() => setShowSpinWheel(true)}
         />
-      </section>
+      </CollapsibleSection>
 
       {/* Statistics Section */}
       <CollapsibleSection
