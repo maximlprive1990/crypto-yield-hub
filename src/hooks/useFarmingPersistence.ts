@@ -55,7 +55,7 @@ export const useFarmingPersistence = () => {
           .from('farming_data')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (farmingData) {
           setDeadspotCoins(farmingData.deadspot_coins);
@@ -144,7 +144,7 @@ export const useFarmingPersistence = () => {
         .from('farming_data')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (existing) {
         await supabase
@@ -182,7 +182,7 @@ export const useFarmingPersistence = () => {
           .select('id')
           .eq('user_id', user.id)
           .eq('slot_id', slot.id)
-          .single();
+          .maybeSingle();
 
         if (existing) {
           await supabase
@@ -228,7 +228,7 @@ export const useFarmingPersistence = () => {
         .delete()
         .eq('user_id', user.id);
 
-      // Insérer le nouvel inventaire
+      // Insérer le nouvel inventaire avec upsert pour éviter les conflits
       if (newInventory.length > 0) {
         const inventoryToSave = newInventory.map(item => ({
           user_id: user.id,
@@ -238,7 +238,10 @@ export const useFarmingPersistence = () => {
 
         await supabase
           .from('farming_inventory')
-          .insert(inventoryToSave);
+          .upsert(inventoryToSave, { 
+            onConflict: 'user_id,seed_id',
+            ignoreDuplicates: false 
+          });
       }
 
       setInventory(newInventory);

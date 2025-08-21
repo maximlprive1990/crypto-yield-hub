@@ -22,7 +22,7 @@ export const useRPGPersistence = () => {
           .from('rpg_players')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (playerData) {
           // Charger l'inventaire
@@ -30,14 +30,14 @@ export const useRPGPersistence = () => {
             .from('rpg_inventory')
             .select('*')
             .eq('user_id', user.id)
-            .single();
+            .maybeSingle();
 
           // Charger l'équipement
           const { data: equipmentData } = await supabase
             .from('rpg_equipment')
             .select('*')
             .eq('user_id', user.id)
-            .single();
+            .maybeSingle();
 
           const loadedPlayer: Player = {
             id: playerData.id,
@@ -90,7 +90,7 @@ export const useRPGPersistence = () => {
         .from('rpg_players')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (existingPlayer) {
         await supabase
@@ -133,7 +133,7 @@ export const useRPGPersistence = () => {
         .from('rpg_inventory')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (existingInventory) {
         await supabase
@@ -156,7 +156,7 @@ export const useRPGPersistence = () => {
         .from('rpg_equipment')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (existingEquipment) {
         await supabase
