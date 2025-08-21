@@ -241,41 +241,6 @@ const Index = () => {
         </div>
       )}
       
-      {/* Top Access Buttons */}
-      <div className="fixed top-4 left-4 z-40 flex gap-2">
-        <Button 
-          variant="crypto" 
-          size="lg"
-          onClick={() => setShowRPG(true)}
-          className="shadow-glow"
-        >
-          ⚔️ Jeu RPG
-        </Button>
-        <Button 
-          variant="stake" 
-          size="lg"
-          onClick={() => setShowSpinWheel(true)}
-          className="shadow-glow"
-        >
-          🎰 Spin Wheel
-        </Button>
-        <Button 
-          variant="secondary" 
-          size="lg"
-          onClick={() => setShowFaucet(true)}
-          className="shadow-glow"
-        >
-          💧 Faucet ZERO
-        </Button>
-        <Button 
-          variant="outline" 
-          size="lg"
-          onClick={() => setShowFarm(true)}
-          className="shadow-glow"
-        >
-          🌾 Ferme
-        </Button>
-      </div>
 
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -316,11 +281,80 @@ const Index = () => {
       </section>
 
 
+      {/* Gaming & Features Access Section */}
+      <CollapsibleSection
+        title="🎮 Jeux et Fonctionnalités"
+        subtitle="Accédez rapidement à nos jeux RPG, système de ferme, faucet ZERO et roulette"
+        defaultOpen={true}
+        className="bg-secondary/20"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
+            <div className="text-4xl mb-4">⚔️</div>
+            <h3 className="text-lg font-bold mb-2">Jeu RPG</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Combattez des ennemis, récoltez de l'équipement et gagnez des ZERO coins
+            </p>
+            <Button 
+              variant="crypto" 
+              onClick={() => setShowRPG(true)}
+              className="w-full shadow-glow"
+            >
+              Jouer
+            </Button>
+          </div>
+          
+          <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
+            <div className="text-4xl mb-4">🌾</div>
+            <h3 className="text-lg font-bold mb-2">Système de Ferme</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Plantez, récoltez et gérez votre ferme pour gagner des DeadSpot coins
+            </p>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowFarm(true)}
+              className="w-full shadow-glow"
+            >
+              Cultiver
+            </Button>
+          </div>
+          
+          <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
+            <div className="text-4xl mb-4">💧</div>
+            <h3 className="text-lg font-bold mb-2">Faucet ZERO</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Réclamez des ZERO coins gratuits toutes les heures
+            </p>
+            <Button 
+              variant="secondary" 
+              onClick={() => setShowFaucet(true)}
+              className="w-full shadow-glow"
+            >
+              Réclamer
+            </Button>
+          </div>
+          
+          <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
+            <div className="text-4xl mb-4">🎰</div>
+            <h3 className="text-lg font-bold mb-2">Roulette Spin</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Tournez la roue de la fortune et gagnez des récompenses
+            </p>
+            <Button 
+              variant="stake" 
+              onClick={() => setShowSpinWheel(true)}
+              className="w-full shadow-glow"
+            >
+              Tourner
+            </Button>
+          </div>
+        </div>
+      </CollapsibleSection>
+
       {/* Statistics Section */}
       <CollapsibleSection
         title="Statistiques de la Plateforme"
         subtitle="Des chiffres réels qui témoignent de la croissance de notre communauté"
-        defaultOpen={true}
       >
         <PlatformStats />
       </CollapsibleSection>
