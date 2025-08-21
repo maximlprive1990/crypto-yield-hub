@@ -71,29 +71,7 @@ export const FarmingSystem = () => {
   const [lastFaucetClaim, setLastFaucetClaim] = useState<Date | null>(null);
   const [canClaim, setCanClaim] = useState(true);
 
-  // Si pas connecté
-  if (!user) {
-    return (
-      <Card className="p-8 text-center">
-        <h2 className="text-2xl font-bold mb-4">Connexion requise</h2>
-        <p className="text-muted-foreground">
-          Vous devez être connecté pour accéder au système de ferme.
-        </p>
-      </Card>
-    );
-  }
-
-  // Chargement
-  if (loading) {
-    return (
-      <Card className="p-8 text-center">
-        <h2 className="text-2xl font-bold mb-4">Chargement...</h2>
-        <Progress value={50} className="w-48 mx-auto" />
-      </Card>
-    );
-  }
-
-  // Vérifier le cooldown du faucet (10 minutes) - Hook toujours appelé
+  // Vérifier le cooldown du faucet (10 minutes) - Hook AVANT les conditions
   useEffect(() => {
     if (!lastFaucetClaim) {
       setCanClaim(true);
@@ -117,6 +95,28 @@ export const FarmingSystem = () => {
       setCanClaim(true);
     }
   }, [lastFaucetClaim]);
+
+  // Si pas connecté
+  if (!user) {
+    return (
+      <Card className="p-8 text-center">
+        <h2 className="text-2xl font-bold mb-4">Connexion requise</h2>
+        <p className="text-muted-foreground">
+          Vous devez être connecté pour accéder au système de ferme.
+        </p>
+      </Card>
+    );
+  }
+
+  // Chargement
+  if (loading) {
+    return (
+      <Card className="p-8 text-center">
+        <h2 className="text-2xl font-bold mb-4">Chargement...</h2>
+        <Progress value={50} className="w-48 mx-auto" />
+      </Card>
+    );
+  }
 
   // Chargement
 
