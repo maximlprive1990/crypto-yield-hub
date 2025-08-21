@@ -47,44 +47,6 @@ interface InventoryItem {
   quantity: number;
 }
 
-const SEEDS: Seed[] = [
-  {
-    id: "wheat",
-    name: "Blé",
-    icon: Wheat,
-    price: 100,
-    growthTime: 30,
-    reward: 5,
-    rarity: "common"
-  },
-  {
-    id: "carrot",
-    name: "Carotte",
-    icon: Carrot,
-    price: 150,
-    growthTime: 45,
-    reward: 8,
-    rarity: "common"
-  },
-  {
-    id: "lettuce",
-    name: "Courgette",
-    icon: Salad,
-    price: 200,
-    growthTime: 60,
-    reward: 12,
-    rarity: "rare"
-  },
-  {
-    id: "tomato",
-    name: "Tomate",
-    icon: Cherry,
-    price: 300,
-    growthTime: 90,
-    reward: 20,
-    rarity: "epic"
-  }
-];
 
 export const FarmingSystem = () => {
   const { user } = useAuth();
@@ -95,6 +57,7 @@ export const FarmingSystem = () => {
     inventory,
     slots,
     loading,
+    SEEDS,
     setDeadspotCoins,
     setZeroTokens,
     setInventory,

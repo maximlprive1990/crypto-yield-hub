@@ -1,6 +1,47 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+import { Wheat, Carrot, Salad, Cherry } from "lucide-react";
+
+// Définir les seeds ici pour éviter la dépendance circulaire
+const SEEDS = [
+  {
+    id: "wheat",
+    name: "Blé",
+    icon: Wheat,
+    price: 100,
+    growthTime: 30,
+    reward: 5,
+    rarity: "common" as const
+  },
+  {
+    id: "carrot", 
+    name: "Carotte",
+    icon: Carrot,
+    price: 150,
+    growthTime: 45,
+    reward: 8,
+    rarity: "common" as const
+  },
+  {
+    id: "lettuce",
+    name: "Courgette", 
+    icon: Salad,
+    price: 200,
+    growthTime: 60,
+    reward: 12,
+    rarity: "rare" as const
+  },
+  {
+    id: "tomato",
+    name: "Tomate",
+    icon: Cherry,
+    price: 300,
+    growthTime: 90,
+    reward: 18,
+    rarity: "epic" as const
+  }
+];
 
 interface Seed {
   id: string;
@@ -83,15 +124,8 @@ export const useFarmingPersistence = () => {
             id: slot.slot_id,
             isUnlocked: slot.is_unlocked,
             unlockPrice: slot.unlock_price,
-            plantedSeed: slot.planted_seed_id ? {
-              id: slot.planted_seed_id,
-              name: '',
-              icon: null,
-              price: 0,
-              growthTime: 0,
-              reward: 0,
-              rarity: 'common' as const
-            } : undefined,
+            plantedSeed: slot.planted_seed_id ? 
+              SEEDS.find(s => s.id === slot.planted_seed_id) : undefined,
             plantedAt: slot.planted_at ? new Date(slot.planted_at) : undefined,
             isGrowing: slot.is_growing
           }));
@@ -256,6 +290,7 @@ export const useFarmingPersistence = () => {
     inventory,
     slots,
     loading,
+    SEEDS, // Export the SEEDS array
     setDeadspotCoins: (coins: number) => saveFarmingData(coins, zeroTokens),
     setZeroTokens: (tokens: number) => saveFarmingData(deadspotCoins, tokens),
     setInventory: saveInventory,
