@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import PayeerVerification from "./components/PayeerVerification";
 
 const queryClient = new QueryClient();
 
@@ -20,24 +21,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
-            <Route 
-              path="/payeer_2252670589.txt" 
-              element={
-                <div style={{
-                  fontFamily: 'monospace',
-                  fontSize: '12px',
-                  whiteSpace: 'pre-wrap',
-                  margin: 0,
-                  padding: 0,
-                  backgroundColor: 'white',
-                  color: 'black',
-                  minHeight: '100vh',
-                  width: '100vw'
-                }}>
-                  2252670589
-                </div>
-              } 
-            />
+            <Route path="/payeer_2252670589.txt" element={<PayeerVerification />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
