@@ -17,15 +17,80 @@ const WithdrawalSection = () => {
   const { toast } = useToast();
 
   const currencyOptions = [
+    // Devises Fiat
     { value: "USD", label: "USD - Dollar américain" },
     { value: "EUR", label: "EUR - Euro" },
+    { value: "RUB", label: "RUB - Rouble russe" },
+    { value: "UAH", label: "UAH - Hryvnia ukrainienne" },
+    { value: "KZT", label: "KZT - Tenge kazakhstanais" },
+    { value: "GBP", label: "GBP - Livre sterling" },
+    { value: "JPY", label: "JPY - Yen japonais" },
+    { value: "CAD", label: "CAD - Dollar canadien" },
+    { value: "AUD", label: "AUD - Dollar australien" },
+    { value: "CHF", label: "CHF - Franc suisse" },
+    { value: "CNY", label: "CNY - Yuan chinois" },
+    { value: "TRY", label: "TRY - Livre turque" },
+    
+    // Cryptomonnaies principales
     { value: "BTC", label: "BTC - Bitcoin" },
     { value: "ETH", label: "ETH - Ethereum" },
+    { value: "LTC", label: "LTC - Litecoin" },
+    { value: "BCH", label: "BCH - Bitcoin Cash" },
+    { value: "USDT", label: "USDT - Tether (ERC-20)" },
+    { value: "USDC", label: "USDC - USD Coin" },
+    { value: "BUSD", label: "BUSD - Binance USD" },
+    { value: "DAI", label: "DAI - Dai Stablecoin" },
+    
+    // Altcoins populaires
+    { value: "ADA", label: "ADA - Cardano" },
+    { value: "DOT", label: "DOT - Polkadot" },
+    { value: "LINK", label: "LINK - Chainlink" },
+    { value: "XRP", label: "XRP - Ripple" },
+    { value: "XLM", label: "XLM - Stellar" },
     { value: "MATIC", label: "MATIC - Polygon" },
-    { value: "TRX", label: "TRX - Tron" },
-    { value: "TON", label: "TON - Toncoin" },
+    { value: "AVAX", label: "AVAX - Avalanche" },
     { value: "SOL", label: "SOL - Solana" },
-    { value: "DOGE", label: "DOGE - Dogecoin" }
+    { value: "ALGO", label: "ALGO - Algorand" },
+    { value: "ATOM", label: "ATOM - Cosmos" },
+    { value: "FTM", label: "FTM - Fantom" },
+    { value: "NEAR", label: "NEAR - Near Protocol" },
+    
+    // Réseaux Tron et Binance Smart Chain
+    { value: "TRX", label: "TRX - Tron" },
+    { value: "USDT_TRC20", label: "USDT - Tether (TRC-20)" },
+    { value: "USDC_TRC20", label: "USDC - USD Coin (TRC-20)" },
+    { value: "BNB", label: "BNB - Binance Coin" },
+    { value: "USDT_BSC", label: "USDT - Tether (BSC)" },
+    { value: "BUSD_BSC", label: "BUSD - Binance USD (BSC)" },
+    
+    // Autres cryptos
+    { value: "TON", label: "TON - Toncoin" },
+    { value: "DOGE", label: "DOGE - Dogecoin" },
+    { value: "SHIB", label: "SHIB - Shiba Inu" },
+    { value: "UNI", label: "UNI - Uniswap" },
+    { value: "AAVE", label: "AAVE - Aave" },
+    { value: "COMP", label: "COMP - Compound" },
+    { value: "MKR", label: "MKR - Maker" },
+    { value: "SNX", label: "SNX - Synthetix" },
+    { value: "CRV", label: "CRV - Curve DAO" },
+    { value: "YFI", label: "YFI - Yearn.finance" },
+    { value: "SUSHI", label: "SUSHI - SushiSwap" },
+    { value: "1INCH", label: "1INCH - 1inch" },
+    
+    // Cryptomonnaies de privacy
+    { value: "XMR", label: "XMR - Monero" },
+    { value: "ZEC", label: "ZEC - Zcash" },
+    { value: "DASH", label: "DASH - Dash" },
+    
+    // Autres réseaux populaires
+    { value: "APT", label: "APT - Aptos" },
+    { value: "SUI", label: "SUI - Sui" },
+    { value: "ARB", label: "ARB - Arbitrum" },
+    { value: "OP", label: "OP - Optimism" },
+    { value: "MATIC_POLYGON", label: "MATIC - Polygon Network" },
+    { value: "ETH_POLYGON", label: "ETH - Ethereum (Polygon)" },
+    { value: "USDT_POLYGON", label: "USDT - Tether (Polygon)" },
+    { value: "USDC_POLYGON", label: "USDC - USD Coin (Polygon)" }
   ];
 
   const handleWithdrawal = async () => {
