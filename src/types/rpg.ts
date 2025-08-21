@@ -60,12 +60,14 @@ export interface Player {
   gold: number;
   statPoints: number;
   enemiesDefeated: number;
+  zeroCoins: number;
 }
 
 export interface CombatResult {
   victory: boolean;
   experience: number;
   gold: number;
+  zeroGain: number;
   equipment?: Equipment;
   damage: number;
   enemyDamage: number;

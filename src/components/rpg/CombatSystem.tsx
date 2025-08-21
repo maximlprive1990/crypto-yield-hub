@@ -98,10 +98,14 @@ export const CombatSystem: React.FC<CombatSystemProps> = ({
   const endCombat = (victory: boolean, playerDamage: number, enemyDamage: number) => {
     setCombatEnded(true);
     
+    // Generate ZERO gain for victory (0.000001 to 0.001)
+    const zeroGain = victory ? (Math.random() * 0.000999 + 0.000001) : 0;
+    
     const result: CombatResult = {
       victory,
       experience: victory ? enemy.rewards.experience : Math.floor(enemy.rewards.experience * 0.1),
       gold: victory ? enemy.rewards.gold : 0,
+      zeroGain,
       equipment: victory ? enemy.rewards.dropChance : undefined,
       damage: playerDamage,
       enemyDamage

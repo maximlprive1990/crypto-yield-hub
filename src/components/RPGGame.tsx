@@ -10,6 +10,7 @@ import { CombatSystem } from './rpg/CombatSystem';
 import { PlayerPanel } from './rpg/PlayerPanel';
 import { InventorySystem } from './rpg/InventorySystem';
 import { StatsUpgrade } from './rpg/StatsUpgrade';
+import { ZeroWallet } from './rpg/ZeroWallet';
 import { X } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -33,7 +34,8 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
       inventory: [...baseEquipment.slice(0, 3)],
       gold: 100,
       statPoints: 0,
-      enemiesDefeated: 0
+      enemiesDefeated: 0,
+      zeroCoins: 0
     };
     setPlayer(newPlayer);
     setGameState('town');
@@ -114,6 +116,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
     if (result.victory) {
       newPlayer.experience += result.experience;
       newPlayer.gold += result.gold;
+      newPlayer.zeroCoins += result.zeroGain;
       newPlayer.enemiesDefeated += 1;
       
       if (result.equipment) {
@@ -154,7 +157,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
       updatePlayerStats(newPlayer);
       toast({
         title: "Victoire!",
-        description: `+${result.experience} XP, +${result.gold} or!`
+        description: `+${result.experience} XP, +${result.gold} or, +${result.zeroGain.toFixed(6)} ZERO!`
       });
     } else {
       toast({
@@ -182,6 +185,14 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
     });
   };
 
+  const handleZeroWithdraw = (amount: number) => {
+    if (!player) return;
+    
+    const newPlayer = { ...player };
+    newPlayer.zeroCoins -= amount;
+    updatePlayerStats(newPlayer);
+  };
+
   if (!player) {
     return <CharacterCreation classes={playerClasses} onCreatePlayer={createPlayer} />;
   }
@@ -191,19 +202,39 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
       <div className="container mx-auto p-4 max-w-7xl">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-4xl font-bold gradient-text">⚔️ Monde RPG</h1>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="h-6 w-6" />
-          </Button>
+          <div className="flex items-center gap-4">
+            {/* ZERO Balance Display */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg border border-yellow-500/30">
+              <span className="text-xl">💰</span>
+              <div className="text-right">
+                <div className="text-sm text-muted-foreground">ZERO Balance</div>
+                <div className="font-bold text-yellow-400">
+                  {player.zeroCoins.toFixed(6)} ZERO
+                </div>
+              </div>
+            </div>
+            <Button variant="ghost" size="icon" onClick={onClose}>
+              <X className="h-6 w-6" />
+            </Button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Player Panel - Always visible */}
+        <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+          {/* Player Panel */}
           <div className="lg:col-span-1">
             <PlayerPanel player={player} />
           </div>
 
+          {/* Zero Wallet */}
+          <div className="lg:col-span-1">
+            <ZeroWallet 
+              zeroBalance={player.zeroCoins}
+              onWithdraw={handleZeroWithdraw}
+            />
+          </div>
+
           {/* Main Content */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-4">
             {gameState === 'town' && (
               <Card className="gradient-card">
                 <CardHeader>
