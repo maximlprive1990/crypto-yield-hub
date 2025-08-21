@@ -423,7 +423,13 @@ const Index = () => {
       </CollapsibleSection>
 
       {/* Referral Links Section */}
-      <ReferralLinksSection />
+      <CollapsibleSection
+        title={t('referral_links.title')}
+        subtitle={t('referral_links.subtitle')}
+        className="bg-secondary/20"
+      >
+        <ReferralLinksSection />
+      </CollapsibleSection>
 
       {/* VIP & Monetization Section */}
       <CollapsibleSection
