@@ -8,6 +8,7 @@ import NewsCenter from "@/components/NewsCenter";
 import DepositTracker from "@/components/DepositTracker";
 import StakingTracker from "@/components/StakingTracker";
 import CustomStaking from "@/components/CustomStaking";
+import { FarmingSystem } from "@/components/FarmingSystem";
 import MiningFarm from "@/components/MiningFarm";
 import RewardsSystem from "@/components/RewardsSystem";
 import MissionsSystem from "@/components/MissionsSystem";
@@ -282,6 +283,15 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Farming System */}
+      <CollapsibleSection
+        title="🌾 Système de Ferme"
+        subtitle="Plantez, cultivez et récoltez des crypto-récompenses"
+        className="bg-gradient-to-r from-green-500/10 to-emerald-500/10"
+      >
+        <FarmingSystem />
+      </CollapsibleSection>
 
       {/* Statistics Section */}
       <CollapsibleSection
