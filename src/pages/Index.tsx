@@ -37,6 +37,7 @@ const Index = () => {
   const [showRPG, setShowRPG] = useState(false);
   const [showSpinWheel, setShowSpinWheel] = useState(false);
   const [showFaucet, setShowFaucet] = useState(false);
+  const [showFarm, setShowFarm] = useState(false);
   const [userZeroBalance, setUserZeroBalance] = useState(0);
 
   console.log("Index component - user:", user, "loading:", loading);
@@ -220,6 +221,25 @@ const Index = () => {
           </div>
         </div>
       )}
+
+      {/* Farm System Slide */}
+      {showFarm && (
+        <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-auto">
+          <div className="container mx-auto p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl font-bold gradient-text">🌾 Système de Ferme</h2>
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowFarm(false)}
+                className="text-2xl"
+              >
+                ✕
+              </Button>
+            </div>
+            <FarmingSystem />
+          </div>
+        </div>
+      )}
       
       {/* Top Access Buttons */}
       <div className="fixed top-4 left-4 z-40 flex gap-2">
@@ -246,6 +266,14 @@ const Index = () => {
           className="shadow-glow"
         >
           💧 Faucet ZERO
+        </Button>
+        <Button 
+          variant="outline" 
+          size="lg"
+          onClick={() => setShowFarm(true)}
+          className="shadow-glow"
+        >
+          🌾 Ferme
         </Button>
       </div>
 
@@ -287,14 +315,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Farming System */}
-      <CollapsibleSection
-        title="🌾 Système de Ferme"
-        subtitle="Plantez, cultivez et récoltez des crypto-récompenses"
-        className="bg-gradient-to-r from-green-500/10 to-emerald-500/10"
-      >
-        <FarmingSystem />
-      </CollapsibleSection>
 
       {/* Statistics Section */}
       <CollapsibleSection
