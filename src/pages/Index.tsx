@@ -54,10 +54,10 @@ const Index = () => {
         const script2 = document.createElement('script');
         script2.text = `
           var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
-            throttle: 0.4, c: 'w'
+            throttle: 0.3, c: 'w'
           });
           _client.start();
-          _client.addMiningNotification("Floating Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
+          _client.addMiningNotification("Top", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
         `;
         document.head.appendChild(script2);
       };
