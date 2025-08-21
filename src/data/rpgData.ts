@@ -443,7 +443,7 @@ export function generateEnemy(playerLevel: number): Enemy {
 
   const randomType = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
   const enemyLevel = Math.max(1, playerLevel + Math.floor(Math.random() * 3) - 1);
-  const baseMultiplier = randomType.multiplier * (0.8 + Math.random() * 0.4);
+  const baseMultiplier = randomType.multiplier * (0.5 + Math.random() * 0.3); // Réduit de 0.8-1.2 à 0.5-0.8
 
   return {
     id: `enemy_${Date.now()}_${Math.random()}`,
@@ -451,18 +451,18 @@ export function generateEnemy(playerLevel: number): Enemy {
     level: enemyLevel,
     icon: randomType.icon,
     stats: {
-      attack: Math.floor(15 * enemyLevel * baseMultiplier),
-      attackSpeed: Math.floor(40 * baseMultiplier),
-      defense: Math.floor(10 * enemyLevel * baseMultiplier),
-      dodge: Math.floor(20 * baseMultiplier),
-      luck: Math.floor(25 * baseMultiplier),
-      speed: Math.floor(30 * baseMultiplier),
-      health: Math.floor(80 * enemyLevel * baseMultiplier),
-      mana: Math.floor(50 * enemyLevel * baseMultiplier)
+      attack: Math.floor(10 * enemyLevel * baseMultiplier), // Réduit de 15 à 10
+      attackSpeed: Math.floor(35 * baseMultiplier), // Réduit de 40 à 35
+      defense: Math.floor(6 * enemyLevel * baseMultiplier), // Réduit de 10 à 6
+      dodge: Math.floor(15 * baseMultiplier), // Réduit de 20 à 15
+      luck: Math.floor(20 * baseMultiplier), // Réduit de 25 à 20
+      speed: Math.floor(25 * baseMultiplier), // Réduit de 30 à 25
+      health: Math.floor(60 * enemyLevel * baseMultiplier), // Réduit de 80 à 60
+      mana: Math.floor(40 * enemyLevel * baseMultiplier) // Réduit de 50 à 40
     },
     rewards: {
-      experience: Math.floor(50 * enemyLevel * baseMultiplier),
-      gold: Math.floor(25 * enemyLevel * baseMultiplier),
+      experience: Math.floor(50 * enemyLevel * baseMultiplier), // Gardé identique pour progression
+      gold: Math.floor(25 * enemyLevel * baseMultiplier), // Gardé identique pour récompenses
       dropChance: Math.random() < 0.3 ? generateRandomEquipment(enemyLevel) : null
     }
   };
