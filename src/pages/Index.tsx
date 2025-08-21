@@ -28,6 +28,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Navigate } from "react-router-dom";
 import { RPGGame } from "@/components/RPGGame";
+import DepositBonusPopup from "@/components/DepositBonusPopup";
 import { SpinWheel } from "@/components/SpinWheel";
 import heroBackground from "@/assets/hero-background.jpg";
 import { useState } from "react";
@@ -43,6 +44,7 @@ const Index = () => {
   const [showFaucet, setShowFaucet] = useState(false);
   const [showFarm, setShowFarm] = useState(false);
   const [userZeroBalance, setUserZeroBalance] = useState(0);
+  const [showDepositBonus, setShowDepositBonus] = useState(true);
 
   console.log("Index component - user:", user, "loading:", loading);
 
@@ -248,7 +250,11 @@ const Index = () => {
           </div>
         </div>
       )}
-      
+
+      <DepositBonusPopup 
+        isOpen={showDepositBonus} 
+        onClose={() => setShowDepositBonus(false)} 
+      />
 
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
