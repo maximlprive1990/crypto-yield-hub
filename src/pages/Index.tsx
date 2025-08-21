@@ -29,6 +29,7 @@ import heroBackground from "@/assets/hero-background.jpg";
 import { useState } from "react";
 import { FaucetClaim } from "@/components/FaucetClaim";
 import { useEffect } from "react";
+import LiveChat from "@/components/LiveChat";
 
 const Index = () => {
   const { user, signOut, loading } = useAuth();
@@ -445,6 +446,15 @@ const Index = () => {
         subtitle="Restez informé des dernières nouvelles crypto"
       >
         <NewsCenter />
+      </CollapsibleSection>
+
+      {/* Live Chat Section */}
+      <CollapsibleSection
+        title="Chat Communautaire"
+        subtitle="Discutez en temps réel avec la communauté CryptoStake Pro"
+        className="bg-secondary/20"
+      >
+        <LiveChat />
       </CollapsibleSection>
 
       {/* Referral System Section */}
