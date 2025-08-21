@@ -14,70 +14,322 @@ interface ReferralLink {
 }
 
 const referralLinks: ReferralLink[] = [
-  // Website
-  {
-    id: 'crypto-stake',
-    name: 'CryptoStake Pro',
-    url: 'https://cryptostake.pro/ref/user123',
-    category: 'website',
-    description: 'Plateforme de staking premium',
-    bonus: '10% bonus',
-    icon: <Globe className="w-5 h-5" />
-  },
-  
   // Gaming
   {
-    id: 'crypto-game',
-    name: 'CryptoGame Arena',
-    url: 'https://cryptogame.arena/ref/user123',
+    id: 'talemar',
+    name: 'Talemar',
+    url: 'https://talemar.com/?ref=2316',
     category: 'gaming',
-    description: 'Jeux P2E avec récompenses crypto',
-    bonus: '5 ZERO gratuits',
+    description: 'Jeu crypto avec récompenses',
+    bonus: 'Bonus de parrainage',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'crypto-marvel',
+    name: 'Crypto Marvel Game',
+    url: 'https://crypto-marvelgame.net/?ref=Maximlprive90',
+    category: 'gaming',
+    description: 'Jeu Marvel avec crypto rewards',
+    bonus: 'Héros gratuit',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'blocklooter',
+    name: 'BlockLooter',
+    url: 'https://blocklooter.com/?r=8778',
+    category: 'gaming',
+    description: 'Jeu de collection blockchain',
+    bonus: 'Pack de démarrage',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'rollercoin',
+    name: 'RollerCoin',
+    url: 'https://rollercoin.com/?r=k1xc8514',
+    category: 'gaming',
+    description: 'Simulateur de mining avec jeux',
+    bonus: '1000 satoshi',
     icon: <Gamepad2 className="w-5 h-5" />
   },
   
   // Mining
   {
-    id: 'hash-power',
-    name: 'HashPower Mining',
-    url: 'https://hashpower.mining/ref/user123',
+    id: 'chainers',
+    name: 'Chainers.io',
+    url: 'https://chainers.io/?r=lzt79xqp',
     category: 'mining',
-    description: 'Cloud mining rentable',
-    bonus: '10 GH/s gratuits',
+    description: 'Plateforme de mining avancée',
+    bonus: 'Bonus hashrate',
+    icon: <Pickaxe className="w-5 h-5" />
+  },
+  {
+    id: 'hashup',
+    name: 'HashUp',
+    url: 'https://hashup.cc/?ref=695',
+    category: 'mining',
+    description: 'Cloud mining professionnel',
+    bonus: 'GH/s gratuits',
+    icon: <Pickaxe className="w-5 h-5" />
+  },
+  {
+    id: 'eonmining',
+    name: 'EonMining',
+    url: 'https://eonmining.site/?ref=maximlprive90',
+    category: 'mining',
+    description: 'Mining site rentable',
+    bonus: 'Boost mining',
+    icon: <Pickaxe className="w-5 h-5" />
+  },
+  {
+    id: 'ltcunit',
+    name: 'LTC Unit',
+    url: 'https://ltcunit.com/?ref=maximlprive90',
+    category: 'mining',
+    description: 'Mining Litecoin optimisé',
+    bonus: 'LTC bonus',
+    icon: <Pickaxe className="w-5 h-5" />
+  },
+  {
+    id: 'ltcminer',
+    name: 'LTC Miner',
+    url: 'https://ltcminer.com/843600',
+    category: 'mining',
+    description: 'Miner LTC automatique',
+    bonus: 'Auto-mining',
+    icon: <Pickaxe className="w-5 h-5" />
+  },
+  {
+    id: 'contract-miner',
+    name: 'Contract Miner',
+    url: 'https://www.contract-miner.com/?ref_user=botbitcoin90',
+    category: 'mining',
+    description: 'Contrats de mining flexibles',
+    bonus: 'Contrat gratuit',
+    icon: <Pickaxe className="w-5 h-5" />
+  },
+  {
+    id: 'miningblocks',
+    name: 'Mining Blocks Club',
+    url: 'https://miningblocks.club/?Referral=178',
+    category: 'mining',
+    description: 'Club de mining communautaire',
+    bonus: 'Adhésion VIP',
     icon: <Pickaxe className="w-5 h-5" />
   },
   
-  // Faucet
+  // Faucets
   {
-    id: 'zero-faucet',
-    name: 'ZERO Faucet Pro',
-    url: 'https://zerofaucet.pro/ref/user123',
+    id: 'camelbtc',
+    name: 'CamelBTC',
+    url: 'https://camelbtc.com/?ref=17311',
     category: 'faucet',
-    description: 'Faucet ZERO à haut rendement',
-    bonus: '100 ZERO bonus',
+    description: 'Faucet BTC premium',
+    bonus: '100 satoshi',
     icon: <Droplets className="w-5 h-5" />
   },
-  
-  // PTC
   {
-    id: 'crypto-ptc',
-    name: 'CryptoPTC Elite',
-    url: 'https://cryptoptc.elite/ref/user123',
+    id: 'litepick',
+    name: 'LitePick',
+    url: 'https://litepick.io/?ref=maximlprive90',
+    category: 'faucet',
+    description: 'Faucet multicrypto léger',
+    bonus: 'Claims bonus',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'polpick',
+    name: 'PolPick',
+    url: 'https://polpick.io/?ref=maximlprive90',
+    category: 'faucet',
+    description: 'Faucet Polygon optimisé',
+    bonus: 'MATIC gratuits',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'usdpick',
+    name: 'USDPick',
+    url: 'https://usdpick.io?ref=LyRyocsNSP',
+    category: 'faucet',
+    description: 'Faucet USDT/USDC',
+    bonus: 'Stablecoins',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'freetrump',
+    name: 'FreeTrump',
+    url: 'https://freetrump.in?ref=zT2xHibf2A',
+    category: 'faucet',
+    description: 'Faucet Trump coin',
+    bonus: 'TRUMP tokens',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'freetron',
+    name: 'FreeTron',
+    url: 'https://freetron.in?ref=FOfCEENdrI',
+    category: 'faucet',
+    description: 'Faucet TRON gratuit',
+    bonus: 'TRX rewards',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'freexrp',
+    name: 'FreeXRP',
+    url: 'https://freexrp.in?ref=tIxdOiQy-v',
+    category: 'faucet',
+    description: 'Faucet XRP premium',
+    bonus: 'XRP drops',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'freesui',
+    name: 'FreeSUI',
+    url: 'https://freesui.in?ref=pRk169puly',
+    category: 'faucet',
+    description: 'Faucet SUI blockchain',
+    bonus: 'SUI tokens',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'freeshib',
+    name: 'FreeShib',
+    url: 'https://freeshib.in?ref=KjBkG02sas',
+    category: 'faucet',
+    description: 'Faucet Shiba Inu',
+    bonus: 'SHIB rewards',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'freebnb',
+    name: 'FreeBNB',
+    url: 'https://freebnb.in?ref=3qTZUmhIIP',
+    category: 'faucet',
+    description: 'Faucet Binance Coin',
+    bonus: 'BNB bonus',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'freetoncoin',
+    name: 'FreeToncoin',
+    url: 'https://freetoncoin.in?ref=7GXtPDm6Bz',
+    category: 'faucet',
+    description: 'Faucet TON Network',
+    bonus: 'TON rewards',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'megaco',
+    name: 'MegaCo',
+    url: 'https://megaco.in/?r=f12980ca',
+    category: 'faucet',
+    description: 'Mega faucet multicrypto',
+    bonus: 'Mega bonus',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'cryptodrip',
+    name: 'CryptoDrip',
+    url: 'https://cryptodrip.io/index.php?ref=128339',
+    category: 'faucet',
+    description: 'Faucet drip system',
+    bonus: 'Drip rewards',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'viefaucet',
+    name: 'VieFaucet',
+    url: 'https://viefaucet.com?r=64c866f539d82707177b242c',
+    category: 'faucet',
+    description: 'Faucet vie premium',
+    bonus: 'Vie tokens',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'donaldco',
+    name: 'DonaldCo',
+    url: 'https://donaldco.in/index.php?ref=maximlprive90',
+    category: 'faucet',
+    description: 'Faucet Donald themed',
+    bonus: 'Donald coins',
+    icon: <Droplets className="w-5 h-5" />
+  },
+  {
+    id: 'cashupcoin',
+    name: 'CashUpCoin',
+    url: 'https://cashupcoin.com/ref/id/maximlprive90',
+    category: 'faucet',
+    description: 'Faucet cash up system',
+    bonus: 'Cash rewards',
+    icon: <Droplets className="w-5 h-5" />
+  },
+
+  // PTC (Pay to Click)
+  {
+    id: 'pigzer',
+    name: 'Pigzer',
+    url: 'https://pigzer.eu/?ref=248',
     category: 'ptc',
-    description: 'Cliquez et gagnez des cryptos',
-    bonus: '1000 clics gratuits',
+    description: 'PTC européen premium',
+    bonus: '1000 clics',
     icon: <Mouse className="w-5 h-5" />
   },
-  
+  {
+    id: 'exclick',
+    name: 'ExClick Pro',
+    url: 'https://exclick.pro/?r=718290',
+    category: 'ptc',
+    description: 'PTC professionnel',
+    bonus: 'Clics premium',
+    icon: <Mouse className="w-5 h-5" />
+  },
+
   // Ads
   {
-    id: 'crypto-ads',
-    name: 'CryptoAds Network',
-    url: 'https://cryptoads.network/ref/user123',
+    id: 'teaserfast-a',
+    name: 'TeaserFast (Annonceur)',
+    url: 'https://teaserfast.ru/a/maximlprive90',
     category: 'ads',
-    description: 'Regardez des pubs, gagnez des cryptos',
-    bonus: '50 vues gratuites',
+    description: 'Plateforme publicitaire',
+    bonus: 'Crédit pub',
     icon: <FileText className="w-5 h-5" />
+  },
+  {
+    id: 'teaserfast-u',
+    name: 'TeaserFast (Utilisateur)',
+    url: 'https://teaserfast.ru/u/maximlprive90',
+    category: 'ads',
+    description: 'Regarder des pubs payantes',
+    bonus: 'Vues bonus',
+    icon: <FileText className="w-5 h-5" />
+  },
+
+  // Website/Services
+  {
+    id: 'lovable',
+    name: 'Lovable Dev',
+    url: 'https://lovable.dev/invite/4db65234-00e6-4c8a-aff5-a8f7d4028df4',
+    category: 'website',
+    description: 'Plateforme de développement',
+    bonus: 'Accès premium',
+    icon: <Globe className="w-5 h-5" />
+  },
+  {
+    id: 'faucetpay',
+    name: 'FaucetPay',
+    url: 'https://faucetpay.io/?r=492929',
+    category: 'website',
+    description: 'Portefeuille micro-paiements',
+    bonus: 'Frais réduits',
+    icon: <Globe className="w-5 h-5" />
+  },
+  {
+    id: 'payeer',
+    name: 'Payeer',
+    url: 'https://payeer.com/033816044',
+    category: 'website',
+    description: 'Portefeuille électronique',
+    bonus: 'Bonus inscription',
+    icon: <Globe className="w-5 h-5" />
   }
 ];
 
