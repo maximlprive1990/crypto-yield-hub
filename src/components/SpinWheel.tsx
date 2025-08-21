@@ -281,7 +281,7 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
           <div className="lg:col-span-2 flex flex-col items-center">
             <div className="relative mb-6">
               <div 
-                className="w-80 h-80 rounded-full border-8 border-primary relative overflow-hidden transition-transform duration-3000 ease-out"
+                className="w-80 h-80 rounded-full border-8 border-primary relative overflow-hidden transition-transform duration-[3000ms] ease-out"
                 style={{ 
                   transform: `rotate(${rotation}deg)`,
                   background: `conic-gradient(${SPIN_PRIZES.map((prize, index) => 
