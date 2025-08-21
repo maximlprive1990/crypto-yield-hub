@@ -20,6 +20,24 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route 
+              path="/payeer_2252670589.txt" 
+              element={
+                <div style={{
+                  fontFamily: 'monospace',
+                  fontSize: '12px',
+                  whiteSpace: 'pre-wrap',
+                  margin: 0,
+                  padding: 0,
+                  backgroundColor: 'white',
+                  color: 'black',
+                  minHeight: '100vh',
+                  width: '100vw'
+                }}>
+                  2252670589
+                </div>
+              } 
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
