@@ -53,6 +53,160 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          created_at: string
+          description: string
+          end_date: string
+          event_type: string
+          id: string
+          is_active: boolean | null
+          multiplier: number | null
+          start_date: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          end_date: string
+          event_type: string
+          id?: string
+          is_active?: boolean | null
+          multiplier?: number | null
+          start_date: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          end_date?: string
+          event_type?: string
+          id?: string
+          is_active?: boolean | null
+          multiplier?: number | null
+          start_date?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      leaderboard_entries: {
+        Row: {
+          created_at: string
+          id: string
+          leaderboard_type: string
+          period_end: string
+          period_start: string
+          rank_position: number | null
+          score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          leaderboard_type: string
+          period_end: string
+          period_start: string
+          rank_position?: number | null
+          score?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          leaderboard_type?: string
+          period_end?: string
+          period_start?: string
+          rank_position?: number | null
+          score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leaderboard_entries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      loot_box_rewards: {
+        Row: {
+          created_at: string
+          drop_chance: number
+          id: string
+          loot_box_id: string
+          rarity: string
+          reward_amount: number
+          reward_name: string
+          reward_type: string
+        }
+        Insert: {
+          created_at?: string
+          drop_chance: number
+          id?: string
+          loot_box_id: string
+          rarity: string
+          reward_amount: number
+          reward_name: string
+          reward_type: string
+        }
+        Update: {
+          created_at?: string
+          drop_chance?: number
+          id?: string
+          loot_box_id?: string
+          rarity?: string
+          reward_amount?: number
+          reward_name?: string
+          reward_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loot_box_rewards_loot_box_id_fkey"
+            columns: ["loot_box_id"]
+            isOneToOne: false
+            referencedRelation: "loot_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loot_boxes: {
+        Row: {
+          cost_deadspot: number
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          is_available: boolean | null
+          name: string
+          rarity: string
+        }
+        Insert: {
+          cost_deadspot: number
+          created_at?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          is_available?: boolean | null
+          name: string
+          rarity: string
+        }
+        Update: {
+          cost_deadspot?: number
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          is_available?: boolean | null
+          name?: string
+          rarity?: string
+        }
+        Relationships: []
+      }
       mining_sessions: {
         Row: {
           amount_mined: number
@@ -86,6 +240,48 @@ export type Database = {
           session_start?: string
           status?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      missions: {
+        Row: {
+          created_at: string
+          description: string
+          duration_hours: number | null
+          id: string
+          is_active: boolean | null
+          is_daily: boolean | null
+          mission_type: string
+          reward_amount: number
+          reward_type: string
+          target_amount: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          duration_hours?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_daily?: boolean | null
+          mission_type: string
+          reward_amount: number
+          reward_type: string
+          target_amount: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          duration_hours?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_daily?: boolean | null
+          mission_type?: string
+          reward_amount?: number
+          reward_type?: string
+          target_amount?: number
+          title?: string
         }
         Relationships: []
       }
@@ -202,6 +398,45 @@ export type Database = {
           },
         ]
       }
+      skins: {
+        Row: {
+          cost_deadspot: number | null
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          is_premium: boolean | null
+          name: string
+          rarity: string
+          skin_type: string
+          unlocked_by: string | null
+        }
+        Insert: {
+          cost_deadspot?: number | null
+          created_at?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          is_premium?: boolean | null
+          name: string
+          rarity: string
+          skin_type: string
+          unlocked_by?: string | null
+        }
+        Update: {
+          cost_deadspot?: number | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          is_premium?: boolean | null
+          name?: string
+          rarity?: string
+          skin_type?: string
+          unlocked_by?: string | null
+        }
+        Relationships: []
+      }
       staking_positions: {
         Row: {
           amount_staked: number
@@ -252,6 +487,145 @@ export type Database = {
           wallet_address?: string | null
         }
         Relationships: []
+      }
+      user_loot_box_openings: {
+        Row: {
+          id: string
+          loot_box_id: string
+          opened_at: string
+          reward_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          loot_box_id: string
+          opened_at?: string
+          reward_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          loot_box_id?: string
+          opened_at?: string
+          reward_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_loot_box_openings_loot_box_id_fkey"
+            columns: ["loot_box_id"]
+            isOneToOne: false
+            referencedRelation: "loot_boxes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_loot_box_openings_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "loot_box_rewards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_loot_box_openings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      user_missions: {
+        Row: {
+          completed_at: string | null
+          current_progress: number | null
+          expires_at: string
+          id: string
+          is_claimed: boolean | null
+          is_completed: boolean | null
+          mission_id: string
+          started_at: string
+          target_amount: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          current_progress?: number | null
+          expires_at: string
+          id?: string
+          is_claimed?: boolean | null
+          is_completed?: boolean | null
+          mission_id: string
+          started_at?: string
+          target_amount: number
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          current_progress?: number | null
+          expires_at?: string
+          id?: string
+          is_claimed?: boolean | null
+          is_completed?: boolean | null
+          mission_id?: string
+          started_at?: string
+          target_amount?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_missions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_missions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      user_skins: {
+        Row: {
+          acquired_at: string
+          id: string
+          is_equipped: boolean | null
+          skin_id: string
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          id?: string
+          is_equipped?: boolean | null
+          skin_id: string
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          id?: string
+          is_equipped?: boolean | null
+          skin_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_skins_skin_id_fkey"
+            columns: ["skin_id"]
+            isOneToOne: false
+            referencedRelation: "skins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_skins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
     }
     Views: {
