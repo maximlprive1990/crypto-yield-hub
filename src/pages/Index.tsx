@@ -39,6 +39,8 @@ const Index = () => {
   const [showFaucet, setShowFaucet] = useState(false);
   const [userZeroBalance, setUserZeroBalance] = useState(0);
 
+  console.log("Index component - user:", user, "loading:", loading);
+
   const handleZeroWin = (amount: number) => {
     setUserZeroBalance(prev => prev + amount);
   };
@@ -100,16 +102,17 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Chargement...</p>
+          <p className="text-foreground">Chargement de l'application...</p>
         </div>
       </div>
     );
   }
 
   if (!user) {
+    console.log("User not found, redirecting to auth");
     return <Navigate to="/auth" replace />;
   }
   const stakingPools = [

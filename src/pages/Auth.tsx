@@ -11,6 +11,8 @@ const Auth = () => {
   const { signIn, signUp, user, loading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log("Auth component - user:", user, "loading:", loading);
+
   // Redirect if already authenticated
   if (user) {
     return <Navigate to="/" replace />;
@@ -18,10 +20,10 @@ const Auth = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Chargement...</p>
+          <p className="text-foreground">Chargement de l'authentification...</p>
         </div>
       </div>
     );
