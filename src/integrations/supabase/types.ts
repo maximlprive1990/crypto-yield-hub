@@ -1247,9 +1247,17 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: Json
       }
+      delete_chat_message: {
+        Args: { p_message_id: string }
+        Returns: Json
+      }
       generate_referral_code: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_chat_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
       }
       get_latest_faucet_claim: {
         Args: { p_user_id: string }
@@ -1285,6 +1293,10 @@ export type Database = {
       }
       process_referral: {
         Args: { p_referred_user_id: string; p_referrer_code: string }
+        Returns: Json
+      }
+      send_chat_message: {
+        Args: { p_message: string; p_username: string }
         Returns: Json
       }
       update_platform_stat: {
