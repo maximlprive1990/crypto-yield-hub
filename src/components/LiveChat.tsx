@@ -11,10 +11,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 interface ChatMessage {
   id: string;
-  user_id: string;
   username: string;
   message: string;
   created_at: string;
+  is_own_message?: boolean;
 }
 
 const LiveChat = () => {
@@ -50,15 +50,12 @@ const LiveChat = () => {
     }
   }, [user]);
 
-  // Charger les messages existants
+  // Charger les messages existants via la fonction sécurisée
   useEffect(() => {
     const loadMessages = async () => {
       try {
         const { data, error } = await supabase
-          .from('chat_messages')
-          .select('*')
-          .order('created_at', { ascending: true })
-          .limit(50);
+          .rpc('get_public_chat_messages');
 
         if (error) throw error;
         setMessages(data || []);
@@ -83,15 +80,15 @@ const LiveChat = () => {
           schema: 'public',
           table: 'chat_messages'
         },
-        (payload) => {
-          const newMessage = payload.new as ChatMessage;
-          setMessages(prev => {
-            // Éviter les doublons
-            if (prev.find(msg => msg.id === newMessage.id)) {
-              return prev;
-            }
-            return [...prev, newMessage];
-          });
+        async (payload) => {
+          // Recharger les messages via la fonction sécurisée pour maintenir la sécurité
+          try {
+            const { data, error } = await supabase.rpc('get_public_chat_messages');
+            if (error) throw error;
+            setMessages(data || []);
+          } catch (error) {
+            console.error('Erreur lors du rechargement des messages:', error);
+          }
         }
       )
       .subscribe();
@@ -196,7 +193,7 @@ const LiveChat = () => {
     });
   };
 
-  const getUserColor = (userId: string) => {
+  const getUserColor = (messageIndex: number) => {
     const colors = [
       'text-red-400',
       'text-blue-400',
@@ -207,7 +204,7 @@ const LiveChat = () => {
       'text-indigo-400',
       'text-orange-400'
     ];
-    const index = userId.charCodeAt(0) % colors.length;
+    const index = messageIndex % colors.length;
     return colors[index];
   };
 
@@ -297,8 +294,8 @@ const LiveChat = () => {
                   <p className="text-sm">Soyez le premier à dire bonjour ! 👋</p>
                 </div>
               ) : (
-                messages.map((message) => {
-                  const isOwnMessage = message.user_id === user.id;
+                messages.map((message, index) => {
+                  const isOwnMessage = message.is_own_message;
                   return (
                     <div
                       key={message.id}
@@ -313,7 +310,7 @@ const LiveChat = () => {
                       >
                         {!isOwnMessage && (
                           <div className="flex items-center gap-2 mb-1">
-                            <span className={`text-sm font-medium ${getUserColor(message.user_id)}`}>
+                            <span className={`text-sm font-medium ${getUserColor(index)}`}>
                               {message.username}
                             </span>
                             <span className="text-xs text-muted-foreground">
