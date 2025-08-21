@@ -551,6 +551,89 @@ export type Database = {
         }
         Relationships: []
       }
+      spin_results: {
+        Row: {
+          created_at: string
+          id: string
+          is_free_spin: boolean
+          prize_amount: number
+          prize_type: string
+          transaction_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_free_spin?: boolean
+          prize_amount: number
+          prize_type: string
+          transaction_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_free_spin?: boolean
+          prize_amount?: number
+          prize_type?: string
+          transaction_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spin_results_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "spin_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spin_transactions: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          currency_paid: string
+          id: string
+          payeer_account: string
+          payment_method: string
+          spins_purchased: number
+          status: string
+          transaction_id: string
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          amount_paid?: number
+          created_at?: string
+          currency_paid: string
+          id?: string
+          payeer_account?: string
+          payment_method: string
+          spins_purchased?: number
+          status?: string
+          transaction_id: string
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          currency_paid?: string
+          id?: string
+          payeer_account?: string
+          payment_method?: string
+          spins_purchased?: number
+          status?: string
+          transaction_id?: string
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       staking_positions: {
         Row: {
           amount_staked: number
@@ -740,6 +823,45 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      user_spin_status: {
+        Row: {
+          created_at: string
+          id: string
+          last_free_spin: string | null
+          purchased_spins: number
+          total_dogecoin_won: number
+          total_spins: number
+          total_usdt_won: number
+          total_zero_won: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_free_spin?: string | null
+          purchased_spins?: number
+          total_dogecoin_won?: number
+          total_spins?: number
+          total_usdt_won?: number
+          total_zero_won?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_free_spin?: string | null
+          purchased_spins?: number
+          total_dogecoin_won?: number
+          total_spins?: number
+          total_usdt_won?: number
+          total_zero_won?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       vip_accounts: {
         Row: {

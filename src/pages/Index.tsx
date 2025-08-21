@@ -24,12 +24,18 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { RPGGame } from "@/components/RPGGame";
+import { SpinWheel } from "@/components/SpinWheel";
 import heroBackground from "@/assets/hero-background.jpg";
 import { useState } from "react";
 
 const Index = () => {
   const { user, signOut, loading } = useAuth();
   const [showRPG, setShowRPG] = useState(false);
+  const [userZeroBalance, setUserZeroBalance] = useState(0);
+
+  const handleZeroWin = (amount: number) => {
+    setUserZeroBalance(prev => prev + amount);
+  };
 
   if (loading) {
     return (
@@ -159,6 +165,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Spin Wheel Section - Top Priority */}
+      <SpinWheel onZeroWin={handleZeroWin} />
 
       {/* Statistics Section */}
       <CollapsibleSection
