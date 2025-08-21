@@ -80,58 +80,56 @@ export default function DepositBonusPopup({ isOpen, onClose }: DepositBonusPopup
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-sm sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold gradient-text">
-            <Coins className="h-6 w-6" />
+          <DialogTitle className="flex items-center gap-2 text-lg font-bold gradient-text">
+            <Coins className="h-5 w-5" />
             BONUS MEGA DÉPÔT 200%
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-primary" />
                 Bonus Exclusif
               </CardTitle>
-              <CardDescription>
-                Obtenez des récompenses incroyables sur votre dépôt!
-              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex items-center gap-2 text-sm">
-                <Coins className="h-4 w-4 text-yellow-500" />
+            <CardContent className="space-y-1 pt-0">
+              <div className="flex items-center gap-2 text-xs">
+                <Coins className="h-3 w-3 text-yellow-500" />
                 <span className="font-medium">+200% DeadSpot Coins</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Zap className="h-4 w-4 text-blue-500" />
+              <div className="flex items-center gap-2 text-xs">
+                <Zap className="h-3 w-3 text-blue-500" />
                 <span className="font-medium">+200% GH/s Mining</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <TrendingUp className="h-4 w-4 text-green-500" />
+              <div className="flex items-center gap-2 text-xs">
+                <TrendingUp className="h-3 w-3 text-green-500" />
                 <span className="font-medium">Bonus Dépôt x1.35</span>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Adresse de Dépôt TON</CardTitle>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Adresse de Dépôt TON</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2">
               <div>
                 <Label className="text-xs text-muted-foreground">Adresse</Label>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-1 mt-1">
                   <Input 
                     value={tonAddress} 
                     readOnly 
-                    className="text-xs font-mono"
+                    className="text-xs font-mono h-8"
                   />
                   <Button 
                     size="sm" 
                     variant="outline"
                     onClick={() => copyToClipboard(tonAddress)}
+                    className="h-8 w-8 p-0"
                   >
                     <Copy className="h-3 w-3" />
                   </Button>
@@ -140,16 +138,17 @@ export default function DepositBonusPopup({ isOpen, onClose }: DepositBonusPopup
               
               <div>
                 <Label className="text-xs text-muted-foreground">Memo (Obligatoire)</Label>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-1 mt-1">
                   <Input 
                     value={memo} 
                     readOnly 
-                    className="text-xs font-mono"
+                    className="text-xs font-mono h-8"
                   />
                   <Button 
                     size="sm" 
                     variant="outline"
                     onClick={() => copyToClipboard(memo)}
+                    className="h-8 w-8 p-0"
                   >
                     <Copy className="h-3 w-3" />
                   </Button>
@@ -158,9 +157,9 @@ export default function DepositBonusPopup({ isOpen, onClose }: DepositBonusPopup
             </CardContent>
           </Card>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div>
-              <Label htmlFor="amount">Montant Déposé (TON)</Label>
+              <Label htmlFor="amount" className="text-sm">Montant Déposé (TON)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -168,33 +167,35 @@ export default function DepositBonusPopup({ isOpen, onClose }: DepositBonusPopup
                 placeholder="0.00"
                 value={depositAmount}
                 onChange={(e) => setDepositAmount(e.target.value)}
+                className="h-8"
               />
             </div>
 
             <div>
-              <Label htmlFor="txid">ID Transaction (FaucetPay)</Label>
+              <Label htmlFor="txid" className="text-sm">ID Transaction (FaucetPay)</Label>
               <Input
                 id="txid"
                 placeholder="Votre ID de transaction"
                 value={txId}
                 onChange={(e) => setTxId(e.target.value)}
+                className="h-8"
               />
             </div>
           </div>
 
-          <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded-md">
-            <p className="font-medium mb-1">⏱️ Délai de validation: 1-10 heures</p>
-            <p>Utilisez FaucetPay pour envoyer vers l'adresse TON avec le memo obligatoire.</p>
+          <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded-md">
+            <p className="font-medium">⏱️ Délai: 1-10h</p>
+            <p>Utilisez FaucetPay avec memo obligatoire.</p>
           </div>
 
           <div className="flex gap-2">
-            <Button variant="outline" onClick={onClose} className="flex-1">
+            <Button variant="outline" onClick={onClose} className="flex-1 h-8 text-sm">
               Annuler
             </Button>
             <Button 
               onClick={handleSubmit} 
               disabled={isSubmitting || !depositAmount || !txId}
-              className="flex-1"
+              className="flex-1 h-8 text-sm"
               variant="crypto"
             >
               {isSubmitting ? "Envoi..." : "Activer le Bonus"}
