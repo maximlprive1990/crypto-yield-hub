@@ -11,6 +11,11 @@ import StakingTracker from "@/components/StakingTracker";
 import CustomStaking from "@/components/CustomStaking";
 import MiningFarm from "@/components/MiningFarm";
 import RewardsSystem from "@/components/RewardsSystem";
+import MissionsSystem from "@/components/MissionsSystem";
+import LeaderboardSystem from "@/components/LeaderboardSystem";
+import LootBoxSystem from "@/components/LootBoxSystem";
+import EventsSystem from "@/components/EventsSystem";
+import CustomizationSystem from "@/components/CustomizationSystem";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
@@ -246,6 +251,13 @@ const Index = () => {
           />
         </div>
       </section>
+
+      {/* Gaming Features Section */}
+      <MissionsSystem />
+      <LeaderboardSystem />
+      <LootBoxSystem />
+      <EventsSystem />
+      <CustomizationSystem />
 
       {/* Staking Pools Section */}
       <section className="py-20 px-6">
