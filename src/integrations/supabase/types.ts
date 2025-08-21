@@ -372,6 +372,33 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_stats: {
+        Row: {
+          created_at: string
+          display_format: string
+          id: string
+          stat_name: string
+          stat_value: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_format?: string
+          id?: string
+          stat_name: string
+          stat_value?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_format?: string
+          id?: string
+          stat_name?: string
+          stat_value?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -767,7 +794,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_platform_stat: {
+        Args: { increment_value: number; stat_name_param: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

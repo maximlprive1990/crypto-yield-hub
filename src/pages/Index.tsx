@@ -19,6 +19,7 @@ import CustomizationSystem from "@/components/CustomizationSystem";
 import VIPSystem from "@/components/VIPSystem";
 import BattlePassSystem from "@/components/BattlePassSystem";
 import DeadSpotShop from "@/components/DeadSpotShop";
+import PlatformStats from "@/components/PlatformStats";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
@@ -99,32 +100,7 @@ const Index = () => {
     }
   ];
 
-  const stats = [
-    {
-      title: "Total Value Locked",
-      value: "$2.4B",
-      icon: "💰",
-      color: "bg-green-500"
-    },
-    {
-      title: "Active Stakers",
-      value: "150K+",
-      icon: "👥",
-      color: "bg-blue-500"
-    },
-    {
-      title: "Récompenses Distribuées",
-      value: "$45M",
-      icon: "🎁",
-      color: "bg-purple-500"
-    },
-    {
-      title: "Cryptos Supportées",
-      value: "6",
-      icon: "🪙",
-      color: "bg-orange-500"
-    }
-  ];
+  // ... keep existing code (hero section variables)
 
   return (
     <div className="min-h-screen bg-background">
@@ -158,17 +134,19 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Statistics Section */}
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            Statistiques de la Plateforme
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <StatsCard key={index} {...stat} />
-            ))}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Statistiques de la Plateforme
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Des chiffres réels qui témoignent de la croissance de notre communauté
+            </p>
           </div>
+          
+          <PlatformStats />
         </div>
       </section>
 
