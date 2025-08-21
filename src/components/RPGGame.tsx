@@ -14,11 +14,13 @@ import { ZeroWallet } from './rpg/ZeroWallet';
 import { ShopSystem } from './rpg/ShopSystem';
 import { ArrowLeft, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useRPGPersistence } from '@/hooks/useRPGPersistence';
 import { useAuth } from '@/hooks/useAuth';
 
 export const RPGGame = ({ onClose }: { onClose: () => void }) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { player, setPlayer, loading } = useRPGPersistence();
   const [currentEnemy, setCurrentEnemy] = useState<Enemy | null>(null);
   const [gameState, setGameState] = useState<'creation' | 'town' | 'combat' | 'inventory' | 'stats' | 'shop'>('creation');
@@ -85,11 +87,11 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
     return (
       <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
         <Card className="p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Connexion requise</h2>
+          <h2 className="text-2xl font-bold mb-4">{t('rpg.connection_required')}</h2>
           <p className="text-muted-foreground mb-4">
-            Vous devez être connecté pour accéder au jeu RPG.
+            {t('rpg.connection_message')}
           </p>
-          <Button onClick={onClose}>Retour</Button>
+          <Button onClick={onClose}>{t('rpg.back')}</Button>
         </Card>
       </div>
     );
@@ -100,7 +102,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
     return (
       <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
         <Card className="p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Chargement...</h2>
+          <h2 className="text-2xl font-bold mb-4">{t('rpg.loading')}</h2>
           <Progress value={50} className="w-48" />
         </Card>
       </div>
@@ -168,8 +170,8 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
     
     updatePlayerStats(newPlayer);
     toast({
-      title: "Équipement équipé",
-      description: `${item.name} a été équipé!`
+      title: t('rpg.item_equipped'),
+      description: `${item.name} ${t('rpg.item_equipped_desc')}`
     });
   };
 
@@ -184,8 +186,8 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
     
     updatePlayerStats(newPlayer);
     toast({
-      title: "Équipement retiré",
-      description: `${item.name} a été retiré!`
+      title: t('rpg.item_unequipped'),
+      description: `${item.name} ${t('rpg.item_unequipped_desc')}`
     });
   };
 
@@ -211,8 +213,8 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
       if (result.equipment) {
         newPlayer.inventory.push(result.equipment);
         toast({
-          title: "Objet trouvé!",
-          description: `Vous avez obtenu: ${result.equipment.name}!`
+          title: t('rpg.item_found'),
+          description: `${t('rpg.item_found_desc')} ${result.equipment.name}!`
         });
       }
 
@@ -229,8 +231,8 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
         });
 
         toast({
-          title: "Niveau supérieur!",
-          description: `Félicitations! Vous êtes maintenant niveau ${newPlayer.level}!`
+          title: t('rpg.level_up'),
+          description: `${t('rpg.level_up_desc')} ${newPlayer.level}!`
         });
       }
 
@@ -238,20 +240,20 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
       if (newPlayer.enemiesDefeated % 25 === 0) {
         newPlayer.statPoints += 10;
         toast({
-          title: "Récompense spéciale!",
-          description: "Vous avez gagné 10 points de stats pour avoir vaincu 25 ennemis!"
+          title: t('rpg.special_reward'),
+          description: t('rpg.special_reward_desc')
         });
       }
 
       updatePlayerStats(newPlayer);
       toast({
-        title: "Victoire!",
-        description: `+${result.experience} XP, +${result.gold} or, +${result.zeroGain.toFixed(6)} ZERO!`
+        title: t('rpg.victory'),
+        description: `+${result.experience} ${t('exp')}, +${result.gold} ${t('rpg.gold')}, +${result.zeroGain.toFixed(6)} ZERO!`
       });
     } else {
       toast({
-        title: "Défaite...",
-        description: "Vous avez été vaincu! Réessayez quand vous serez plus fort.",
+        title: t('rpg.defeat'),
+        description: t('rpg.defeat_desc'),
         variant: "destructive"
       });
     }
@@ -269,8 +271,8 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
     
     updatePlayerStats(newPlayer);
     toast({
-      title: "Stats améliorées",
-      description: `${statName} augmentée de ${points}!`
+      title: t('rpg.stats_improved'),
+      description: `${statName} ${t('rpg.stats_improved_desc')} ${points}!`
     });
   };
 
@@ -307,13 +309,13 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-auto">
       <div className="container mx-auto p-4 max-w-7xl">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl font-bold gradient-text">⚔️ Monde RPG</h1>
+          <h1 className="text-4xl font-bold gradient-text">{t('rpg.title')}</h1>
           <div className="flex items-center gap-4">
             {/* ZERO Balance Display */}
             <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg border border-yellow-500/30">
               <span className="text-xl">💰</span>
               <div className="text-right">
-                <div className="text-sm text-muted-foreground">ZERO Balance</div>
+                <div className="text-sm text-muted-foreground">{t('rpg.zero_balance')}</div>
                 <div className="font-bold text-yellow-400">
                   {player.zeroCoins.toFixed(6)} ZERO
                 </div>
@@ -322,10 +324,10 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
             
             {/* Navigation Buttons */}
             <div className="flex gap-2">
-              <Button variant="outline" size="icon" onClick={onClose} title="Retour à l'accueil">
+              <Button variant="outline" size="icon" onClick={onClose} title={t('rpg.home')}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={onClose} title="Fermer">
+              <Button variant="ghost" size="icon" onClick={onClose} title={t('rpg.close')}>
                 <X className="h-6 w-6" />
               </Button>
             </div>
@@ -351,7 +353,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
             {gameState === 'town' && (
               <Card className="gradient-card">
                 <CardHeader>
-                  <CardTitle className="text-center text-2xl">🏰 Place du Village</CardTitle>
+                  <CardTitle className="text-center text-2xl">{t('rpg.town_square')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -361,7 +363,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
                       onClick={startCombat}
                       className="h-20"
                     >
-                      ⚔️ Partir au Combat
+                      {t('rpg.go_combat')}
                     </Button>
                     <Button 
                       variant="stake" 
@@ -369,7 +371,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
                       onClick={() => setGameState('inventory')}
                       className="h-20"
                     >
-                      🎒 Inventaire
+                      {t('rpg.inventory')}
                     </Button>
                     <Button 
                       variant="secondary" 
@@ -377,7 +379,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
                       onClick={() => setGameState('stats')}
                       className="h-20"
                     >
-                      📊 Améliorer Stats
+                      {t('rpg.upgrade_stats')}
                       {player.statPoints > 0 && (
                         <Badge variant="destructive" className="ml-2">
                           {player.statPoints}
@@ -390,17 +392,17 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
                       onClick={() => setGameState('shop')}
                       className="h-20"
                     >
-                      🏪 Boutique d'Équipement
+                      {t('rpg.shop')}
                     </Button>
                   </div>
 
                   <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-2">📈 Statistiques</h3>
+                    <h3 className="text-lg font-semibold mb-2">{t('rpg.statistics')}</h3>
                     <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div>Ennemis vaincus: <Badge variant="outline">{player.enemiesDefeated}</Badge></div>
-                      <div>Or: <Badge variant="outline" className="text-yellow-400">{player.gold}</Badge></div>
-                      <div>Points de stats: <Badge variant="outline" className="text-green-400">{player.statPoints}</Badge></div>
-                      <div>Prochaine récompense: <Badge variant="outline">{25 - (player.enemiesDefeated % 25)} ennemis</Badge></div>
+                      <div>{t('rpg.enemies_defeated')}: <Badge variant="outline">{player.enemiesDefeated}</Badge></div>
+                      <div>{t('rpg.gold')}: <Badge variant="outline" className="text-yellow-400">{player.gold}</Badge></div>
+                      <div>{t('rpg.stat_points')}: <Badge variant="outline" className="text-green-400">{player.statPoints}</Badge></div>
+                      <div>{t('rpg.next_reward')}: <Badge variant="outline">{25 - (player.enemiesDefeated % 25)} {t('rpg.enemies')}</Badge></div>
                     </div>
                   </div>
                 </CardContent>

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { PlayerClass } from '@/types/rpg';
 
 interface CharacterCreationProps {
@@ -12,6 +13,7 @@ interface CharacterCreationProps {
 }
 
 export const CharacterCreation: React.FC<CharacterCreationProps> = ({ classes, onCreatePlayer }) => {
+  const { t } = useLanguage();
   const [selectedClass, setSelectedClass] = useState<PlayerClass | null>(null);
   const [playerName, setPlayerName] = useState('');
 
@@ -26,23 +28,23 @@ export const CharacterCreation: React.FC<CharacterCreationProps> = ({ classes, o
       <div className="container mx-auto p-4 max-w-4xl">
         <Card className="gradient-card">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl gradient-text">⚔️ Création de Personnage</CardTitle>
+            <CardTitle className="text-3xl gradient-text">{t('character.creation_title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               <div>
-                <Label htmlFor="playerName" className="text-lg font-semibold">Nom du Personnage</Label>
+                <Label htmlFor="playerName" className="text-lg font-semibold">{t('character.player_name')}</Label>
                 <Input
                   id="playerName"
                   value={playerName}
                   onChange={(e) => setPlayerName(e.target.value)}
-                  placeholder="Entrez votre nom..."
+                  placeholder={t('character.name_placeholder')}
                   className="mt-2 text-lg"
                 />
               </div>
 
               <div>
-                <Label className="text-lg font-semibold">Choisissez votre Classe</Label>
+                <Label className="text-lg font-semibold">{t('character.choose_class')}</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                   {classes.map((playerClass) => (
                     <Card
@@ -65,27 +67,27 @@ export const CharacterCreation: React.FC<CharacterCreationProps> = ({ classes, o
                         
                         <div className="space-y-1">
                           <div className="flex justify-between text-xs">
-                            <span>Attaque:</span>
+                            <span>{t('character.attack')}:</span>
                             <Badge variant="outline">{playerClass.baseStats.attack}</Badge>
                           </div>
                           <div className="flex justify-between text-xs">
-                            <span>Défense:</span>
+                            <span>{t('character.defense')}:</span>
                             <Badge variant="outline">{playerClass.baseStats.defense}</Badge>
                           </div>
                           <div className="flex justify-between text-xs">
-                            <span>Vitesse:</span>
+                            <span>{t('character.speed')}:</span>
                             <Badge variant="outline">{playerClass.baseStats.speed}</Badge>
                           </div>
                           <div className="flex justify-between text-xs">
-                            <span>Chance:</span>
+                            <span>{t('character.luck')}:</span>
                             <Badge variant="outline">{playerClass.baseStats.luck}</Badge>
                           </div>
                           <div className="flex justify-between text-xs">
-                            <span>Vie:</span>
+                            <span>{t('character.health')}:</span>
                             <Badge variant="outline">{playerClass.baseStats.health}</Badge>
                           </div>
                           <div className="flex justify-between text-xs">
-                            <span>Mana:</span>
+                            <span>{t('character.mana')}:</span>
                             <Badge variant="outline">{playerClass.baseStats.mana}</Badge>
                           </div>
                         </div>
@@ -103,7 +105,7 @@ export const CharacterCreation: React.FC<CharacterCreationProps> = ({ classes, o
                   disabled={!selectedClass || !playerName.trim()}
                   className="px-12"
                 >
-                  🌟 Créer le Personnage
+                  {t('character.create_button')}
                 </Button>
               </div>
             </div>

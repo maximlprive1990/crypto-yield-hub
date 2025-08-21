@@ -7,10 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const { signIn, signUp, user, loading } = useAuth();
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const [referralCode, setReferralCode] = useState('');
@@ -35,7 +37,7 @@ const Auth = () => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-foreground">Chargement de l'authentification...</p>
+          <p className="text-foreground">{t('auth.loading')}</p>
         </div>
       </div>
     );
@@ -91,38 +93,38 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
       <Card className="w-full max-w-md shadow-glow border-primary/20">
         <CardHeader className="text-center">
-          <CardTitle className="gradient-text text-2xl font-bold">CryptoStake Pro</CardTitle>
+          <CardTitle className="gradient-text text-2xl font-bold">{t('auth.title')}</CardTitle>
           <CardDescription>
-            Accédez à votre plateforme de staking et de mining
+            {t('auth.subtitle')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Connexion</TabsTrigger>
-              <TabsTrigger value="signup">Inscription</TabsTrigger>
+              <TabsTrigger value="signin">{t('auth.signin')}</TabsTrigger>
+              <TabsTrigger value="signup">{t('auth.signup')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signin-email">Email</Label>
+                  <Label htmlFor="signin-email">{t('auth.email')}</Label>
                   <Input
                     id="signin-email"
                     name="email"
                     type="email"
                     required
-                    placeholder="votre@email.com"
+                    placeholder={t('auth.email_placeholder')}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">Mot de passe</Label>
+                  <Label htmlFor="signin-password">{t('auth.password')}</Label>
                   <Input
                     id="signin-password"
                     name="password"
                     type="password"
                     required
-                    placeholder="••••••••"
+                    placeholder={t('auth.password_placeholder')}
                   />
                 </div>
                 <Button 
@@ -131,7 +133,7 @@ const Auth = () => {
                   variant="crypto"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Connexion..." : "Se connecter"}
+                  {isLoading ? t('auth.signin_loading') : t('auth.signin_button')}
                 </Button>
               </form>
             </TabsContent>
@@ -141,8 +143,8 @@ const Auth = () => {
                 <div className="mb-4 p-3 bg-success/10 border border-success/20 rounded-lg">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-success">🎁 Code de parrainage détecté !</p>
-                      <p className="text-xs text-muted-foreground">Vous gagnerez 5 tokens DeadSpot à l'inscription</p>
+                      <p className="text-sm font-medium text-success">{t('auth.referral_detected')}</p>
+                      <p className="text-xs text-muted-foreground">{t('auth.referral_bonus')}</p>
                     </div>
                     <Badge variant="secondary" className="bg-success/20 text-success">
                       {referralCode}
@@ -153,45 +155,45 @@ const Auth = () => {
               
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-username">Nom d'utilisateur</Label>
+                  <Label htmlFor="signup-username">{t('auth.username')}</Label>
                   <Input
                     id="signup-username"
                     name="username"
                     type="text"
                     required
-                    placeholder="votreusername"
+                    placeholder={t('auth.username_placeholder')}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                  <Label htmlFor="signup-email">{t('auth.email')}</Label>
                   <Input
                     id="signup-email"
                     name="email"
                     type="email"
                     required
-                    placeholder="votre@email.com"
+                    placeholder={t('auth.email_placeholder')}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Mot de passe</Label>
+                  <Label htmlFor="signup-password">{t('auth.password')}</Label>
                   <Input
                     id="signup-password"
                     name="password"
                     type="password"
                     required
-                    placeholder="••••••••"
+                    placeholder={t('auth.password_placeholder')}
                     minLength={6}
                   />
                 </div>
                 
                 {!referralCode && (
                   <div className="space-y-2">
-                    <Label htmlFor="signup-referral">Code de parrainage (optionnel)</Label>
+                    <Label htmlFor="signup-referral">{t('auth.referral_code')}</Label>
                     <Input
                       id="signup-referral"
                       name="referralCode"
                       type="text"
-                      placeholder="Code d'un ami"
+                      placeholder={t('auth.referral_placeholder')}
                       className="font-mono text-center"
                       maxLength={8}
                     />
@@ -204,7 +206,7 @@ const Auth = () => {
                   variant="crypto"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Inscription..." : "S'inscrire"}
+                  {isLoading ? t('auth.signup_loading') : t('auth.signup_button')}
                 </Button>
               </form>
             </TabsContent>
