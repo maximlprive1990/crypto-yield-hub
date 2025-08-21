@@ -176,6 +176,33 @@ export type Database = {
         }
         Relationships: []
       }
+      faucet_claims: {
+        Row: {
+          amount_claimed: number
+          claimed_at: string
+          created_at: string
+          id: string
+          next_claim_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_claimed?: number
+          claimed_at?: string
+          created_at?: string
+          id?: string
+          next_claim_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_claimed?: number
+          claimed_at?: string
+          created_at?: string
+          id?: string
+          next_claim_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       leaderboard_entries: {
         Row: {
           created_at: string
@@ -988,6 +1015,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      increment_deadspot: {
+        Args: { amount: number }
+        Returns: number
+      }
       update_platform_stat: {
         Args: { increment_value: number; stat_name_param: string }
         Returns: undefined

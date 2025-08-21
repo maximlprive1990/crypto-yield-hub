@@ -74,20 +74,18 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenRPG, onOpenSpin 
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
-        .from('faucet_claims')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('claimed_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      // Use RPC to avoid TypeScript issues until types are regenerated
+      const { data, error } = await supabase.rpc('get_latest_faucet_claim', {
+        p_user_id: user.id
+      });
 
       if (error && error.code !== 'PGRST116') {
-        throw error;
+        console.log('No previous claims found');
       }
 
-      if (data) {
-        const nextClaim = new Date(data.next_claim_at);
+      if (data && data.length > 0) {
+        const latest = data[0];
+        const nextClaim = new Date(latest.next_claim_at);
         const now = new Date();
         
         setNextClaimTime(nextClaim);
@@ -97,17 +95,16 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenRPG, onOpenSpin 
       }
 
       // Get total claimed
-      const { data: totalData, error: totalError } = await supabase
-        .from('faucet_claims')
-        .select('amount_claimed')
-        .eq('user_id', user.id);
+      const { data: totalData } = await supabase.rpc('get_total_faucet_claims', {
+        p_user_id: user.id
+      });
 
-      if (!totalError && totalData) {
-        const total = totalData.reduce((sum, claim) => sum + parseFloat(claim.amount_claimed.toString()), 0);
-        setTotalClaimed(total);
+      if (totalData) {
+        setTotalClaimed(totalData || 0);
       }
     } catch (error) {
       console.error('Error checking claim status:', error);
+      setCanClaim(true);
     }
   };
 
