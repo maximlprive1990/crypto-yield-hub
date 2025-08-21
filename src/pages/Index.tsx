@@ -31,6 +31,7 @@ import { useState } from "react";
 const Index = () => {
   const { user, signOut, loading } = useAuth();
   const [showRPG, setShowRPG] = useState(false);
+  const [showSpinWheel, setShowSpinWheel] = useState(false);
   const [userZeroBalance, setUserZeroBalance] = useState(0);
 
   const handleZeroWin = (amount: number) => {
@@ -116,8 +117,27 @@ const Index = () => {
       {/* RPG Game Slide */}
       {showRPG && <RPGGame onClose={() => setShowRPG(false)} />}
       
-      {/* Top RPG Access Button */}
-      <div className="fixed top-4 left-4 z-40">
+      {/* Spin Wheel Slide */}
+      {showSpinWheel && (
+        <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-auto">
+          <div className="container mx-auto p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl font-bold gradient-text">🎰 Section Spin</h2>
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowSpinWheel(false)}
+                className="text-2xl"
+              >
+                ✕
+              </Button>
+            </div>
+            <SpinWheel onZeroWin={handleZeroWin} />
+          </div>
+        </div>
+      )}
+      
+      {/* Top Access Buttons */}
+      <div className="fixed top-4 left-4 z-40 flex gap-2">
         <Button 
           variant="crypto" 
           size="lg"
@@ -125,6 +145,14 @@ const Index = () => {
           className="shadow-glow"
         >
           ⚔️ Jeu RPG
+        </Button>
+        <Button 
+          variant="stake" 
+          size="lg"
+          onClick={() => setShowSpinWheel(true)}
+          className="shadow-glow"
+        >
+          🎰 Spin Wheel
         </Button>
       </div>
 
@@ -166,8 +194,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Spin Wheel Section - Top Priority */}
-      <SpinWheel onZeroWin={handleZeroWin} />
 
       {/* Statistics Section */}
       <CollapsibleSection

