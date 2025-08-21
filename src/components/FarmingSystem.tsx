@@ -93,25 +93,28 @@ export const FarmingSystem = () => {
     );
   }
 
-  // Vérifier le cooldown du faucet (10 minutes)
+  // Vérifier le cooldown du faucet (10 minutes) - Hook toujours appelé
   useEffect(() => {
-    if (lastFaucetClaim) {
-      const now = new Date();
-      const timeDiff = now.getTime() - lastFaucetClaim.getTime();
-      const cooldownTime = 10 * 60 * 1000; // 10 minutes en millisecondes
+    if (!lastFaucetClaim) {
+      setCanClaim(true);
+      return;
+    }
+
+    const now = new Date();
+    const timeDiff = now.getTime() - lastFaucetClaim.getTime();
+    const cooldownTime = 10 * 60 * 1000; // 10 minutes en millisecondes
+    
+    if (timeDiff < cooldownTime) {
+      setCanClaim(false);
+      const remainingTime = cooldownTime - timeDiff;
       
-      if (timeDiff < cooldownTime) {
-        setCanClaim(false);
-        const remainingTime = cooldownTime - timeDiff;
-        
-        const timer = setTimeout(() => {
-          setCanClaim(true);
-        }, remainingTime);
-        
-        return () => clearTimeout(timer);
-      } else {
+      const timer = setTimeout(() => {
         setCanClaim(true);
-      }
+      }, remainingTime);
+      
+      return () => clearTimeout(timer);
+    } else {
+      setCanClaim(true);
     }
   }, [lastFaucetClaim]);
 
