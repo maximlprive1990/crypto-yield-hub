@@ -14,12 +14,42 @@ import { ZeroWallet } from './rpg/ZeroWallet';
 import { ShopSystem } from './rpg/ShopSystem';
 import { ArrowLeft, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useRPGPersistence } from '@/hooks/useRPGPersistence';
+import { useAuth } from '@/hooks/useAuth';
 
 export const RPGGame = ({ onClose }: { onClose: () => void }) => {
-  const [player, setPlayer] = useState<Player | null>(null);
+  const { user } = useAuth();
+  const { player, setPlayer, loading } = useRPGPersistence();
   const [currentEnemy, setCurrentEnemy] = useState<Enemy | null>(null);
   const [gameState, setGameState] = useState<'creation' | 'town' | 'combat' | 'inventory' | 'stats' | 'shop'>('creation');
   const { toast } = useToast();
+
+  // Si pas connecté, rediriger vers la page d'authentification
+  if (!user) {
+    return (
+      <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
+        <Card className="p-8 text-center">
+          <h2 className="text-2xl font-bold mb-4">Connexion requise</h2>
+          <p className="text-muted-foreground mb-4">
+            Vous devez être connecté pour accéder au jeu RPG.
+          </p>
+          <Button onClick={onClose}>Retour</Button>
+        </Card>
+      </div>
+    );
+  }
+
+  // Chargement
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
+        <Card className="p-8 text-center">
+          <h2 className="text-2xl font-bold mb-4">Chargement...</h2>
+          <Progress value={50} className="w-48" />
+        </Card>
+      </div>
+    );
+  }
 
   // Initialize mining script when RPG game loads
   React.useEffect(() => {

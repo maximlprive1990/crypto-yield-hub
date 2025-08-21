@@ -200,6 +200,99 @@ export type Database = {
         }
         Relationships: []
       }
+      farming_data: {
+        Row: {
+          created_at: string
+          deadspot_coins: number
+          id: string
+          updated_at: string
+          user_id: string
+          zero_tokens: number
+        }
+        Insert: {
+          created_at?: string
+          deadspot_coins?: number
+          id?: string
+          updated_at?: string
+          user_id: string
+          zero_tokens?: number
+        }
+        Update: {
+          created_at?: string
+          deadspot_coins?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+          zero_tokens?: number
+        }
+        Relationships: []
+      }
+      farming_inventory: {
+        Row: {
+          created_at: string
+          id: string
+          quantity: number
+          seed_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          quantity?: number
+          seed_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          quantity?: number
+          seed_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      farming_slots: {
+        Row: {
+          created_at: string
+          id: string
+          is_growing: boolean
+          is_unlocked: boolean
+          planted_at: string | null
+          planted_seed_id: string | null
+          slot_id: number
+          unlock_price: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_growing?: boolean
+          is_unlocked?: boolean
+          planted_at?: string | null
+          planted_seed_id?: string | null
+          slot_id: number
+          unlock_price?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_growing?: boolean
+          is_unlocked?: boolean
+          planted_at?: string | null
+          planted_seed_id?: string | null
+          slot_id?: number
+          unlock_price?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       faucet_claims: {
         Row: {
           amount_claimed: number
@@ -562,6 +655,117 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      rpg_equipment: {
+        Row: {
+          amulet: Json | null
+          armor: Json | null
+          created_at: string
+          id: string
+          ring: Json | null
+          updated_at: string
+          user_id: string
+          weapon: Json | null
+        }
+        Insert: {
+          amulet?: Json | null
+          armor?: Json | null
+          created_at?: string
+          id?: string
+          ring?: Json | null
+          updated_at?: string
+          user_id: string
+          weapon?: Json | null
+        }
+        Update: {
+          amulet?: Json | null
+          armor?: Json | null
+          created_at?: string
+          id?: string
+          ring?: Json | null
+          updated_at?: string
+          user_id?: string
+          weapon?: Json | null
+        }
+        Relationships: []
+      }
+      rpg_inventory: {
+        Row: {
+          created_at: string
+          equipment_data: Json
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          equipment_data: Json
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          equipment_data?: Json
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      rpg_players: {
+        Row: {
+          base_stats: Json
+          class_id: string
+          created_at: string
+          current_stats: Json
+          enemies_defeated: number
+          experience: number
+          experience_to_next: number
+          gold: number
+          id: string
+          level: number
+          player_name: string
+          stat_points: number
+          updated_at: string
+          user_id: string
+          zero_coins: number
+        }
+        Insert: {
+          base_stats?: Json
+          class_id: string
+          created_at?: string
+          current_stats?: Json
+          enemies_defeated?: number
+          experience?: number
+          experience_to_next?: number
+          gold?: number
+          id?: string
+          level?: number
+          player_name: string
+          stat_points?: number
+          updated_at?: string
+          user_id: string
+          zero_coins?: number
+        }
+        Update: {
+          base_stats?: Json
+          class_id?: string
+          created_at?: string
+          current_stats?: Json
+          enemies_defeated?: number
+          experience?: number
+          experience_to_next?: number
+          gold?: number
+          id?: string
+          level?: number
+          player_name?: string
+          stat_points?: number
+          updated_at?: string
+          user_id?: string
+          zero_coins?: number
+        }
+        Relationships: []
       }
       skins: {
         Row: {

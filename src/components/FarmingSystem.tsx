@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useFarmingPersistence } from "@/hooks/useFarmingPersistence";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   Wheat, 
   Carrot, 
@@ -85,44 +87,47 @@ const SEEDS: Seed[] = [
 ];
 
 export const FarmingSystem = () => {
+  const { user } = useAuth();
   const { toast } = useToast();
-  const [deadspotCoins, setDeadspotCoins] = useState(500); // Exemple
-  const [zeroTokens, setZeroTokens] = useState(0);
-  const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [slots, setSlots] = useState<FarmSlot[]>([
-    { id: 1, isUnlocked: true, unlockPrice: 0, isGrowing: false },
-    { id: 2, isUnlocked: false, unlockPrice: 1, isGrowing: false },
-    { id: 3, isUnlocked: false, unlockPrice: 2, isGrowing: false },
-    { id: 4, isUnlocked: false, unlockPrice: 3, isGrowing: false },
-    { id: 5, isUnlocked: false, unlockPrice: 4, isGrowing: false },
-    { id: 6, isUnlocked: false, unlockPrice: 5, isGrowing: false }
-  ]);
+  const {
+    deadspotCoins,
+    zeroTokens,
+    inventory,
+    slots,
+    loading,
+    setDeadspotCoins,
+    setZeroTokens,
+    setInventory,
+    setSlots,
+  } = useFarmingPersistence();
 
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [showPayeerInfo, setShowPayeerInfo] = useState(false);
 
-  // Vérifier la croissance des plantes
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSlots(prevSlots =>
-        prevSlots.map(slot => {
-          if (slot.plantedSeed && slot.plantedAt && !slot.isGrowing) {
-            const now = new Date();
-            const plantedTime = new Date(slot.plantedAt);
-            const elapsedMinutes = (now.getTime() - plantedTime.getTime()) / (1000 * 60);
-            
-            if (elapsedMinutes >= slot.plantedSeed.growthTime) {
-              return { ...slot, isGrowing: false };
-            }
-          }
-          return slot;
-        })
-      );
-    }, 10000); // Vérifier toutes les 10 secondes
+  // Si pas connecté
+  if (!user) {
+    return (
+      <Card className="p-8 text-center">
+        <h2 className="text-2xl font-bold mb-4">Connexion requise</h2>
+        <p className="text-muted-foreground">
+          Vous devez être connecté pour accéder au système de ferme.
+        </p>
+      </Card>
+    );
+  }
 
-    return () => clearInterval(interval);
-  }, []);
+  // Chargement
+  if (loading) {
+    return (
+      <Card className="p-8 text-center">
+        <h2 className="text-2xl font-bold mb-4">Chargement...</h2>
+        <Progress value={50} className="w-48 mx-auto" />
+      </Card>
+    );
+  }
+
+  // Vérifier la croissance des plantes se fait maintenant lors du rendu
 
   const buySeeds = (seedId: string, quantity: number) => {
     const seed = SEEDS.find(s => s.id === seedId);
@@ -138,18 +143,16 @@ export const FarmingSystem = () => {
       return;
     }
 
-    setDeadspotCoins(prev => prev - totalCost);
-    setInventory(prev => {
-      const existing = prev.find(item => item.seedId === seedId);
-      if (existing) {
-        return prev.map(item =>
-          item.seedId === seedId
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      }
-      return [...prev, { seedId, quantity }];
-    });
+    setDeadspotCoins(deadspotCoins - totalCost);
+    
+    const newInventory = [...inventory];
+    const existing = newInventory.find(item => item.seedId === seedId);
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      newInventory.push({ seedId, quantity });
+    }
+    setInventory(newInventory);
 
     toast({
       title: "Achat réussi",
@@ -181,27 +184,25 @@ export const FarmingSystem = () => {
     }
 
     // Planter la graine
-    setSlots(prev =>
-      prev.map(s =>
-        s.id === slotId
-          ? {
-              ...s,
-              plantedSeed: seed,
-              plantedAt: new Date(),
-              isGrowing: true
-            }
-          : s
-      )
+    const newSlots = slots.map(s =>
+      s.id === slotId
+        ? {
+            ...s,
+            plantedSeed: seed,
+            plantedAt: new Date(),
+            isGrowing: true
+          }
+        : s
     );
+    setSlots(newSlots);
 
     // Retirer de l'inventaire
-    setInventory(prev =>
-      prev.map(item =>
-        item.seedId === seedId
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      ).filter(item => item.quantity > 0)
-    );
+    const newInventory = inventory.map(item =>
+      item.seedId === seedId
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
+    ).filter(item => item.quantity > 0);
+    setInventory(newInventory);
 
     toast({
       title: "Graine plantée",
@@ -227,19 +228,19 @@ export const FarmingSystem = () => {
     }
 
     // Récolter
-    setZeroTokens(prev => prev + slot.plantedSeed!.reward);
-    setSlots(prev =>
-      prev.map(s =>
-        s.id === slotId
-          ? {
-              ...s,
-              plantedSeed: undefined,
-              plantedAt: undefined,
-              isGrowing: false
-            }
-          : s
-      )
+    setZeroTokens(zeroTokens + slot.plantedSeed.reward);
+    
+    const newSlots = slots.map(s =>
+      s.id === slotId
+        ? {
+            ...s,
+            plantedSeed: undefined,
+            plantedAt: undefined,
+            isGrowing: false
+          }
+        : s
     );
+    setSlots(newSlots);
 
     toast({
       title: "Récolte réussie",
