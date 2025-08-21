@@ -14,6 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
+      battle_passes: {
+        Row: {
+          created_at: string
+          experience_points: number
+          expires_at: string | null
+          id: string
+          is_premium: boolean
+          level: number
+          premium_purchased_at: string | null
+          rewards_claimed: Json | null
+          season_name: string
+          tier: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          experience_points?: number
+          expires_at?: string | null
+          id?: string
+          is_premium?: boolean
+          level?: number
+          premium_purchased_at?: string | null
+          rewards_claimed?: Json | null
+          season_name: string
+          tier?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          experience_points?: number
+          expires_at?: string | null
+          id?: string
+          is_premium?: boolean
+          level?: number
+          premium_purchased_at?: string | null
+          rewards_claimed?: Json | null
+          season_name?: string
+          tier?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coin_purchases: {
+        Row: {
+          amount_deadspot: number
+          amount_usd: number
+          created_at: string
+          currency: string
+          exchange_rate: number
+          id: string
+          payeer_account: string | null
+          status: string
+          transaction_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_deadspot: number
+          amount_usd: number
+          created_at?: string
+          currency?: string
+          exchange_rate?: number
+          id?: string
+          payeer_account?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_deadspot?: number
+          amount_usd?: number
+          created_at?: string
+          currency?: string
+          exchange_rate?: number
+          id?: string
+          payeer_account?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       deposits: {
         Row: {
           amount: number
@@ -626,6 +713,54 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      vip_accounts: {
+        Row: {
+          bonus_click_multiplier: number | null
+          bonus_mining_rate: number | null
+          bonus_staking_apy: number | null
+          created_at: string
+          deposit_amount: number
+          expires_at: string | null
+          id: string
+          payeer_account: string | null
+          status: string
+          tier: string
+          transaction_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bonus_click_multiplier?: number | null
+          bonus_mining_rate?: number | null
+          bonus_staking_apy?: number | null
+          created_at?: string
+          deposit_amount?: number
+          expires_at?: string | null
+          id?: string
+          payeer_account?: string | null
+          status?: string
+          tier?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bonus_click_multiplier?: number | null
+          bonus_mining_rate?: number | null
+          bonus_staking_apy?: number | null
+          created_at?: string
+          deposit_amount?: number
+          expires_at?: string | null
+          id?: string
+          payeer_account?: string | null
+          status?: string
+          tier?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {

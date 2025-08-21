@@ -16,6 +16,9 @@ import LeaderboardSystem from "@/components/LeaderboardSystem";
 import LootBoxSystem from "@/components/LootBoxSystem";
 import EventsSystem from "@/components/EventsSystem";
 import CustomizationSystem from "@/components/CustomizationSystem";
+import VIPSystem from "@/components/VIPSystem";
+import BattlePassSystem from "@/components/BattlePassSystem";
+import DeadSpotShop from "@/components/DeadSpotShop";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
@@ -252,12 +255,31 @@ const Index = () => {
         </div>
       </section>
 
+      {/* VIP & Monetization Section */}
+      <section className="py-20 px-6 bg-secondary/20">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <VIPSystem />
+          
+          <BattlePassSystem />
+          
+          <DeadSpotShop />
+        </div>
+      </section>
+
       {/* Gaming Features Section */}
-      <MissionsSystem />
-      <LeaderboardSystem />
-      <LootBoxSystem />
-      <EventsSystem />
-      <CustomizationSystem />
+      <section className="py-20 px-6">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <EventsSystem />
+          
+          <MissionsSystem />
+          
+          <LeaderboardSystem />
+          
+          <LootBoxSystem />
+          
+          <CustomizationSystem />
+        </div>
+      </section>
 
       {/* Staking Pools Section */}
       <section className="py-20 px-6">
