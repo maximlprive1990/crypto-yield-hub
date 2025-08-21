@@ -23,10 +23,13 @@ import { CollapsibleSection } from "@/components/CollapsibleSection";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
+import { RPGGame } from "@/components/RPGGame";
 import heroBackground from "@/assets/hero-background.jpg";
+import { useState } from "react";
 
 const Index = () => {
   const { user, signOut, loading } = useAuth();
+  const [showRPG, setShowRPG] = useState(false);
 
   if (loading) {
     return (
@@ -104,6 +107,21 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* RPG Game Slide */}
+      {showRPG && <RPGGame onClose={() => setShowRPG(false)} />}
+      
+      {/* Top RPG Access Button */}
+      <div className="fixed top-4 left-4 z-40">
+        <Button 
+          variant="crypto" 
+          size="lg"
+          onClick={() => setShowRPG(true)}
+          className="shadow-glow"
+        >
+          ⚔️ Jeu RPG
+        </Button>
+      </div>
+
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div 
@@ -126,6 +144,14 @@ const Index = () => {
             </Button>
             <Button variant="stake" size="xl">
               Explorer les Pools
+            </Button>
+            <Button 
+              variant="outline" 
+              size="xl" 
+              onClick={() => setShowRPG(true)}
+              className="shadow-neon"
+            >
+              ⚔️ Jouer au RPG
             </Button>
             <Button variant="ghost" size="sm" onClick={signOut} className="mt-4">
               Se déconnecter
