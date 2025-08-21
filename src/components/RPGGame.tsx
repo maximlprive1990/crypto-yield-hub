@@ -4,20 +4,21 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { PlayerStats, Player, Enemy, PlayerClass, Equipment, CombatResult } from '@/types/rpg';
-import { playerClasses, generateEnemy, baseEquipment } from '@/data/rpgData';
+import { playerClasses, generateEnemy, baseEquipment, getEquipmentPrice } from '@/data/rpgData';
 import { CharacterCreation } from './rpg/CharacterCreation';
 import { CombatSystem } from './rpg/CombatSystem';
 import { PlayerPanel } from './rpg/PlayerPanel';
 import { InventorySystem } from './rpg/InventorySystem';
 import { StatsUpgrade } from './rpg/StatsUpgrade';
 import { ZeroWallet } from './rpg/ZeroWallet';
+import { ShopSystem } from './rpg/ShopSystem';
 import { X } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 export const RPGGame = ({ onClose }: { onClose: () => void }) => {
   const [player, setPlayer] = useState<Player | null>(null);
   const [currentEnemy, setCurrentEnemy] = useState<Enemy | null>(null);
-  const [gameState, setGameState] = useState<'creation' | 'town' | 'combat' | 'inventory' | 'stats'>('creation');
+  const [gameState, setGameState] = useState<'creation' | 'town' | 'combat' | 'inventory' | 'stats' | 'shop'>('creation');
   const { toast } = useToast();
 
   const createPlayer = (selectedClass: PlayerClass, name: string) => {
@@ -193,6 +194,23 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
     updatePlayerStats(newPlayer);
   };
 
+  const handlePurchase = (item: Equipment): boolean => {
+    if (!player) return false;
+
+    const price = getEquipmentPrice(item);
+    
+    if (player.level < item.level || player.gold < price) {
+      return false;
+    }
+
+    const newPlayer = { ...player };
+    newPlayer.gold -= price;
+    newPlayer.inventory.push(item);
+    
+    updatePlayerStats(newPlayer);
+    return true;
+  };
+
   if (!player) {
     return <CharacterCreation classes={playerClasses} onCreatePlayer={createPlayer} />;
   }
@@ -272,12 +290,12 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
                       )}
                     </Button>
                     <Button 
-                      variant="outline" 
+                      variant="stake" 
                       size="xl" 
+                      onClick={() => setGameState('shop')}
                       className="h-20"
-                      disabled
                     >
-                      🏪 Boutique (Bientôt)
+                      🏪 Boutique d'Équipement
                     </Button>
                   </div>
 
@@ -316,6 +334,14 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
               <StatsUpgrade
                 player={player}
                 onUpgrade={upgradeStats}
+                onBack={() => setGameState('town')}
+              />
+            )}
+
+            {gameState === 'shop' && (
+              <ShopSystem
+                player={player}
+                onPurchase={handlePurchase}
                 onBack={() => setGameState('town')}
               />
             )}

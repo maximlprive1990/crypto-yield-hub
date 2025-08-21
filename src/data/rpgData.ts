@@ -140,7 +140,7 @@ export const playerClasses: PlayerClass[] = [
 ];
 
 export const baseEquipment: Equipment[] = [
-  // Armes
+  // Armes Niveau 1-5
   {
     id: "iron_sword",
     name: "Épée de Fer",
@@ -151,22 +151,69 @@ export const baseEquipment: Equipment[] = [
     statsBonus: { attack: 5, attackSpeed: 2.1 }
   },
   {
+    id: "wooden_club",
+    name: "Massue en Bois",
+    type: "weapon", 
+    rarity: "common",
+    level: 1,
+    description: "Arme primitive mais efficace",
+    statsBonus: { attack: 8, speed: -2 }
+  },
+  {
+    id: "bronze_dagger",
+    name: "Dague de Bronze",
+    type: "weapon",
+    rarity: "common", 
+    level: 2,
+    description: "Lame rapide et précise",
+    statsBonus: { attack: 6, attackSpeed: 8.5, dodge: 3 }
+  },
+  {
     id: "steel_bow",
     name: "Arc d'Acier",
     type: "weapon",
     rarity: "uncommon",
     level: 3,
     description: "Arc précis en acier trempé",
-    statsBonus: { attack: 8, attackSpeed: 5.5, dodge: 3 }
+    statsBonus: { attack: 12, attackSpeed: 5.5, dodge: 5 }
   },
   {
-    id: "magic_staff",
-    name: "Bâton Magique",
+    id: "silver_blade",
+    name: "Lame d'Argent",
+    type: "weapon",
+    rarity: "uncommon",
+    level: 4,
+    description: "Épée bénie contre les créatures des ténèbres",
+    statsBonus: { attack: 15, attackSpeed: 3.2, luck: 8 }
+  },
+  {
+    id: "enchanted_staff",
+    name: "Bâton Enchanté",
     type: "weapon",
     rarity: "rare",
     level: 5,
-    description: "Bâton imprégné de magie",
-    statsBonus: { attack: 12, mana: 25, luck: 8 }
+    description: "Bâton imprégné de magie ancienne",
+    statsBonus: { attack: 18, mana: 35, luck: 12 }
+  },
+
+  // Armes Niveau 6-10
+  {
+    id: "crystal_sword",
+    name: "Épée de Cristal",
+    type: "weapon",
+    rarity: "rare",
+    level: 6,
+    description: "Lame taillée dans un cristal magique",
+    statsBonus: { attack: 22, attackSpeed: 4.8, mana: 15 }
+  },
+  {
+    id: "demon_axe",
+    name: "Hache Démoniaque",
+    type: "weapon",
+    rarity: "epic",
+    level: 8,
+    description: "Hache forgée dans les flammes infernales",
+    statsBonus: { attack: 35, attackSpeed: -2.1, defense: 8 }
   },
   {
     id: "shadow_blade",
@@ -175,7 +222,27 @@ export const baseEquipment: Equipment[] = [
     rarity: "epic",
     level: 10,
     description: "Lame maudite des ténèbres",
-    statsBonus: { attack: 20, attackSpeed: 15.2, dodge: 10, speed: 12 }
+    statsBonus: { attack: 28, attackSpeed: 15.2, dodge: 15, speed: 12 }
+  },
+
+  // Armes Niveau 11-20
+  {
+    id: "phoenix_staff",
+    name: "Bâton du Phénix",
+    type: "weapon",
+    rarity: "epic",
+    level: 12,
+    description: "Bâton imprégné du feu éternel",
+    statsBonus: { attack: 32, mana: 80, luck: 18, attackSpeed: 6.5 }
+  },
+  {
+    id: "void_bow",
+    name: "Arc du Vide",
+    type: "weapon",
+    rarity: "epic",
+    level: 15,
+    description: "Arc tirant des flèches dimensionnelles",
+    statsBonus: { attack: 40, attackSpeed: 12.8, dodge: 20, speed: 25 }
   },
   {
     id: "dragon_slayer",
@@ -184,10 +251,19 @@ export const baseEquipment: Equipment[] = [
     rarity: "legendary",
     level: 20,
     description: "Épée légendaire forgée dans le sang de dragon",
-    statsBonus: { attack: 35, attackSpeed: 8.7, defense: 5, luck: 15 }
+    statsBonus: { attack: 55, attackSpeed: 8.7, defense: 15, luck: 25, health: 50 }
   },
 
-  // Armures
+  // Armures Niveau 1-5
+  {
+    id: "cloth_robe",
+    name: "Robe de Tissu",
+    type: "armor",
+    rarity: "common",
+    level: 1,
+    description: "Vêtement simple mais confortable",
+    statsBonus: { defense: 3, mana: 10 }
+  },
   {
     id: "leather_armor",
     name: "Armure de Cuir",
@@ -195,7 +271,16 @@ export const baseEquipment: Equipment[] = [
     rarity: "common",
     level: 1,
     description: "Protection basique en cuir",
-    statsBonus: { defense: 8, dodge: 2 }
+    statsBonus: { defense: 8, dodge: 2, health: 15 }
+  },
+  {
+    id: "studded_leather",
+    name: "Cuir Clouté",
+    type: "armor",
+    rarity: "uncommon",
+    level: 3,
+    description: "Armure renforcée de clous métalliques",
+    statsBonus: { defense: 12, dodge: 5, health: 25 }
   },
   {
     id: "chain_mail",
@@ -204,28 +289,66 @@ export const baseEquipment: Equipment[] = [
     rarity: "uncommon",
     level: 4,
     description: "Armure flexible en mailles",
-    statsBonus: { defense: 15, health: 20, speed: -2 }
+    statsBonus: { defense: 18, health: 40, speed: -3 }
   },
   {
-    id: "plate_armor",
-    name: "Armure de Plates",
+    id: "scale_armor",
+    name: "Armure d'Écailles",
+    type: "armor",
+    rarity: "rare",
+    level: 5,
+    description: "Protection faite d'écailles de dragon",
+    statsBonus: { defense: 22, health: 50, luck: 8 }
+  },
+
+  // Armures Niveau 6-15
+  {
+    id: "steel_plate",
+    name: "Armure de Plates d'Acier",
     type: "armor",
     rarity: "rare",
     level: 8,
     description: "Lourde armure en plaques d'acier",
-    statsBonus: { defense: 25, health: 40, speed: -8, dodge: -5 }
+    statsBonus: { defense: 35, health: 80, speed: -8, dodge: -5 }
   },
   {
     id: "mage_robes",
-    name: "Robes de Mage",
+    name: "Robes de Mage Supérieur",
     type: "armor",
     rarity: "epic",
     level: 12,
     description: "Robes enchantées des arcanes",
-    statsBonus: { defense: 12, mana: 50, luck: 12, speed: 5 }
+    statsBonus: { defense: 25, mana: 120, luck: 20, speed: 8 }
+  },
+  {
+    id: "celestial_armor",
+    name: "Armure Céleste",
+    type: "armor",
+    rarity: "legendary",
+    level: 15,
+    description: "Armure bénie par les dieux",
+    statsBonus: { defense: 50, health: 150, mana: 80, luck: 30, dodge: 10 }
   },
 
-  // Bijoux
+  // Bijoux Niveau 1-10
+  {
+    id: "copper_ring",
+    name: "Anneau de Cuivre",
+    type: "ring",
+    rarity: "common",
+    level: 1,
+    description: "Simple anneau de cuivre",
+    statsBonus: { attack: 2, health: 10 }
+  },
+  {
+    id: "silver_ring",
+    name: "Anneau d'Argent",
+    type: "ring",
+    rarity: "uncommon",
+    level: 3,
+    description: "Anneau poli brillant d'argent",
+    statsBonus: { attack: 5, mana: 20, luck: 5 }
+  },
   {
     id: "power_ring",
     name: "Anneau de Puissance",
@@ -233,27 +356,78 @@ export const baseEquipment: Equipment[] = [
     rarity: "rare",
     level: 6,
     description: "Anneau augmentant la force",
-    statsBonus: { attack: 10, attackSpeed: 3.2 }
+    statsBonus: { attack: 12, attackSpeed: 5.2, health: 30 }
+  },
+  {
+    id: "master_ring",
+    name: "Anneau de Maître",
+    type: "ring",
+    rarity: "epic",
+    level: 10,
+    description: "Anneau des grands maîtres",
+    statsBonus: { attack: 18, defense: 12, luck: 25, mana: 50 }
+  },
+
+  // Amulettes Niveau 1-15
+  {
+    id: "bone_amulet",
+    name: "Amulette d'Os",
+    type: "amulet",
+    rarity: "common",
+    level: 1,
+    description: "Amulette primitive sculptée dans l'os",
+    statsBonus: { luck: 8, mana: 15 }
+  },
+  {
+    id: "crystal_pendant",
+    name: "Pendentif de Cristal",
+    type: "amulet",
+    rarity: "uncommon",
+    level: 4,
+    description: "Cristal amplifiant les énergies magiques",
+    statsBonus: { mana: 40, luck: 12, speed: 5 }
   },
   {
     id: "luck_amulet",
-    name: "Amulette de Chance",
+    name: "Amulette de Chance Supreme",
     type: "amulet",
     rarity: "epic",
-    level: 15,
-    description: "Amulette portant bonheur",
-    statsBonus: { luck: 25, dodge: 8, speed: 6 }
+    level: 8,
+    description: "Amulette portant une chance extraordinaire",
+    statsBonus: { luck: 35, dodge: 15, speed: 12, attackSpeed: 8.5 }
   },
   {
-    id: "health_ring",
-    name: "Anneau de Vitalité",
-    type: "ring",
-    rarity: "uncommon",
-    level: 5,
-    description: "Anneau renforçant la vitalité",
-    statsBonus: { health: 35, defense: 5 }
+    id: "soul_pendant",
+    name: "Pendentif des Âmes",
+    type: "amulet",
+    rarity: "legendary",
+    level: 15,
+    description: "Amulette contenant le pouvoir des âmes anciennes",
+    statsBonus: { mana: 200, luck: 50, health: 100, defense: 20, attack: 25 }
   }
 ];
+
+// Prix de base pour chaque type et rareté
+export const getEquipmentPrice = (equipment: Equipment): number => {
+  const basePrice = {
+    weapon: 50,
+    armor: 80,
+    ring: 30,
+    amulet: 40
+  };
+
+  const rarityMultiplier = {
+    common: 1,
+    uncommon: 2.5,
+    rare: 6,
+    epic: 15,
+    legendary: 40
+  };
+
+  const levelMultiplier = 1 + (equipment.level - 1) * 0.3;
+  
+  return Math.floor(basePrice[equipment.type] * rarityMultiplier[equipment.rarity] * levelMultiplier);
+};
 
 export function generateEnemy(playerLevel: number): Enemy {
   const enemyTypes = [
