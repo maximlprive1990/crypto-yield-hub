@@ -20,7 +20,8 @@ import {
   Clock,
   Coins,
   Lock,
-  Unlock
+  Unlock,
+  Gift
 } from "lucide-react";
 
 interface Seed {
@@ -67,6 +68,8 @@ export const FarmingSystem = () => {
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [showPayeerInfo, setShowPayeerInfo] = useState(false);
+  const [lastFaucetClaim, setLastFaucetClaim] = useState<Date | null>(null);
+  const [canClaim, setCanClaim] = useState(true);
 
   // Si pas connecté
   if (!user) {
@@ -90,7 +93,29 @@ export const FarmingSystem = () => {
     );
   }
 
-  // Vérifier la croissance des plantes se fait maintenant lors du rendu
+  // Vérifier le cooldown du faucet (10 minutes)
+  useEffect(() => {
+    if (lastFaucetClaim) {
+      const now = new Date();
+      const timeDiff = now.getTime() - lastFaucetClaim.getTime();
+      const cooldownTime = 10 * 60 * 1000; // 10 minutes en millisecondes
+      
+      if (timeDiff < cooldownTime) {
+        setCanClaim(false);
+        const remainingTime = cooldownTime - timeDiff;
+        
+        const timer = setTimeout(() => {
+          setCanClaim(true);
+        }, remainingTime);
+        
+        return () => clearTimeout(timer);
+      } else {
+        setCanClaim(true);
+      }
+    }
+  }, [lastFaucetClaim]);
+
+  // Chargement
 
   const buySeeds = (seedId: string, quantity: number) => {
     const seed = SEEDS.find(s => s.id === seedId);
@@ -235,6 +260,45 @@ export const FarmingSystem = () => {
     const progress = Math.min((elapsedMinutes / slot.plantedSeed.growthTime) * 100, 100);
     
     return progress;
+  };
+
+  const claimFaucet = () => {
+    if (!canClaim) {
+      toast({
+        title: "Cooldown actif",
+        description: "Vous devez attendre avant de réclamer à nouveau",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Générer un montant aléatoire entre 0.1 et 2
+    const randomAmount = Math.random() * (2 - 0.1) + 0.1;
+    const roundedAmount = Math.round(randomAmount * 10) / 10; // Arrondir à 1 décimale
+    
+    setDeadspotCoins(deadspotCoins + roundedAmount);
+    setLastFaucetClaim(new Date());
+    setCanClaim(false);
+
+    toast({
+      title: "Faucet réclamé!",
+      description: `+${roundedAmount} DeadSpot Coins récoltés`,
+    });
+  };
+
+  const getNextClaimTime = () => {
+    if (!lastFaucetClaim) return null;
+    
+    const nextClaim = new Date(lastFaucetClaim.getTime() + 10 * 60 * 1000);
+    const now = new Date();
+    
+    if (now >= nextClaim) return null;
+    
+    const diff = nextClaim.getTime() - now.getTime();
+    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -446,6 +510,43 @@ export const FarmingSystem = () => {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Faucet Section */}
+      <Card className="p-6 border-dashed border-2 border-primary/30">
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center space-x-2">
+            <Gift className="h-6 w-6 text-primary" />
+            <h3 className="text-xl font-bold">Faucet DeadSpot</h3>
+          </div>
+          
+          <p className="text-muted-foreground">
+            Réclamez des DeadSpot Coins gratuits toutes les 10 minutes
+          </p>
+          
+          <div className="flex items-center justify-center space-x-4">
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">Récompense</p>
+              <p className="text-lg font-bold text-yellow-500">0.1 - 2.0 DeadSpot</p>
+            </div>
+            {!canClaim && (
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">Prochain claim</p>
+                <p className="text-lg font-bold text-blue-500">{getNextClaimTime()}</p>
+              </div>
+            )}
+          </div>
+          
+          <Button
+            onClick={claimFaucet}
+            disabled={!canClaim}
+            size="lg"
+            variant="crypto"
+            className="shadow-glow"
+          >
+            {canClaim ? "🎁 Réclamer Maintenant" : `⏱️ Attendre ${getNextClaimTime()}`}
+          </Button>
+        </div>
+      </Card>
 
       {/* Dialog pour débloquer un slot */}
       <Dialog open={showPayeerInfo} onOpenChange={setShowPayeerInfo}>
