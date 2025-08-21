@@ -24,6 +24,8 @@ import PlatformStats from "@/components/PlatformStats";
 import { CollapsibleSection } from "@/components/CollapsibleSection";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { Navigate } from "react-router-dom";
 import { RPGGame } from "@/components/RPGGame";
 import { SpinWheel } from "@/components/SpinWheel";
@@ -35,6 +37,7 @@ import LiveChat from "@/components/LiveChat";
 
 const Index = () => {
   const { user, signOut, loading } = useAuth();
+  const { t } = useLanguage();
   const [showRPG, setShowRPG] = useState(false);
   const [showSpinWheel, setShowSpinWheel] = useState(false);
   const [showFaucet, setShowFaucet] = useState(false);
@@ -107,7 +110,7 @@ const Index = () => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-foreground">Chargement de l'application...</p>
+          <p className="text-foreground">{t('loading')}</p>
         </div>
       </div>
     );
@@ -179,6 +182,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Language Selector - Fixed position */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSelector />
+      </div>
       {/* RPG Game Slide */}
       {showRPG && <RPGGame onClose={() => setShowRPG(false)} />}
       
@@ -187,13 +194,13 @@ const Index = () => {
         <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-auto">
           <div className="container mx-auto p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-bold gradient-text">🎰 Section Spin</h2>
+              <h2 className="text-3xl font-bold gradient-text">🎰 {t('gaming.spin.title')}</h2>
               <Button 
                 variant="ghost" 
                 onClick={() => setShowSpinWheel(false)}
                 className="text-2xl"
               >
-                ✕
+                {t('close')}
               </Button>
             </div>
             <SpinWheel onZeroWin={handleZeroWin} onOpenRPG={() => setShowRPG(true)} />
@@ -206,13 +213,13 @@ const Index = () => {
         <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-auto">
           <div className="container mx-auto p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-bold gradient-text">💧 Faucet ZERO</h2>
+              <h2 className="text-3xl font-bold gradient-text">💧 {t('gaming.faucet.title')}</h2>
               <Button 
                 variant="ghost" 
                 onClick={() => setShowFaucet(false)}
                 className="text-2xl"
               >
-                ✕
+                {t('close')}
               </Button>
             </div>
             <FaucetClaim 
@@ -228,13 +235,13 @@ const Index = () => {
         <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-auto">
           <div className="container mx-auto p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-bold gradient-text">🌾 Système de Ferme</h2>
+              <h2 className="text-3xl font-bold gradient-text">🌾 {t('gaming.farm.title')}</h2>
               <Button 
                 variant="ghost" 
                 onClick={() => setShowFarm(false)}
                 className="text-2xl"
               >
-                ✕
+                {t('close')}
               </Button>
             </div>
             <FarmingSystem />
@@ -253,18 +260,17 @@ const Index = () => {
         
         <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
           <h1 className="text-6xl md:text-8xl font-bold mb-6 gradient-crypto bg-clip-text text-transparent animate-float">
-            CryptoStake Pro
+            {t('app.title')}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Maximisez vos rendements avec notre plateforme de staking multi-crypto. 
-            Jusqu'à 7% de rendement quotidien sur vos cryptomonnaies préférées.
+            {t('app.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="crypto" size="xl" className="shadow-glow">
-              Commencer le Staking
+              {t('hero.start_staking')}
             </Button>
             <Button variant="stake" size="xl">
-              Explorer les Pools
+              {t('hero.explore_pools')}
             </Button>
             <Button 
               variant="outline" 
@@ -272,10 +278,10 @@ const Index = () => {
               onClick={() => setShowRPG(true)}
               className="shadow-neon"
             >
-              ⚔️ Jouer au RPG
+              {t('hero.play_rpg')}
             </Button>
             <Button variant="ghost" size="sm" onClick={signOut} className="mt-4">
-              Se déconnecter
+              {t('sign_out')}
             </Button>
           </div>
         </div>
@@ -286,69 +292,69 @@ const Index = () => {
 
       {/* Gaming & Features Access Section */}
       <CollapsibleSection
-        title="🎮 Jeux et Fonctionnalités"
-        subtitle="Accédez rapidement à nos jeux RPG, système de ferme, faucet ZERO et roulette"
+        title={t('gaming.title')}
+        subtitle={t('gaming.subtitle')}
         defaultOpen={true}
         className="bg-secondary/20"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
             <div className="text-4xl mb-4">⚔️</div>
-            <h3 className="text-lg font-bold mb-2">Jeu RPG</h3>
+            <h3 className="text-lg font-bold mb-2">{t('gaming.rpg.title')}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Combattez des ennemis, récoltez de l'équipement et gagnez des ZERO coins
+              {t('gaming.rpg.description')}
             </p>
             <Button 
               variant="crypto" 
               onClick={() => setShowRPG(true)}
               className="w-full shadow-glow"
             >
-              Jouer
+              {t('gaming.rpg.play')}
             </Button>
           </div>
           
           <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
             <div className="text-4xl mb-4">🌾</div>
-            <h3 className="text-lg font-bold mb-2">Système de Ferme</h3>
+            <h3 className="text-lg font-bold mb-2">{t('gaming.farm.title')}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Plantez, récoltez et gérez votre ferme pour gagner des DeadSpot coins
+              {t('gaming.farm.description')}
             </p>
             <Button 
               variant="outline" 
               onClick={() => setShowFarm(true)}
               className="w-full shadow-glow"
             >
-              Cultiver
+              {t('gaming.farm.cultivate')}
             </Button>
           </div>
           
           <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
             <div className="text-4xl mb-4">💧</div>
-            <h3 className="text-lg font-bold mb-2">Faucet ZERO</h3>
+            <h3 className="text-lg font-bold mb-2">{t('gaming.faucet.title')}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Réclamez des ZERO coins gratuits toutes les heures
+              {t('gaming.faucet.description')}
             </p>
             <Button 
               variant="secondary" 
               onClick={() => setShowFaucet(true)}
               className="w-full shadow-glow"
             >
-              Réclamer
+              {t('gaming.faucet.claim')}
             </Button>
           </div>
           
           <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
             <div className="text-4xl mb-4">🎰</div>
-            <h3 className="text-lg font-bold mb-2">Roulette Spin</h3>
+            <h3 className="text-lg font-bold mb-2">{t('gaming.spin.title')}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Tournez la roue de la fortune et gagnez des récompenses
+              {t('gaming.spin.description')}
             </p>
             <Button 
               variant="stake" 
               onClick={() => setShowSpinWheel(true)}
               className="w-full shadow-glow"
             >
-              Tourner
+              {t('gaming.spin.turn')}
             </Button>
           </div>
         </div>

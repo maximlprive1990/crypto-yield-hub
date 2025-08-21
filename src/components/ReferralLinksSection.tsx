@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Globe, Gamepad2, Pickaxe, Droplets, Mouse, FileText } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ReferralLink {
   id: string;
@@ -342,16 +343,18 @@ const categoryColors = {
   ads: 'bg-red-500/20 text-red-300 border-red-500/30'
 };
 
-const categoryLabels = {
-  website: 'Site Web',
-  gaming: 'Gaming',
-  mining: 'Mining',
-  faucet: 'Faucet',
-  ptc: 'PTC',
-  ads: 'Publicités'
-};
-
 export const ReferralLinksSection = () => {
+  const { t } = useLanguage();
+  
+  const categoryLabels = {
+    website: t('category.website'),
+    gaming: t('category.gaming'),
+    mining: t('category.mining'),
+    faucet: t('category.faucet'),
+    ptc: t('category.ptc'),
+    ads: t('category.ads')
+  };
+
   const handleLinkClick = (url: string, name: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
     console.log(`Opened referral link: ${name}`);
@@ -370,10 +373,10 @@ export const ReferralLinksSection = () => {
       <div className="container mx-auto px-6">
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-4">
-            🔗 Liens Référrals Premium
+            {t('referrals.title')}
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Découvrez nos partenaires de confiance et gagnez des bonus exclusifs avec nos liens référrals
+            {t('referrals.subtitle')}
           </p>
         </div>
 
@@ -424,7 +427,7 @@ export const ReferralLinksSection = () => {
                       className="w-full mt-2 text-xs"
                       onClick={() => handleLinkClick(link.url, link.name)}
                     >
-                      Accéder au lien
+                      {t('referrals.access_link')}
                     </Button>
                   </div>
                 ))}
@@ -435,7 +438,7 @@ export const ReferralLinksSection = () => {
 
         <div className="text-center mt-8">
           <p className="text-sm text-muted-foreground">
-            💡 <strong>Conseil:</strong> Utilisez nos liens référrals pour obtenir des bonus exclusifs et soutenir notre plateforme
+            {t('referrals.tip')}
           </p>
         </div>
       </div>

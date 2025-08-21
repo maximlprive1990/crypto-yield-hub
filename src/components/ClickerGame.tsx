@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Skull, Zap, Plus } from "lucide-react";
 import skullIcon from "@/assets/skull-icon.png";
 
@@ -18,6 +19,7 @@ interface PowerUp {
 
 const ClickerGame = () => {
   const { toast } = useToast();
+  const { t } = useLanguage();
   
   // Game state
   const [deadspotCoins, setDeadspotCoins] = useState(0);
@@ -92,8 +94,8 @@ const ClickerGame = () => {
       setMaxEnergy(prev => prev + 50);
       setEnergy(prev => prev + 50);
       toast({
-        title: "Level Up!",
-        description: `Niveau ${level + 1} atteint! +50 energy max`,
+        title: t('clicker.level_up'),
+        description: `${t('level')} ${level + 1} ${t('clicker.level_reached')}`,
       });
     }
   }, [expPoints, level, toast]);
@@ -127,8 +129,8 @@ const ClickerGame = () => {
   const handleClick = () => {
     if (energy <= 0) {
       toast({
-        title: "Pas d'énergie!",
-        description: "Attendez que votre énergie se régénère",
+        title: t('clicker.no_energy'),
+        description: t('clicker.wait_energy'),
         variant: "destructive"
       });
       return;
@@ -150,8 +152,8 @@ const ClickerGame = () => {
       setExpPoints(prev => prev + 10);
       setDiamonds(prev => prev + 0.1);
       toast({
-        title: "Bonus!",
-        description: "0.0000001 DOGE + 10 EXP + 0.1 💎 gagnés!",
+        title: t('clicker.bonus'),
+        description: `0.0000001 DOGE + 10 ${t('exp')} + 0.1 💎 ${t('clicker.bonus_earned')}`,
       });
     }
   };
@@ -160,8 +162,8 @@ const ClickerGame = () => {
     const powerUp = powerUps.find(p => p.id === powerUpId);
     if (!powerUp || deadspotCoins < powerUp.cost) {
       toast({
-        title: "Fonds insuffisants!",
-        description: `Il vous faut ${powerUp?.cost} DeadSpot coins`,
+        title: t('clicker.insufficient_funds'),
+        description: `${t('clicker.need_coins')} ${powerUp?.cost} ${t('deadspot_coins')}`,
         variant: "destructive"
       });
       return;
@@ -190,8 +192,8 @@ const ClickerGame = () => {
     ));
 
     toast({
-      title: "Power-up acheté!",
-      description: `${powerUp.name} activé!`,
+      title: t('clicker.powerup_bought'),
+      description: `${powerUp.name} ${t('clicker.activated')}`,
     });
   };
 
@@ -202,14 +204,14 @@ const ClickerGame = () => {
         <Card className="gradient-card border-primary/20">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-primary">{deadspotCoins.toFixed(3)}</div>
-            <div className="text-sm text-muted-foreground">DeadSpot Coins</div>
+            <div className="text-sm text-muted-foreground">{t('deadspot_coins')}</div>
           </CardContent>
         </Card>
         
         <Card className="gradient-card border-primary/20">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-blue-400">{diamonds.toFixed(1)}</div>
-            <div className="text-sm text-muted-foreground">💎 Diamants</div>
+            <div className="text-sm text-muted-foreground">{t('diamonds')}</div>
           </CardContent>
         </Card>
         
@@ -223,14 +225,14 @@ const ClickerGame = () => {
         <Card className="gradient-card border-primary/20">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-info">{expPoints}</div>
-            <div className="text-sm text-muted-foreground">EXP ({level * 150 + (level - 1) * 50} needed)</div>
+            <div className="text-sm text-muted-foreground">{t('exp')} ({level * 150 + (level - 1) * 50} {t('needed')})</div>
           </CardContent>
         </Card>
         
         <Card className="gradient-card border-primary/20">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-success">{level}</div>
-            <div className="text-sm text-muted-foreground">Niveau</div>
+            <div className="text-sm text-muted-foreground">{t('level')}</div>
           </CardContent>
         </Card>
       </div>
@@ -241,7 +243,7 @@ const ClickerGame = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Skull className="w-6 h-6 text-primary" />
-              Mini-Jeu Click
+              {t('clicker.title')}
               {doubleClickActive && (
                 <Badge variant="secondary" className="ml-2">
                   Double Click: {doubleClickTimer}s
@@ -253,7 +255,7 @@ const ClickerGame = () => {
             {/* Energy Bar */}
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Énergie</span>
+                <span>{t('clicker.energy')}</span>
                 <span>{energy}/{maxEnergy}</span>
               </div>
               <Progress value={(energy / maxEnergy) * 100} className="h-3" />
@@ -273,9 +275,9 @@ const ClickerGame = () => {
                 />
               </Button>
               <div className="text-center">
-                <div className="text-sm text-muted-foreground">Click Power: {clickPower}</div>
-                <div className="text-sm text-muted-foreground">Clicks: {clickCount}</div>
-                <div className="text-sm text-muted-foreground">Prochain bonus: {6 - (clickCount % 6)} clicks</div>
+                <div className="text-sm text-muted-foreground">{t('clicker.click_power')}: {clickPower}</div>
+                <div className="text-sm text-muted-foreground">{t('clicker.clicks')}: {clickCount}</div>
+                <div className="text-sm text-muted-foreground">{t('clicker.next_bonus')}: {6 - (clickCount % 6)} clicks</div>
               </div>
             </div>
           </CardContent>
@@ -286,7 +288,7 @@ const ClickerGame = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Zap className="w-6 h-6 text-warning" />
-              Power-ups
+              {t('clicker.powerups')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -298,7 +300,7 @@ const ClickerGame = () => {
                   <div className="text-xs text-primary">{powerUp.effect}</div>
                   {powerUp.owned > 0 && (
                     <Badge variant="outline" className="mt-1">
-                      Possédé: {powerUp.owned}
+                      {t('clicker.owned')}: {powerUp.owned}
                     </Badge>
                   )}
                 </div>
