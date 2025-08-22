@@ -124,6 +124,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
       equipment: {},
       inventory: [...baseEquipment.slice(0, 3)],
       gold: 100,
+      diamonds: 0,
       statPoints: 0,
       enemiesDefeated: 0,
       zeroCoins: 0

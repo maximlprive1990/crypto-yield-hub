@@ -22,10 +22,12 @@ export interface Equipment {
   id: string;
   name: string;
   type: 'weapon' | 'armor' | 'ring' | 'amulet';
-  rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+  rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'silver' | 'gold' | 'platinum' | 'sparkling' | 'elite' | 'supreme_sparkling';
   statsBonus: Partial<PlayerStats>;
   level: number;
   description: string;
+  priceType?: 'gold' | 'diamonds';
+  customPrice?: number;
 }
 
 export interface Enemy {
@@ -58,6 +60,7 @@ export interface Player {
   };
   inventory: Equipment[];
   gold: number;
+  diamonds: number;
   statPoints: number;
   enemiesDefeated: number;
   zeroCoins: number;

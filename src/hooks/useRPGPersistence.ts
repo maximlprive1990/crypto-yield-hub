@@ -63,6 +63,7 @@ export const useRPGPersistence = () => {
             },
             inventory: (inventoryData?.equipment_data as unknown as Equipment[]) || [],
             gold: playerData.gold,
+            diamonds: playerData.diamonds || 0,
             statPoints: playerData.stat_points,
             enemiesDefeated: playerData.enemies_defeated,
             zeroCoins: playerData.zero_coins,
