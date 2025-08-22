@@ -117,6 +117,132 @@ const referralLinks: ReferralLink[] = [
     bonus: 'Adhésion VIP',
     icon: <Pickaxe className="w-5 h-5" />
   },
+  {
+    id: 'minerhash',
+    name: 'MinerHash',
+    url: 'https://minerhash.site/r/1038',
+    category: 'mining',
+    description: 'Plateforme de hachage',
+    bonus: 'Hash bonus',
+    icon: <Pickaxe className="w-5 h-5" />
+  },
+  {
+    id: 'minerhash-alt',
+    name: 'MinerHash Alt',
+    url: 'https://minerhash.site/r1038',
+    category: 'mining',
+    description: 'Alternative MinerHash',
+    bonus: 'Bonus alternatif',
+    icon: <Pickaxe className="w-5 h-5" />
+  },
+  {
+    id: 'bbgms',
+    name: 'BBGMS Crypto',
+    url: 'http://bbgms.link/crypto/and/3420715',
+    category: 'mining',
+    description: 'Plateforme crypto BBGMS',
+    bonus: 'Crypto bonus',
+    icon: <Pickaxe className="w-5 h-5" />
+  },
+  {
+    id: 'usdt-whales',
+    name: 'USDT Whales',
+    url: 'https://usdt-whales.business/?ref=1723',
+    category: 'mining',
+    description: 'Business USDT mining',
+    bonus: 'USDT rewards',
+    icon: <Pickaxe className="w-5 h-5" />
+  },
+  {
+    id: 'minefarm-telegram',
+    name: 'MineFarm Bot',
+    url: 'https://t.me/minefarm_game_bot/play?startapp=149716',
+    category: 'gaming',
+    description: 'Bot Telegram de mining',
+    bonus: 'Mining automatique',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'cross-play-bot',
+    name: 'Cross Play Bot',
+    url: 'https://t.me/cross_play_bot/app?startapp=cfAc1K14',
+    category: 'gaming',
+    description: 'Bot de jeu cross-platform',
+    bonus: 'Jeu bonus',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'katon-game',
+    name: 'Katon Game',
+    url: 'https://t.me/katongame_bot/Katon/?startapp=i_Z7KN5',
+    category: 'gaming',
+    description: 'Jeu Katon sur Telegram',
+    bonus: 'Tokens Katon',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'wemine-bot',
+    name: 'WeMine Bot',
+    url: 'https://t.me/WeMineBot/mine?startapp=ref_7C67HP6MHY',
+    category: 'gaming',
+    description: 'Bot de mining collaboratif',
+    bonus: 'Mining partagé',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'llama-payday',
+    name: 'Llama Payday',
+    url: 'https://t.me/LlamaPaydayBot/game?startapp=zwppmuwx-NjMxNjI=-invite',
+    category: 'gaming',
+    description: 'Jeu Llama rewards',
+    bonus: 'Payday bonus',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'duckmyduck',
+    name: 'DuckMyDuck',
+    url: 'https://t.me/duckmyduck_bot?start=r3095464bfbe1dece',
+    category: 'gaming',
+    description: 'Jeu de canards crypto',
+    bonus: 'Duck rewards',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'hamster-king',
+    name: 'Hamster King',
+    url: 'https://t.me/hamsterking_game_bot?startapp=7707218336',
+    category: 'gaming',
+    description: 'Jeu Hamster royale',
+    bonus: 'Couronne hamster',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'uonium-bot',
+    name: 'Uonium Box',
+    url: 'https://t.me/uoniumbot/UonBox?startapp=LD1TPF0Z',
+    category: 'gaming',
+    description: 'Box Uonium crypto',
+    bonus: 'Box bonus',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'emerland-game',
+    name: 'Emerland Game',
+    url: 'https://t.me/emerlandgame_bot/?start=tg_7707218336',
+    category: 'gaming',
+    description: 'Aventure Emerland',
+    bonus: 'Emeraudes gratuites',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
+  {
+    id: 'flutter-bees',
+    name: 'Flutter Bees',
+    url: 'https://t.me/FlutterBees_bot?startapp=BYCAXYP2',
+    category: 'gaming',
+    description: 'Jeu d\'abeilles Flutter',
+    bonus: 'Miel bonus',
+    icon: <Gamepad2 className="w-5 h-5" />
+  },
   
   // Faucets
   {
