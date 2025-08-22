@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Pickaxe, ShoppingCart, TrendingUp, Cpu } from "lucide-react";
+import { Pickaxe, ShoppingCart, TrendingUp, Cpu, ArrowDownLeft } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -99,6 +100,8 @@ const MiningFarm = ({
     { crypto: "BCH", amount: 0, rate: 0 },
   ]);
 
+  const [withdrawAmount, setWithdrawAmount] = useState<string>("");
+
   // Calculate total hashrate
   const totalHashrate = miners.reduce((total, miner) => {
     const hashrateInGH = miner.unit === "TH/s" ? miner.hashrate * 1000 : miner.hashrate;
@@ -184,6 +187,38 @@ const MiningFarm = ({
     });
   };
 
+  const withdrawDeadspotCoins = () => {
+    const amount = parseFloat(withdrawAmount);
+    if (!amount || amount <= 0) {
+      toast({
+        title: "Montant invalide!",
+        description: "Veuillez entrer un montant valide",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // New exchange rate: 100000 hashrate = 0.15 deadspot coins
+    const requiredHashrate = (amount / 0.15) * 100000;
+
+    if (totalHashrate < requiredHashrate) {
+      toast({
+        title: "Hashrate insuffisant!",
+        description: `Il vous faut ${requiredHashrate.toLocaleString()} GH/s pour retirer ${amount} DeadSpot coins`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setDeadspotCoins(prev => prev + amount);
+    setWithdrawAmount("");
+
+    toast({
+      title: "Retrait effectué!",
+      description: `+${amount} DeadSpot coins ajoutés à votre compte`,
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Mining Stats */}
@@ -209,6 +244,51 @@ const MiningFarm = ({
           </CardContent>
         </Card>
       </div>
+
+      {/* Hashrate to DeadSpot Coins Exchange */}
+      <Card className="gradient-card border-primary/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ArrowDownLeft className="w-6 h-6 text-success" />
+            Échange Hashrate → DeadSpot Coins
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="text-sm text-muted-foreground">
+              Taux d'échange: 100,000 GH/s = 0.15 DeadSpot coins
+            </div>
+            <div className="flex gap-2 items-end">
+              <div className="flex-1">
+                <label className="text-sm font-medium mb-2 block">
+                  Montant à retirer (DeadSpot coins)
+                </label>
+                <Input
+                  type="number"
+                  placeholder="0.00"
+                  value={withdrawAmount}
+                  onChange={(e) => setWithdrawAmount(e.target.value)}
+                  step="0.01"
+                  min="0"
+                />
+              </div>
+              <Button
+                onClick={withdrawDeadspotCoins}
+                disabled={!withdrawAmount || parseFloat(withdrawAmount) <= 0}
+                className="px-6"
+              >
+                <ArrowDownLeft className="w-4 h-4 mr-2" />
+                Retirer
+              </Button>
+            </div>
+            {withdrawAmount && parseFloat(withdrawAmount) > 0 && (
+              <div className="text-xs text-muted-foreground">
+                Hashrate requis: {((parseFloat(withdrawAmount) / 0.15) * 100000).toLocaleString()} GH/s
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Miners Shop */}
