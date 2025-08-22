@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 interface FaucetClaimProps {
-  onOpenRPG?: () => void;
+  
   onOpenSpin?: () => void;
 }
 
@@ -18,7 +18,7 @@ interface FaucetClaim {
   next_claim_at: string;
 }
 
-export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenRPG, onOpenSpin }) => {
+export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenSpin }) => {
   const [canClaim, setCanClaim] = useState(false);
   const [nextClaimTime, setNextClaimTime] = useState<Date | null>(null);
   const [timeUntilClaim, setTimeUntilClaim] = useState('');
@@ -173,16 +173,7 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenRPG, onOpenSpin 
             <CardTitle className="text-3xl gradient-text">💧 Faucet ZERO</CardTitle>
             <p className="text-muted-foreground">Réclamez des ZERO tokens toutes les 15 minutes!</p>
           </div>
-          {onOpenRPG && (
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={onOpenRPG}
-              className="shadow-neon"
-            >
-              ⚔️ RPG Game
-            </Button>
-          )}
+          <div></div>
         </div>
         <div className="mt-2 p-2 bg-muted/50 rounded text-sm text-muted-foreground">
           ⚡ Section avec mining JavaScript actif

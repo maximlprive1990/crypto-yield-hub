@@ -27,7 +27,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Navigate } from "react-router-dom";
-import { RPGGame } from "@/components/RPGGame";
+
 import DepositBonusPopup from "@/components/DepositBonusPopup";
 import { SpinWheel } from "@/components/SpinWheel";
 import heroBackground from "@/assets/hero-background.jpg";
@@ -39,7 +39,7 @@ import LiveChat from "@/components/LiveChat";
 const Index = () => {
   const { user, signOut, loading } = useAuth();
   const { t } = useLanguage();
-  const [showRPG, setShowRPG] = useState(false);
+  
   const [showSpinWheel, setShowSpinWheel] = useState(false);
   const [showFaucet, setShowFaucet] = useState(false);
   const [showFarm, setShowFarm] = useState(false);
@@ -188,8 +188,6 @@ const Index = () => {
       <div className="fixed top-4 right-4 z-50">
         <LanguageSelector />
       </div>
-      {/* RPG Game Slide */}
-      {showRPG && <RPGGame onClose={() => setShowRPG(false)} />}
       
       {/* Spin Wheel Slide */}
       {showSpinWheel && (
@@ -205,7 +203,7 @@ const Index = () => {
                 {t('close')}
               </Button>
             </div>
-            <SpinWheel onZeroWin={handleZeroWin} onOpenRPG={() => setShowRPG(true)} />
+            <SpinWheel onZeroWin={handleZeroWin} />
           </div>
         </div>
       )}
@@ -225,7 +223,6 @@ const Index = () => {
               </Button>
             </div>
             <FaucetClaim 
-              onOpenRPG={() => setShowRPG(true)}
               onOpenSpin={() => setShowSpinWheel(true)}
             />
           </div>
@@ -278,14 +275,6 @@ const Index = () => {
             <Button variant="stake" size="xl">
               {t('hero.explore_pools')}
             </Button>
-            <Button 
-              variant="outline" 
-              size="xl" 
-              onClick={() => setShowRPG(true)}
-              className="shadow-neon"
-            >
-              {t('hero.play_rpg')}
-            </Button>
             <Button variant="ghost" size="sm" onClick={signOut} className="mt-4">
               {t('sign_out')}
             </Button>
@@ -337,22 +326,7 @@ const Index = () => {
         defaultOpen={true}
         className="bg-secondary/20"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
-            <div className="text-4xl mb-4">⚔️</div>
-            <h3 className="text-lg font-bold mb-2">{t('gaming.rpg.title')}</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              {t('gaming.rpg.description')}
-            </p>
-            <Button 
-              variant="crypto" 
-              onClick={() => setShowRPG(true)}
-              className="w-full shadow-glow"
-            >
-              {t('gaming.rpg.play')}
-            </Button>
-          </div>
-          
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
             <div className="text-4xl mb-4">🌾</div>
             <h3 className="text-lg font-bold mb-2">{t('gaming.farm.title')}</h3>
