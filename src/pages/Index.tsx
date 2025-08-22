@@ -475,6 +475,201 @@ const Index = () => {
         </div>
       </CollapsibleSection>
 
+      {/* Jeux et Fonctionnalités - RPG Spatial */}
+      <CollapsibleSection 
+        title="🚀 Jeux et Fonctionnalités - RPG Spatial" 
+        subtitle="Schéma complet du futur jeu RPG spatial"
+        defaultOpen={false}
+      >
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            {/* Section 1: Base */}
+            <div className="bg-card p-6 rounded-lg border">
+              <h3 className="text-xl font-bold mb-4 text-primary">1️⃣ Section de base (clicking & farm)</h3>
+              <div className="space-y-2 text-sm">
+                <p><strong>Clic :</strong> donne des ressources :</p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>0,078 diamants par clic</li>
+                  <li>0,01 à 0,05 EXP par clic</li>
+                </ul>
+                <p><strong>Ressources utilisées pour :</strong></p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Acheter des vaisseaux</li>
+                  <li>Améliorer stats / armes</li>
+                  <li>Débloquer modules</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Section 2: EXP */}
+            <div className="bg-card p-6 rounded-lg border">
+              <h3 className="text-xl font-bold mb-4 text-primary">2️⃣ Système d'EXP & Niveaux</h3>
+              <div className="space-y-2 text-sm">
+                <p>Barre d'expérience globale du joueur.</p>
+                <p><strong>Chaque niveau :</strong></p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>+HP max pour tous les vaisseaux équipés</li>
+                  <li>+% bonus d'attaque/défense</li>
+                  <li>+1 slot d'inventaire global</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Section 3: Boutique */}
+            <div className="bg-card p-6 rounded-lg border">
+              <h3 className="text-xl font-bold mb-4 text-primary">3️⃣ Boutique de Vaisseaux</h3>
+              <div className="space-y-2 text-sm">
+                <p><strong>Prix :</strong> 1 DSC → 450,000 DSC</p>
+                <p><strong>Classes & raretés :</strong></p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Common (1 – 50 DSC)</li>
+                  <li>Uncommon (50 – 500 DSC)</li>
+                  <li>Rare (500 – 5,000 DSC)</li>
+                  <li>Elite (5,000 – 25,000 DSC)</li>
+                  <li>Extreme (25,000 – 75,000 DSC)</li>
+                  <li>Platine (75,000 – 150,000 DSC)</li>
+                  <li>Or (150,000 – 300,000 DSC)</li>
+                  <li>Maître du Jeu (300,000 – 450,000 DSC)</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Section 4: Inventaire */}
+            <div className="bg-card p-6 rounded-lg border">
+              <h3 className="text-xl font-bold mb-4 text-primary">4️⃣ Inventaire</h3>
+              <div className="space-y-2 text-sm">
+                <p><strong>Inventaire de vaisseaux :</strong></p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Voir les vaisseaux achetés</li>
+                  <li>Équiper / déséquiper (1 seul actif)</li>
+                </ul>
+                <p><strong>Inventaire équipements :</strong></p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Armes (laser, missiles, plasma, torpilles, etc.)</li>
+                  <li>Armures (boucliers, blindages, réparateurs, furtivité)</li>
+                  <li>Modules spéciaux (bonus crit, recharge plus rapide, etc.)</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Section 5: Armes */}
+            <div className="bg-card p-6 rounded-lg border">
+              <h3 className="text-xl font-bold mb-4 text-primary">5️⃣ Boutique d'Armes et Défenses</h3>
+              <div className="space-y-2 text-sm">
+                <p><strong>Armes avec raretés :</strong></p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Arme à plomb (faible, début)</li>
+                  <li>Laser standard (équilibré)</li>
+                  <li>Canon plasma (fort mais lent)</li>
+                  <li>Missiles guidés (multi-cible)</li>
+                  <li>Mega torpille (énorme dégâts)</li>
+                  <li>Rayon ionique (ignore boucliers)</li>
+                  <li>Canon gravitationnel (désactive l'ennemi)</li>
+                </ul>
+                <p><strong>Armures & défenses :</strong></p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Boucliers énergétiques</li>
+                  <li>Blindage lourd</li>
+                  <li>Réparateurs auto</li>
+                  <li>Modules furtifs</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Section 6: Amélioration */}
+            <div className="bg-card p-6 rounded-lg border">
+              <h3 className="text-xl font-bold mb-4 text-primary">6️⃣ Amélioration des Vaisseaux</h3>
+              <div className="space-y-2 text-sm">
+                <p>Avec Deadspot Coins + Diamants.</p>
+                <p><strong>Exemples :</strong></p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>+10% HP (200 diamants)</li>
+                  <li>+5% dégâts (500 DSC)</li>
+                  <li>+1 slot arme/armure (2000 DSC + 1000 diamants)</li>
+                  <li>Fusion d'armes (2 → 1 rare)</li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Section 7: Combat - Full width */}
+          <div className="bg-card p-6 rounded-lg border">
+            <h3 className="text-xl font-bold mb-4 text-primary">7️⃣ Système de Combat</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <h4 className="font-semibold text-secondary mb-2">⚔️ Base :</h4>
+                <ul className="list-disc pl-4 space-y-1 text-sm">
+                  <li>Tour par tour : ton vaisseau attaque → ennemi riposte</li>
+                  <li>Chaque coup réussi : 0.000001 → 0.08 DSC</li>
+                  <li>Victoire : Gain d'EXP + diamants bonus</li>
+                  <li>Défaite : Tu perds ton vaisseau actif</li>
+                  <li>Dernier vaisseau perdu → Game Over</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-secondary mb-2">👾 Ennemis :</h4>
+                <ul className="list-disc pl-4 space-y-1 text-sm">
+                  <li>LVL 1 : pirate faible</li>
+                  <li>LVL 5 : corsaire armé</li>
+                  <li>LVL 10 : destroyer alien</li>
+                  <li>LVL 20 : flotte de guerre</li>
+                  <li>Boss galactiques (HP x10, loot rare)</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-secondary mb-2">🏃 Option Flee :</h4>
+                <ul className="list-disc pl-4 space-y-1 text-sm">
+                  <li>Bouton Flee pour quitter le combat</li>
+                  <li>Chance de réussir (ex. 70%)</li>
+                  <li>Si échec → l'ennemi attaque gratuitement</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 8: Progression */}
+          <div className="bg-card p-6 rounded-lg border">
+            <h3 className="text-xl font-bold mb-4 text-primary">8️⃣ Progression & Objectifs</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <ul className="list-disc pl-4 space-y-1 text-sm">
+                  <li>Quêtes (détruire 10 vaisseaux, collecter 1000 diamants)</li>
+                  <li>Missions spatiales (explorer un secteur → loot)</li>
+                </ul>
+              </div>
+              <div>
+                <ul className="list-disc pl-4 space-y-1 text-sm">
+                  <li>Boss galactiques (gros ennemis pour loot rare)</li>
+                  <li>Classement (option PvP ou leaderboard)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Résumé */}
+          <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-6 rounded-lg border-2 border-primary/20">
+            <h3 className="text-xl font-bold mb-4 text-primary">✅ Résumé simplifié :</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Click section → diamants + exp</li>
+                <li>Boutique → acheter vaisseaux (1 à 450k DSC)</li>
+                <li>Inventaire → gérer vaisseaux, armes, armures</li>
+                <li>Combat → ennemis de différents niveaux</li>
+              </ul>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Gagner = exp + diamants + DSC par coup (0.000001 → 0.08)</li>
+                <li>Perdre = perdre vaisseau → si dernier = Game Over</li>
+                <li>Bouton Flee → fuir si trop dur</li>
+                <li>Améliorations → boost stats vaisseaux avec DSC & diamants</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </CollapsibleSection>
+
       {/* Staking Pools Section */}
       <CollapsibleSection
         title="Pools de Staking Disponibles"
