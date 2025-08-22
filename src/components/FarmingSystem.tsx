@@ -58,14 +58,24 @@ export const FarmingSystem = () => {
     zeroTokens,
     diamonds,
     experience,
+    energy,
+    maxEnergy,
+    miningExperience,
+    miningLevel,
     inventory,
     slots,
     loading,
     SEEDS,
+    getRequiredExperience,
+    checkMiningLevelUp,
     setDeadspotCoins,
     setZeroTokens,
     setDiamonds,
     setExperience,
+    setEnergy,
+    setMaxEnergy,
+    setMiningExperience,
+    setMiningLevel,
     setInventory,
     setSlots,
   } = useFarmingPersistence();
@@ -334,13 +344,27 @@ export const FarmingSystem = () => {
   };
 
   const handleClick = () => {
+    if (energy <= 0) {
+      toast({
+        title: "Énergie insuffisante",
+        description: "Attendez que votre énergie se régénère",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const coinsGained = 0.00001785;
     const diamondsGained = 0.057;
-    const expGained = 0.000001;
+    const expGained = 0.001; // Augmenté pour le mining par click
 
+    // Consommer de l'énergie
+    setEnergy(Math.max(0, energy - 1));
+    
+    // Ajouter les gains
     setDeadspotCoins(deadspotCoins + coinsGained);
     setDiamonds(diamonds + diamondsGained);
     setExperience(experience + expGained);
+    setMiningExperience(miningExperience + expGained);
 
     toast({
       title: "Clic récompensé!",
@@ -384,6 +408,48 @@ export const FarmingSystem = () => {
     setShowExchangeDialog(false);
     setExchangeAmount('');
   };
+  
+  // Fonction pour échanger DeadSpot contre énergie
+  const buyEnergy = () => {
+    const cost = 300;
+    const energyGain = 175;
+    
+    if (deadspotCoins < cost) {
+      toast({
+        title: "Fonds insuffisants",
+        description: `Il vous faut ${cost} DeadSpot Coins pour acheter de l'énergie`,
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (energy >= maxEnergy) {
+      toast({
+        title: "Énergie pleine",
+        description: "Votre énergie est déjà au maximum",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setDeadspotCoins(deadspotCoins - cost);
+    setEnergy(Math.min(maxEnergy, energy + energyGain));
+    
+    toast({
+      title: "Énergie achetée!",
+      description: `+${energyGain} énergie pour ${cost} DeadSpot Coins`,
+    });
+  };
+
+  // Régénération automatique d'énergie
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newEnergy = Math.min(maxEnergy, energy + 1);
+      setEnergy(newEnergy);
+    }, 5000); // 1 énergie toutes les 5 secondes
+    
+    return () => clearInterval(interval);
+  }, [energy, maxEnergy]);
 
   return (
     <div className="space-y-6">
@@ -440,10 +506,55 @@ export const FarmingSystem = () => {
             </div>
           </div>
         </Card>
+        
+        <Card className="p-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-5 h-5 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full" />
+            <div>
+              <p className="text-sm text-muted-foreground">Énergie</p>
+              <p className="text-lg font-bold">{energy}/{maxEnergy}</p>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-5 h-5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" />
+            <div>
+              <p className="text-sm text-muted-foreground">Mining Level</p>
+              <p className="text-lg font-bold">{miningLevel}</p>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Barres de progression */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="p-4">
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>Énergie</span>
+              <span>{energy}/{maxEnergy}</span>
+            </div>
+            <Progress value={(energy / maxEnergy) * 100} className="h-3" />
+            <div className="text-xs text-muted-foreground">Régénération: +1 toutes les 5 secondes</div>
+          </div>
+        </Card>
+        
+        <Card className="p-4">
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>Expérience Mining</span>
+              <span>{miningExperience.toFixed(3)}/{getRequiredExperience(miningLevel + 1)}</span>
+            </div>
+            <Progress value={(miningExperience / getRequiredExperience(miningLevel + 1)) * 100} className="h-3" />
+            <div className="text-xs text-muted-foreground">+0.001 exp par click</div>
+          </div>
+        </Card>
       </div>
 
       {/* Bouton de clic et échange */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-6 border-dashed border-2 border-green-500/30">
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center space-x-2">
@@ -458,7 +569,8 @@ export const FarmingSystem = () => {
             <div className="text-sm space-y-1">
               <p>🪙 +0.00001785 DeadSpot Coins</p>
               <p>💎 +0.057 Diamants</p>
-              <p>⭐ +0.000001 Expérience</p>
+              <p>⭐ +0.001 Expérience</p>
+              <p>⚡ -1 Énergie</p>
             </div>
             
             <Button
@@ -466,8 +578,37 @@ export const FarmingSystem = () => {
               size="lg"
               variant="crypto"
               className="shadow-glow"
+              disabled={energy <= 0}
             >
               🖱️ Cliquer pour Récolter
+            </Button>
+          </div>
+        </Card>
+
+        <Card className="p-6 border-dashed border-2 border-orange-500/30">
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center space-x-2">
+              <TrendingUp className="h-6 w-6 text-orange-500" />
+              <h3 className="text-xl font-bold">Bonus Énergie</h3>
+            </div>
+            
+            <p className="text-muted-foreground">
+              Échangez des DSC contre de l'énergie
+            </p>
+            
+            <div className="text-sm space-y-1">
+              <p>💰 Coût: 300 DeadSpot Coins</p>
+              <p>⚡ Gain: +175 énergie</p>
+            </div>
+            
+            <Button
+              onClick={buyEnergy}
+              size="lg"
+              variant="outline"
+              className="shadow-glow"
+              disabled={deadspotCoins < 300 || energy >= maxEnergy}
+            >
+              ⚡ Acheter Énergie
             </Button>
           </div>
         </Card>
@@ -761,3 +902,5 @@ export const FarmingSystem = () => {
     </div>
   );
 };
+
+export default FarmingSystem;

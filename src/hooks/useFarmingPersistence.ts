@@ -201,10 +201,10 @@ export const useFarmingPersistence = () => {
           setZeroTokens(Number(farmingData.zero_tokens));
           setDiamonds(Number(farmingData.diamonds || 0));
           setExperience(Number(farmingData.experience || 0));
-          setEnergy(Number(farmingData.energy || 1000));
-          setMaxEnergy(Number(farmingData.max_energy || 1000));
-          setMiningExperience(Number(farmingData.mining_experience || 0));
-          setMiningLevel(Number(farmingData.mining_level || 1));
+          setEnergy(Number((farmingData as any).energy || 1000));
+          setMaxEnergy(Number((farmingData as any).max_energy || 1000));
+          setMiningExperience(Number((farmingData as any).mining_experience || 0));
+          setMiningLevel(Number((farmingData as any).mining_level || 1));
         } else {
           // Créer les données initiales si elles n'existent pas
           await supabase

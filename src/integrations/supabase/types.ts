@@ -253,8 +253,12 @@ export type Database = {
           created_at: string
           deadspot_coins: number
           diamonds: number
+          energy: number
           experience: number
           id: string
+          max_energy: number
+          mining_experience: number
+          mining_level: number
           updated_at: string
           user_id: string
           zero_tokens: number
@@ -263,8 +267,12 @@ export type Database = {
           created_at?: string
           deadspot_coins?: number
           diamonds?: number
+          energy?: number
           experience?: number
           id?: string
+          max_energy?: number
+          mining_experience?: number
+          mining_level?: number
           updated_at?: string
           user_id: string
           zero_tokens?: number
@@ -273,8 +281,12 @@ export type Database = {
           created_at?: string
           deadspot_coins?: number
           diamonds?: number
+          energy?: number
           experience?: number
           id?: string
+          max_energy?: number
+          mining_experience?: number
+          mining_level?: number
           updated_at?: string
           user_id?: string
           zero_tokens?: number
