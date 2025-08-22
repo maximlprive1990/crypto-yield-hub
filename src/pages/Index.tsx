@@ -37,6 +37,7 @@ import { useState } from "react";
 import { FaucetClaim } from "@/components/FaucetClaim";
 import { useEffect } from "react";
 import LiveChat from "@/components/LiveChat";
+import { HashrateGraph } from "@/components/HashrateGraph";
 
 // Extend Window interface for mining client
 declare global {
@@ -418,43 +419,49 @@ const Index = () => {
               <h2 className="text-3xl font-bold mb-4">⛏️ Contrôle du Mineur</h2>
               <p className="text-muted-foreground">Gérez votre puissance de minage en direct</p>
             </div>
-            <div className="text-center space-y-4 max-w-2xl mx-auto">
-              <Button onClick={toggleMining} variant="crypto" className="shadow-glow">
-                {isMining ? "⛔ Stop Mining" : "▶️ Start Mining"}
-              </Button>
+            <div className="max-w-4xl mx-auto space-y-8">
+              {/* Contrôles Mining */}
+              <div className="text-center space-y-6">
+                <Button onClick={toggleMining} variant="crypto" className="shadow-glow text-lg px-8 py-3">
+                  {isMining ? "⛔ Stop Mining" : "▶️ Start Mining"}
+                </Button>
 
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Utilisation CPU : {Math.round((1 - throttle) * 100)}%
-                </label>
-                <input
-                  type="range"
-                  min="0.1"
-                  max="0.6"
-                  step="0.05"
-                  value={throttle}
-                  onChange={(e) => setThrottle(parseFloat(e.target.value))}
-                  className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider"
-                />
-              </div>
-
-              <div className="bg-card p-4 rounded-lg border border-primary/20">
-                <h4 className="mb-2 font-semibold">Hashrate (H/s)</h4>
-                <div className="flex items-end h-24 space-x-1 justify-center">
-                  {hashrateHistory.length === 0 ? (
-                    <div className="text-muted-foreground text-sm">Aucune donnée de hashrate</div>
-                  ) : (
-                    hashrateHistory.map((h, i) => (
-                      <div
-                        key={i}
-                        style={{ height: `${Math.max(h * 5, 2)}px` }}
-                        className="w-2 bg-primary rounded-t"
-                        title={`${h.toFixed(2)} H/s`}
-                      />
-                    ))
-                  )}
+                {/* Slider throttle */}
+                <div className="max-w-md mx-auto">
+                  <label className="block text-sm font-medium mb-3">
+                    Utilisation CPU : <span className="text-primary font-bold">{Math.round((1 - throttle) * 100)}%</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="range"
+                      min="0.1"
+                      max="0.6"
+                      step="0.05"
+                      value={throttle}
+                      onChange={(e) => setThrottle(parseFloat(e.target.value))}
+                      className="w-full h-3 bg-muted rounded-lg appearance-none cursor-pointer slider"
+                      style={{
+                        background: `linear-gradient(to right, 
+                          hsl(var(--primary)) 0%, 
+                          hsl(var(--primary)) ${((1 - throttle - 0.1) / 0.5) * 100}%, 
+                          hsl(var(--muted)) ${((1 - throttle - 0.1) / 0.5) * 100}%, 
+                          hsl(var(--muted)) 100%)`
+                      }}
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                      <span>Min</span>
+                      <span>Max</span>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              {/* Graphique Hashrate amélioré */}
+              <HashrateGraph 
+                hashrateHistory={hashrateHistory}
+                currentHashrate={hashrateHistory[hashrateHistory.length - 1] || 0}
+                isActive={isMining}
+              />
             </div>
           </section>
 

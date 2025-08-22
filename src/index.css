@@ -158,3 +158,12 @@ All colors MUST be HSL.
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
 }
+
+@keyframes scan {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(200px); }
+}
+
+.animate-scan {
+  animation: scan 3s linear infinite;
+}
