@@ -125,6 +125,54 @@ export type Database = {
         }
         Relationships: []
       }
+      crypto_deposits: {
+        Row: {
+          amount: number
+          confirmed_at: string | null
+          created_at: string
+          crypto_type: string
+          id: string
+          memo: string | null
+          network: string
+          status: string
+          transaction_hash: string | null
+          updated_at: string
+          usd_value: number
+          user_id: string
+          wallet_address: string
+        }
+        Insert: {
+          amount?: number
+          confirmed_at?: string | null
+          created_at?: string
+          crypto_type: string
+          id?: string
+          memo?: string | null
+          network: string
+          status?: string
+          transaction_hash?: string | null
+          updated_at?: string
+          usd_value?: number
+          user_id: string
+          wallet_address: string
+        }
+        Update: {
+          amount?: number
+          confirmed_at?: string | null
+          created_at?: string
+          crypto_type?: string
+          id?: string
+          memo?: string | null
+          network?: string
+          status?: string
+          transaction_hash?: string | null
+          updated_at?: string
+          usd_value?: number
+          user_id?: string
+          wallet_address?: string
+        }
+        Relationships: []
+      }
       deposits: {
         Row: {
           amount: number
@@ -719,6 +767,7 @@ export type Database = {
           class_id: string
           created_at: string
           current_stats: Json
+          diamonds: number
           enemies_defeated: number
           experience: number
           experience_to_next: number
@@ -736,6 +785,7 @@ export type Database = {
           class_id: string
           created_at?: string
           current_stats?: Json
+          diamonds?: number
           enemies_defeated?: number
           experience?: number
           experience_to_next?: number
@@ -753,6 +803,7 @@ export type Database = {
           class_id?: string
           created_at?: string
           current_stats?: Json
+          diamonds?: number
           enemies_defeated?: number
           experience?: number
           experience_to_next?: number
@@ -939,6 +990,50 @@ export type Database = {
           wallet_address?: string | null
         }
         Relationships: []
+      }
+      staking_rewards: {
+        Row: {
+          claimed_at: string | null
+          created_at: string
+          daily_rate: number
+          deposit_id: string
+          id: string
+          is_claimed: boolean
+          reward_amount_usd: number
+          reward_date: string
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          created_at?: string
+          daily_rate?: number
+          deposit_id: string
+          id?: string
+          is_claimed?: boolean
+          reward_amount_usd?: number
+          reward_date?: string
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          created_at?: string
+          daily_rate?: number
+          deposit_id?: string
+          id?: string
+          is_claimed?: boolean
+          reward_amount_usd?: number
+          reward_date?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staking_rewards_deposit_id_fkey"
+            columns: ["deposit_id"]
+            isOneToOne: false
+            referencedRelation: "crypto_deposits"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_loot_box_openings: {
         Row: {
@@ -1243,6 +1338,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_staking_rewards: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
       create_faucet_claim: {
         Args: { p_amount: number; p_user_id: string }
         Returns: Json
@@ -1250,6 +1349,10 @@ export type Database = {
       delete_chat_message: {
         Args: { p_message_id: string }
         Returns: Json
+      }
+      generate_daily_staking_rewards: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       generate_referral_code: {
         Args: Record<PropertyKey, never>
