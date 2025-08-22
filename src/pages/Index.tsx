@@ -520,6 +520,15 @@ const Index = () => {
             </div>
           </section>
 
+          {/* Farming System Section */}
+          <section id="farming" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">🌾 {t('gaming.farm.title')}</h2>
+              <p className="text-muted-foreground">{t('gaming.farm.description')}</p>
+            </div>
+            <FarmingSystem />
+          </section>
+
           {/* Statistics Section */}
           <section id="stats" className="container mx-auto px-6 py-12">
             <div className="text-center mb-12">
@@ -556,14 +565,6 @@ const Index = () => {
             <ClickerGame />
           </section>
 
-          {/* Farming System Section */}
-          <section id="farming" className="container mx-auto px-6 py-12">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">🌾 {t('gaming.farm.title')}</h2>
-              <p className="text-muted-foreground">{t('gaming.farm.description')}</p>
-            </div>
-            <FarmingSystem />
-          </section>
 
           {/* Mining Farm Section */}
           <section id="mining-farm" className="container mx-auto px-6 py-12">

@@ -366,13 +366,13 @@ export const FarmingSystem = () => {
 
     const coinsGained = 0.00001785;
     const diamondsGained = 0.057;
-    const expGained = 0.001; // Augmenté pour le mining par click
+    const expGained = 0.001;
 
-    // Consommer de l'énergie
+    // Consommer de l'énergie IMMÉDIATEMENT
     const newEnergy = Math.max(0, energy - 1);
     setEnergy(newEnergy);
     
-    // Ajouter les gains
+    // Ajouter les gains IMMÉDIATEMENT
     const newDeadspotCoins = deadspotCoins + coinsGained;
     const newDiamonds = diamonds + diamondsGained;
     const newExperience = experience + expGained;
