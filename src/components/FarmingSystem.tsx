@@ -11,23 +11,24 @@ import { useToast } from "@/hooks/use-toast";
 import { useFarmingPersistence } from "@/hooks/useFarmingPersistence";
 import { useAuth } from "@/hooks/useAuth";
 import { 
-  Wheat, 
-  Carrot, 
-  Salad, 
-  Cherry,
   ShoppingBag,
   Package,
   Clock,
   Coins,
   Lock,
   Unlock,
-  Gift
+  Gift,
+  MousePointer,
+  Gem,
+  Star,
+  TrendingUp,
+  ArrowRightLeft
 } from "lucide-react";
 
 interface Seed {
   id: string;
   name: string;
-  icon: typeof Wheat;
+  icon: any;
   price: number;
   growthTime: number; // en minutes
   reward: number; // ZERO tokens
@@ -55,12 +56,16 @@ export const FarmingSystem = () => {
   const {
     deadspotCoins,
     zeroTokens,
+    diamonds,
+    experience,
     inventory,
     slots,
     loading,
     SEEDS,
     setDeadspotCoins,
     setZeroTokens,
+    setDiamonds,
+    setExperience,
     setInventory,
     setSlots,
   } = useFarmingPersistence();
@@ -70,6 +75,8 @@ export const FarmingSystem = () => {
   const [showPayeerInfo, setShowPayeerInfo] = useState(false);
   const [lastFaucetClaim, setLastFaucetClaim] = useState<Date | null>(null);
   const [canClaim, setCanClaim] = useState(true);
+  const [showExchangeDialog, setShowExchangeDialog] = useState(false);
+  const [exchangeAmount, setExchangeAmount] = useState('');
 
   // Vérifier le cooldown du faucet (10 minutes) - Hook AVANT les conditions
   useEffect(() => {
@@ -240,8 +247,30 @@ export const FarmingSystem = () => {
   };
 
   const unlockSlot = (slotId: number) => {
-    setSelectedSlot(slotId);
-    setShowPayeerInfo(true);
+    const slot = slots.find(s => s.id === slotId);
+    if (!slot) return;
+
+    if (deadspotCoins >= slot.unlockPrice) {
+      setDeadspotCoins(deadspotCoins - slot.unlockPrice);
+      
+      const newSlots = slots.map(s =>
+        s.id === slotId
+          ? { ...s, isUnlocked: true }
+          : s
+      );
+      setSlots(newSlots);
+
+      toast({
+        title: "Slot débloqué!",
+        description: `Slot ${slotId} débloqué pour ${slot.unlockPrice} DeadSpot Coins`,
+      });
+    } else {
+      toast({
+        title: "Fonds insuffisants",
+        description: `Il vous faut ${slot.unlockPrice} DeadSpot Coins pour débloquer ce slot`,
+        variant: "destructive"
+      });
+    }
   };
 
   const getRarityColor = (rarity: string) => {
@@ -304,16 +333,68 @@ export const FarmingSystem = () => {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  const handleClick = () => {
+    const coinsGained = 0.00001785;
+    const diamondsGained = 0.057;
+    const expGained = 0.000001;
+
+    setDeadspotCoins(deadspotCoins + coinsGained);
+    setDiamonds(diamonds + diamondsGained);
+    setExperience(experience + expGained);
+
+    toast({
+      title: "Clic récompensé!",
+      description: `+${coinsGained} DSC, +${diamondsGained} 💎, +${expGained} EXP`,
+    });
+  };
+
+  const handleExchange = () => {
+    const amount = parseFloat(exchangeAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: "Montant invalide",
+        description: "Veuillez entrer un montant valide",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (zeroTokens < amount) {
+      toast({
+        title: "ZERO insuffisants",
+        description: "Vous n'avez pas assez de ZERO tokens",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Taux d'échange configurable (ZERO valeur vraie / DSC estimé 0.20-0.75 USD)
+    // Ici on utilise un taux moyen de 0.5 USD pour DSC, donc 1 ZERO = 2 DSC
+    const exchangeRate = 2; // 1 ZERO = 2 DSC
+    const deadspotGained = amount * exchangeRate;
+
+    setZeroTokens(zeroTokens - amount);
+    setDeadspotCoins(deadspotCoins + deadspotGained);
+
+    toast({
+      title: "Échange réussi!",
+      description: `${amount} ZERO → ${deadspotGained} DeadSpot Coins`,
+    });
+
+    setShowExchangeDialog(false);
+    setExchangeAmount('');
+  };
+
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Card className="p-4">
           <div className="flex items-center space-x-2">
             <Coins className="h-5 w-5 text-yellow-500" />
             <div>
               <p className="text-sm text-muted-foreground">DeadSpot Coins</p>
-              <p className="text-lg font-bold">{deadspotCoins.toLocaleString()}</p>
+              <p className="text-lg font-bold">{deadspotCoins.toFixed(8)}</p>
             </div>
           </div>
         </Card>
@@ -323,7 +404,27 @@ export const FarmingSystem = () => {
             <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" />
             <div>
               <p className="text-sm text-muted-foreground">ZERO Tokens</p>
-              <p className="text-lg font-bold">{zeroTokens.toLocaleString()}</p>
+              <p className="text-lg font-bold">{zeroTokens.toFixed(8)}</p>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-4">
+          <div className="flex items-center space-x-2">
+            <Gem className="h-5 w-5 text-cyan-500" />
+            <div>
+              <p className="text-sm text-muted-foreground">Diamants</p>
+              <p className="text-lg font-bold">{diamonds.toFixed(6)}</p>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-4">
+          <div className="flex items-center space-x-2">
+            <Star className="h-5 w-5 text-purple-500" />
+            <div>
+              <p className="text-sm text-muted-foreground">Expérience</p>
+              <p className="text-lg font-bold">{experience.toFixed(6)}</p>
             </div>
           </div>
         </Card>
@@ -341,11 +442,100 @@ export const FarmingSystem = () => {
         </Card>
       </div>
 
+      {/* Bouton de clic et échange */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="p-6 border-dashed border-2 border-green-500/30">
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center space-x-2">
+              <MousePointer className="h-6 w-6 text-green-500" />
+              <h3 className="text-xl font-bold">Système de Clic</h3>
+            </div>
+            
+            <p className="text-muted-foreground">
+              Cliquez pour gagner des ressources
+            </p>
+            
+            <div className="text-sm space-y-1">
+              <p>🪙 +0.00001785 DeadSpot Coins</p>
+              <p>💎 +0.057 Diamants</p>
+              <p>⭐ +0.000001 Expérience</p>
+            </div>
+            
+            <Button
+              onClick={handleClick}
+              size="lg"
+              variant="crypto"
+              className="shadow-glow"
+            >
+              🖱️ Cliquer pour Récolter
+            </Button>
+          </div>
+        </Card>
+
+        <Card className="p-6 border-dashed border-2 border-blue-500/30">
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center space-x-2">
+              <ArrowRightLeft className="h-6 w-6 text-blue-500" />
+              <h3 className="text-xl font-bold">Échange ZERO → DSC</h3>
+            </div>
+            
+            <p className="text-muted-foreground">
+              Convertissez vos ZERO en DeadSpot Coins
+            </p>
+            
+            <div className="text-sm space-y-1">
+              <p>📊 Taux: 1 ZERO = 2 DSC</p>
+              <p>💰 DSC estimé: 0.20-0.75 USD</p>
+            </div>
+            
+            <Dialog open={showExchangeDialog} onOpenChange={setShowExchangeDialog}>
+              <DialogTrigger asChild>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="shadow-glow"
+                  disabled={zeroTokens <= 0}
+                >
+                  🔄 Échanger ZERO
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Échanger ZERO contre DSC</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="exchangeAmount">Montant ZERO à échanger:</Label>
+                    <Input
+                      id="exchangeAmount"
+                      type="number"
+                      step="0.00000001"
+                      value={exchangeAmount}
+                      onChange={(e) => setExchangeAmount(e.target.value)}
+                      placeholder="0.00000000"
+                    />
+                  </div>
+                  
+                  <div className="text-sm space-y-2">
+                    <p>Balance ZERO: {zeroTokens.toFixed(8)}</p>
+                    <p>Vous recevrez: {(parseFloat(exchangeAmount || '0') * 2).toFixed(8)} DSC</p>
+                  </div>
+                  
+                  <Button onClick={handleExchange} className="w-full">
+                    Confirmer l'échange
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </Card>
+      </div>
+
       <Tabs defaultValue="farm" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="farm">Ferme</TabsTrigger>
-          <TabsTrigger value="shop">Boutique</TabsTrigger>
-          <TabsTrigger value="inventory">Inventaire</TabsTrigger>
+          <TabsTrigger value="farm">🚜 Ferme</TabsTrigger>
+          <TabsTrigger value="shop">🛒 Boutique</TabsTrigger>
+          <TabsTrigger value="inventory">📦 Inventaire</TabsTrigger>
         </TabsList>
 
         <TabsContent value="farm" className="space-y-4">
@@ -365,13 +555,14 @@ export const FarmingSystem = () => {
                   {!slot.isUnlocked ? (
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">Débloqué pour</p>
-                      <p className="font-bold">${slot.unlockPrice} USD</p>
+                      <p className="font-bold">{slot.unlockPrice.toLocaleString()} DSC</p>
                       <Button 
                         onClick={() => unlockSlot(slot.id)}
                         size="sm"
                         className="w-full"
+                        disabled={deadspotCoins < slot.unlockPrice}
                       >
-                        Débloquer
+                        {deadspotCoins >= slot.unlockPrice ? 'Débloquer' : 'DSC insuffisants'}
                       </Button>
                     </div>
                   ) : slot.plantedSeed ? (
@@ -433,15 +624,15 @@ export const FarmingSystem = () => {
         </TabsContent>
 
         <TabsContent value="shop" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {SEEDS.map((seed) => (
-              <Card key={seed.id} className="p-4">
+              <Card key={seed.id} className="p-4 hover:shadow-lg transition-shadow">
                 <div className="flex items-center space-x-3 mb-3">
                   <seed.icon className="h-8 w-8 text-green-500" />
                   <div className="flex-1">
                     <h3 className="font-medium">{seed.name}</h3>
                     <Badge className={`text-xs ${getRarityColor(seed.rarity)} text-white`}>
-                      {seed.rarity}
+                      {seed.rarity.toUpperCase()}
                     </Badge>
                   </div>
                 </div>
@@ -449,7 +640,7 @@ export const FarmingSystem = () => {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>Prix:</span>
-                    <span className="font-medium">{seed.price} DeadSpot</span>
+                    <span className="font-medium">{seed.price.toLocaleString()} DSC</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Temps:</span>
@@ -459,6 +650,12 @@ export const FarmingSystem = () => {
                     <span>Récompense:</span>
                     <span className="font-medium text-blue-500">+{seed.reward} ZERO</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span>Ratio:</span>
+                    <span className="text-green-500">
+                      {((seed.reward / seed.price) * 100).toFixed(2)}%
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-2 mt-3">
@@ -466,6 +663,7 @@ export const FarmingSystem = () => {
                     onClick={() => buySeeds(seed.id, 1)}
                     disabled={deadspotCoins < seed.price}
                     className="flex-1"
+                    size="sm"
                   >
                     Acheter 1x
                   </Button>
@@ -473,8 +671,17 @@ export const FarmingSystem = () => {
                     onClick={() => buySeeds(seed.id, 5)}
                     disabled={deadspotCoins < seed.price * 5}
                     variant="outline"
+                    size="sm"
                   >
                     5x
+                  </Button>
+                  <Button
+                    onClick={() => buySeeds(seed.id, 10)}
+                    disabled={deadspotCoins < seed.price * 10}
+                    variant="outline"
+                    size="sm"
+                  >
+                    10x
                   </Button>
                 </div>
               </Card>
@@ -551,55 +758,6 @@ export const FarmingSystem = () => {
         </div>
       </Card>
 
-      {/* Dialog pour débloquer un slot */}
-      <Dialog open={showPayeerInfo} onOpenChange={setShowPayeerInfo}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Débloquer le Slot {selectedSlot}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Pour débloquer ce slot, effectuez un dépôt de{" "}
-              <span className="font-bold">
-                ${slots.find(s => s.id === selectedSlot)?.unlockPrice} USD
-              </span>{" "}
-              sur le compte Payeer suivant :
-            </p>
-            
-            <Card className="p-4 bg-muted">
-              <div className="space-y-2">
-                <Label>Compte Payeer :</Label>
-                <div className="flex items-center space-x-2">
-                  <Input value="P1112145219" readOnly />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      navigator.clipboard.writeText("P1112145219");
-                      toast({
-                        title: "Copié",
-                        description: "Numéro de compte copié dans le presse-papiers",
-                      });
-                    }}
-                  >
-                    Copier
-                  </Button>
-                </div>
-              </div>
-            </Card>
-
-            <div className="text-sm text-muted-foreground space-y-2">
-              <p><strong>Instructions :</strong></p>
-              <ul className="list-disc list-inside space-y-1 ml-4">
-                <li>Connectez-vous à votre compte Payeer</li>
-                <li>Effectuez un transfert vers le compte P1112145219</li>
-                <li>Le slot sera débloqué automatiquement après vérification</li>
-                <li>Temps de traitement : 5-30 minutes</li>
-              </ul>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

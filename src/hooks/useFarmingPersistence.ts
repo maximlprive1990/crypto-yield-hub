@@ -1,45 +1,137 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
-import { Wheat, Carrot, Salad, Cherry } from "lucide-react";
+import { 
+  Wheat, 
+  Carrot, 
+  Salad, 
+  Cherry, 
+  Apple,
+  Grape,
+  TreePine,
+  Flower,
+  Flower2,
+  Gem,
+  Crown,
+  Sparkles
+} from "lucide-react";
 
 // Définir les seeds ici pour éviter la dépendance circulaire
 const SEEDS = [
+  // Common Seeds
   {
     id: "wheat",
     name: "Blé",
     icon: Wheat,
-    price: 100,
-    growthTime: 30,
-    reward: 5,
+    price: 50,
+    growthTime: 15,
+    reward: 2,
     rarity: "common" as const
   },
   {
     id: "carrot", 
     name: "Carotte",
     icon: Carrot,
-    price: 150,
-    growthTime: 45,
-    reward: 8,
+    price: 75,
+    growthTime: 20,
+    reward: 3,
     rarity: "common" as const
   },
   {
     id: "lettuce",
-    name: "Courgette", 
+    name: "Salade", 
     icon: Salad,
-    price: 200,
-    growthTime: 60,
-    reward: 12,
-    rarity: "rare" as const
+    price: 100,
+    growthTime: 25,
+    reward: 4,
+    rarity: "common" as const
   },
+  
+  // Rare Seeds
   {
     id: "tomato",
     name: "Tomate",
     icon: Cherry,
-    price: 300,
-    growthTime: 90,
-    reward: 18,
+    price: 200,
+    growthTime: 40,
+    reward: 8,
+    rarity: "rare" as const
+  },
+  {
+    id: "apple",
+    name: "Pomme",
+    icon: Apple,
+    price: 350,
+    growthTime: 60,
+    reward: 15,
+    rarity: "rare" as const
+  },
+  {
+    id: "grape",
+    name: "Raisin",
+    icon: Grape,
+    price: 500,
+    growthTime: 80,
+    reward: 22,
+    rarity: "rare" as const
+  },
+  
+  // Epic Seeds
+  {
+    id: "magical_tree",
+    name: "Arbre Magique",
+    icon: TreePine,
+    price: 1000,
+    growthTime: 120,
+    reward: 50,
     rarity: "epic" as const
+  },
+  {
+    id: "crystal_flower",
+    name: "Fleur Cristal",
+    icon: Flower,
+    price: 1500,
+    growthTime: 150,
+    reward: 75,
+    rarity: "epic" as const
+  },
+  {
+    id: "golden_bloom",
+    name: "Floraison Dorée",
+    icon: Flower2,
+    price: 2500,
+    growthTime: 200,
+    reward: 125,
+    rarity: "epic" as const
+  },
+  
+  // Legendary Seeds
+  {
+    id: "diamond_seed",
+    name: "Graine Diamant",
+    icon: Gem,
+    price: 5000,
+    growthTime: 300,
+    reward: 250,
+    rarity: "legendary" as const
+  },
+  {
+    id: "royal_seed",
+    name: "Graine Royale",
+    icon: Crown,
+    price: 10000,
+    growthTime: 480,
+    reward: 500,
+    rarity: "legendary" as const
+  },
+  {
+    id: "cosmic_seed",
+    name: "Graine Cosmique",
+    icon: Sparkles,
+    price: 25000,
+    growthTime: 720,
+    reward: 1250,
+    rarity: "legendary" as const
   }
 ];
 
@@ -71,14 +163,16 @@ export const useFarmingPersistence = () => {
   const { user } = useAuth();
   const [deadspotCoins, setDeadspotCoins] = useState(500);
   const [zeroTokens, setZeroTokens] = useState(0);
+  const [diamonds, setDiamonds] = useState(0);
+  const [experience, setExperience] = useState(0);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [slots, setSlots] = useState<FarmSlot[]>([
     { id: 1, isUnlocked: true, unlockPrice: 0, isGrowing: false },
-    { id: 2, isUnlocked: false, unlockPrice: 1, isGrowing: false },
-    { id: 3, isUnlocked: false, unlockPrice: 2, isGrowing: false },
-    { id: 4, isUnlocked: false, unlockPrice: 3, isGrowing: false },
-    { id: 5, isUnlocked: false, unlockPrice: 4, isGrowing: false },
-    { id: 6, isUnlocked: false, unlockPrice: 5, isGrowing: false }
+    { id: 2, isUnlocked: false, unlockPrice: 100, isGrowing: false },
+    { id: 3, isUnlocked: false, unlockPrice: 1000, isGrowing: false },
+    { id: 4, isUnlocked: false, unlockPrice: 5000, isGrowing: false },
+    { id: 5, isUnlocked: false, unlockPrice: 15000, isGrowing: false },
+    { id: 6, isUnlocked: false, unlockPrice: 50000, isGrowing: false }
   ]);
   const [loading, setLoading] = useState(true);
 
@@ -99,8 +193,10 @@ export const useFarmingPersistence = () => {
           .maybeSingle();
 
         if (farmingData) {
-          setDeadspotCoins(farmingData.deadspot_coins);
-          setZeroTokens(farmingData.zero_tokens);
+          setDeadspotCoins(Number(farmingData.deadspot_coins));
+          setZeroTokens(Number(farmingData.zero_tokens));
+          setDiamonds(Number(farmingData.diamonds || 0));
+          setExperience(Number(farmingData.experience || 0));
         } else {
           // Créer les données initiales si elles n'existent pas
           await supabase
@@ -109,6 +205,8 @@ export const useFarmingPersistence = () => {
               user_id: user.id,
               deadspot_coins: 500,
               zero_tokens: 0,
+              diamonds: 0,
+              experience: 0,
             });
         }
 
@@ -134,11 +232,11 @@ export const useFarmingPersistence = () => {
           // Créer les slots initiaux
           const initialSlots = [
             { user_id: user.id, slot_id: 1, is_unlocked: true, unlock_price: 0, is_growing: false },
-            { user_id: user.id, slot_id: 2, is_unlocked: false, unlock_price: 1, is_growing: false },
-            { user_id: user.id, slot_id: 3, is_unlocked: false, unlock_price: 2, is_growing: false },
-            { user_id: user.id, slot_id: 4, is_unlocked: false, unlock_price: 3, is_growing: false },
-            { user_id: user.id, slot_id: 5, is_unlocked: false, unlock_price: 4, is_growing: false },
-            { user_id: user.id, slot_id: 6, is_unlocked: false, unlock_price: 5, is_growing: false },
+            { user_id: user.id, slot_id: 2, is_unlocked: false, unlock_price: 100, is_growing: false },
+            { user_id: user.id, slot_id: 3, is_unlocked: false, unlock_price: 1000, is_growing: false },
+            { user_id: user.id, slot_id: 4, is_unlocked: false, unlock_price: 5000, is_growing: false },
+            { user_id: user.id, slot_id: 5, is_unlocked: false, unlock_price: 15000, is_growing: false },
+            { user_id: user.id, slot_id: 6, is_unlocked: false, unlock_price: 50000, is_growing: false },
           ];
           
           await supabase
@@ -170,7 +268,7 @@ export const useFarmingPersistence = () => {
   }, [user]);
 
   // Sauvegarder les données principales
-  const saveFarmingData = async (coins: number, tokens: number) => {
+  const saveFarmingData = async (coins: number, tokens: number, diamondsValue?: number, experienceValue?: number) => {
     if (!user) return;
 
     try {
@@ -180,26 +278,31 @@ export const useFarmingPersistence = () => {
         .eq('user_id', user.id)
         .maybeSingle();
 
+      const updateData = {
+        deadspot_coins: coins,
+        zero_tokens: tokens,
+        ...(diamondsValue !== undefined && { diamonds: diamondsValue }),
+        ...(experienceValue !== undefined && { experience: experienceValue }),
+      };
+
       if (existing) {
         await supabase
           .from('farming_data')
-          .update({
-            deadspot_coins: coins,
-            zero_tokens: tokens,
-          })
+          .update(updateData)
           .eq('user_id', user.id);
       } else {
         await supabase
           .from('farming_data')
           .insert({
             user_id: user.id,
-            deadspot_coins: coins,
-            zero_tokens: tokens,
+            ...updateData,
           });
       }
 
       setDeadspotCoins(coins);
       setZeroTokens(tokens);
+      if (diamondsValue !== undefined) setDiamonds(diamondsValue);
+      if (experienceValue !== undefined) setExperience(experienceValue);
     } catch (error) {
       console.error('Erreur lors de la sauvegarde des données de farming:', error);
     }
@@ -287,12 +390,16 @@ export const useFarmingPersistence = () => {
   return {
     deadspotCoins,
     zeroTokens,
+    diamonds,
+    experience,
     inventory,
     slots,
     loading,
     SEEDS, // Export the SEEDS array
     setDeadspotCoins: (coins: number) => saveFarmingData(coins, zeroTokens),
     setZeroTokens: (tokens: number) => saveFarmingData(deadspotCoins, tokens),
+    setDiamonds: (diamondsValue: number) => saveFarmingData(deadspotCoins, zeroTokens, diamondsValue, experience),
+    setExperience: (experienceValue: number) => saveFarmingData(deadspotCoins, zeroTokens, diamonds, experienceValue),
     setInventory: saveInventory,
     setSlots: saveSlots,
   };
