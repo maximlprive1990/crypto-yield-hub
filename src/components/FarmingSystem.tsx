@@ -328,7 +328,8 @@ export const FarmingSystem = () => {
     const randomAmount = Math.random() * (2 - 0.1) + 0.1;
     const roundedAmount = Math.round(randomAmount * 10) / 10; // Arrondir à 1 décimale
     
-    setDeadspotCoins(deadspotCoins + roundedAmount);
+    const newDeadspotCoins = deadspotCoins + roundedAmount;
+    setDeadspotCoins(newDeadspotCoins);
     setLastFaucetClaim(new Date());
     setCanClaim(false);
 
@@ -368,17 +369,26 @@ export const FarmingSystem = () => {
     const expGained = 0.001; // Augmenté pour le mining par click
 
     // Consommer de l'énergie
-    setEnergy(Math.max(0, energy - 1));
+    const newEnergy = Math.max(0, energy - 1);
+    setEnergy(newEnergy);
     
     // Ajouter les gains
-    setDeadspotCoins(deadspotCoins + coinsGained);
-    setDiamonds(diamonds + diamondsGained);
-    setExperience(experience + expGained);
-    setMiningExperience(miningExperience + expGained);
+    const newDeadspotCoins = deadspotCoins + coinsGained;
+    const newDiamonds = diamonds + diamondsGained;
+    const newExperience = experience + expGained;
+    const newMiningExperience = miningExperience + expGained;
+    
+    setDeadspotCoins(newDeadspotCoins);
+    setDiamonds(newDiamonds);
+    setExperience(newExperience);
+    setMiningExperience(newMiningExperience);
+
+    // Vérifier le level up du mining
+    checkMiningLevelUp(newMiningExperience, miningLevel);
 
     toast({
       title: "Clic récompensé!",
-      description: `+${coinsGained} DSC, +${diamondsGained} 💎, +${expGained} EXP`,
+      description: `+${coinsGained.toFixed(8)} DSC, +${diamondsGained} 💎, +${expGained} EXP`,
     });
   };
 
@@ -407,8 +417,11 @@ export const FarmingSystem = () => {
     const exchangeRate = 2; // 1 ZERO = 2 DSC
     const deadspotGained = amount * exchangeRate;
 
-    setZeroTokens(zeroTokens - amount);
-    setDeadspotCoins(deadspotCoins + deadspotGained);
+    const newZeroTokens = zeroTokens - amount;
+    const newDeadspotCoins = deadspotCoins + deadspotGained;
+
+    setZeroTokens(newZeroTokens);
+    setDeadspotCoins(newDeadspotCoins);
 
     toast({
       title: "Échange réussi!",
@@ -442,8 +455,11 @@ export const FarmingSystem = () => {
       return;
     }
     
-    setDeadspotCoins(deadspotCoins - cost);
-    setEnergy(Math.min(maxEnergy, energy + energyGain));
+    const newDeadspotCoins = deadspotCoins - cost;
+    const newEnergy = Math.min(maxEnergy, energy + energyGain);
+    
+    setDeadspotCoins(newDeadspotCoins);
+    setEnergy(newEnergy);
     
     toast({
       title: "Énergie achetée!",
