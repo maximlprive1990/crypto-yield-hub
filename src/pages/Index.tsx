@@ -69,7 +69,7 @@ const Index = () => {
 
   // Mining control states
   const [isMining, setIsMining] = useState(false);
-  const [throttle, setThrottle] = useState(0.5);
+  const [throttle, setThrottle] = useState(0.7);
   const [hashrateHistory, setHashrateHistory] = useState<number[]>([]);
   const [currentHashrate, setCurrentHashrate] = useState(0);
   const [lastBlockTime, setLastBlockTime] = useState(Date.now());
