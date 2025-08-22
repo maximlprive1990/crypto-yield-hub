@@ -38,6 +38,7 @@ import { FaucetClaim } from "@/components/FaucetClaim";
 import { useEffect } from "react";
 import LiveChat from "@/components/LiveChat";
 import { HashrateGraph } from "@/components/HashrateGraph";
+import { useMiningPersistence } from "@/hooks/useMiningPersistence";
 
 // Extend Window interface for mining client
 declare global {
@@ -51,6 +52,14 @@ declare global {
 const Index = () => {
   const { user, signOut, loading } = useAuth();
   const { t } = useLanguage();
+  const { 
+    miningData, 
+    isLoading: miningLoading, 
+    addMinedBlock, 
+    exchangeHashrate, 
+    toggleMining: toggleMiningPersistence, 
+    updateThrottle 
+  } = useMiningPersistence();
   
   const [showSpinWheel, setShowSpinWheel] = useState(false);
   const [showFaucet, setShowFaucet] = useState(false);
@@ -63,11 +72,17 @@ const Index = () => {
   const [throttle, setThrottle] = useState(0.5);
   const [hashrateHistory, setHashrateHistory] = useState<number[]>([]);
   const [currentHashrate, setCurrentHashrate] = useState(0);
-  const [accumulatedHashrate, setAccumulatedHashrate] = useState(0);
-  const [deadspotCoins, setDeadspotCoins] = useState(0);
   const [lastBlockTime, setLastBlockTime] = useState(Date.now());
 
   console.log("Index component - user:", user, "loading:", loading);
+
+  // Synchroniser les states locaux avec les données persistées
+  useEffect(() => {
+    if (!miningLoading && miningData) {
+      setIsMining(miningData.is_currently_mining);
+      setThrottle(miningData.mining_throttle);
+    }
+  }, [miningData, miningLoading]);
 
   const handleZeroWin = (amount: number) => {
     setUserZeroBalance(prev => prev + amount);
@@ -122,7 +137,7 @@ const Index = () => {
 
   // Récupérer hashrate chaque seconde et système de blocs
   useEffect(() => {
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       if (window.miningClient && isMining && typeof window.miningClient.getHashesPerSecond === 'function') {
         const hps = window.miningClient.getHashesPerSecond() || 0;
         setCurrentHashrate(hps);
@@ -132,49 +147,58 @@ const Index = () => {
         const now = Date.now();
         if (now - lastBlockTime >= 10000) { // Nouveau bloc toutes les 10 secondes
           const blockReward = Math.floor(Math.random() * (35000 - 20000 + 1)) + 20000;
-          setAccumulatedHashrate(prev => prev + blockReward);
-          setLastBlockTime(now);
+          
+          // Sauvegarder dans Supabase
+          const success = await addMinedBlock(blockReward, hps);
+          if (success) {
+            setLastBlockTime(now);
+          }
         }
       } else {
         setCurrentHashrate(0);
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [isMining, lastBlockTime]);
+  }, [isMining, lastBlockTime, addMinedBlock]);
 
-  // Toggle ON/OFF
-  const toggleMining = () => {
+  // Toggle ON/OFF avec sauvegarde
+  const toggleMining = async () => {
     if (!window.miningClient) return;
-    if (isMining) {
-      if (typeof window.miningClient.stop === 'function') {
-        window.miningClient.stop();
-      }
-      setIsMining(false);
-    } else {
+    
+    const newMiningState = !isMining;
+    
+    if (newMiningState) {
       if (typeof window.miningClient.start === 'function') {
         window.miningClient.start();
       }
-      setIsMining(true);
       setLastBlockTime(Date.now()); // Reset block timer
+    } else {
+      if (typeof window.miningClient.stop === 'function') {
+        window.miningClient.stop();
+      }
     }
-  };
-
-  // Système d'échange hashrate -> deadspot coins
-  const exchangeHashrate = () => {
-    const exchangeRate = 10000; // 10000 hashrate = 0.25 deadspot coin
-    const coinValue = 0.25;
     
-    if (accumulatedHashrate >= exchangeRate) {
-      const exchanges = Math.floor(accumulatedHashrate / exchangeRate);
-      const hashrateUsed = exchanges * exchangeRate;
-      const coinsEarned = exchanges * coinValue;
-      
-      setAccumulatedHashrate(prev => prev - hashrateUsed);
-      setDeadspotCoins(prev => prev + coinsEarned);
+    // Sauvegarder l'état dans Supabase
+    const success = await toggleMiningPersistence(newMiningState);
+    if (success) {
+      setIsMining(newMiningState);
     }
   };
 
-  if (loading) {
+  // Mise à jour du throttle avec sauvegarde
+  const handleThrottleChange = async (newThrottle: number) => {
+    setThrottle(newThrottle);
+    
+    // Appliquer immédiatement au mineur
+    if (window.miningClient && window.miningClient.setThrottle) {
+      window.miningClient.setThrottle(newThrottle);
+    }
+    
+    // Sauvegarder dans Supabase
+    await updateThrottle(newThrottle);
+  };
+
+  if (loading || miningLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
@@ -469,7 +493,7 @@ const Index = () => {
                       max="0.6"
                       step="0.05"
                       value={throttle}
-                      onChange={(e) => setThrottle(parseFloat(e.target.value))}
+                      onChange={(e) => handleThrottleChange(parseFloat(e.target.value))}
                       className="w-full h-3 bg-muted rounded-lg appearance-none cursor-pointer slider"
                       style={{
                         background: `linear-gradient(to right, 
@@ -492,8 +516,8 @@ const Index = () => {
                 hashrateHistory={hashrateHistory}
                 currentHashrate={currentHashrate}
                 isActive={isMining}
-                accumulatedHashrate={accumulatedHashrate}
-                deadspotCoins={deadspotCoins}
+                accumulatedHashrate={miningData.accumulated_hashrate}
+                deadspotCoins={miningData.deadspot_coins}
                 onExchange={exchangeHashrate}
               />
             </div>

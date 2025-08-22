@@ -374,6 +374,33 @@ export type Database = {
         }
         Relationships: []
       }
+      hashrate_exchanges: {
+        Row: {
+          created_at: string
+          deadspot_coins_received: number
+          exchange_rate: number
+          hashrate_amount: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          deadspot_coins_received: number
+          exchange_rate?: number
+          hashrate_amount: number
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          deadspot_coins_received?: number
+          exchange_rate?: number
+          hashrate_amount?: number
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       leaderboard_entries: {
         Row: {
           created_at: string
@@ -489,6 +516,75 @@ export type Database = {
           is_available?: boolean | null
           name?: string
           rarity?: string
+        }
+        Relationships: []
+      }
+      mining_blocks: {
+        Row: {
+          block_reward: number
+          block_time: string
+          current_hashrate: number
+          id: string
+          session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          block_reward: number
+          block_time?: string
+          current_hashrate?: number
+          id?: string
+          session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          block_reward?: number
+          block_time?: string
+          current_hashrate?: number
+          id?: string
+          session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mining_data: {
+        Row: {
+          accumulated_hashrate: number
+          created_at: string
+          current_mining_session_start: string | null
+          deadspot_coins: number
+          id: string
+          is_currently_mining: boolean
+          mining_throttle: number
+          total_blocks_mined: number
+          total_hashrate_earned: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accumulated_hashrate?: number
+          created_at?: string
+          current_mining_session_start?: string | null
+          deadspot_coins?: number
+          id?: string
+          is_currently_mining?: boolean
+          mining_throttle?: number
+          total_blocks_mined?: number
+          total_hashrate_earned?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accumulated_hashrate?: number
+          created_at?: string
+          current_mining_session_start?: string | null
+          deadspot_coins?: number
+          id?: string
+          is_currently_mining?: boolean
+          mining_throttle?: number
+          total_blocks_mined?: number
+          total_hashrate_earned?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
