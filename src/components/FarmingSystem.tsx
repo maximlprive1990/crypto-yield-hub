@@ -113,6 +113,16 @@ export const FarmingSystem = () => {
     }
   }, [lastFaucetClaim]);
 
+  // Régénération automatique d'énergie - TOUS LES HOOKS DOIVENT ÊTRE APPELÉS AVANT LES RETURNS
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newEnergy = Math.min(maxEnergy, energy + 1);
+      setEnergy(newEnergy);
+    }, 5000); // 1 énergie toutes les 5 secondes
+    
+    return () => clearInterval(interval);
+  }, [energy, maxEnergy, setEnergy]);
+
   // Si pas connecté
   if (!user) {
     return (
@@ -441,15 +451,6 @@ export const FarmingSystem = () => {
     });
   };
 
-  // Régénération automatique d'énergie
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newEnergy = Math.min(maxEnergy, energy + 1);
-      setEnergy(newEnergy);
-    }, 5000); // 1 énergie toutes les 5 secondes
-    
-    return () => clearInterval(interval);
-  }, [energy, maxEnergy]);
 
   return (
     <div className="space-y-6">
