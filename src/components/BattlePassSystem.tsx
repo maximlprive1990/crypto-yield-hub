@@ -8,6 +8,7 @@ import { Crown, Gift, Lock, Star, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { CryptoDepositSystem } from "./CryptoDepositSystem";
 
 interface BattlePass {
   id: string;
@@ -274,22 +275,25 @@ const BattlePassSystem = () => {
             </div>
 
             {!battlePass.is_premium && (
-              <div className="flex gap-2">
-                <Button 
-                  variant="crypto" 
-                  onClick={purchasePremiumBattlePass}
-                  className="flex-1"
-                >
-                  <Crown className="w-4 h-4 mr-2" />
-                  Passer Premium - ${SEASON_DATA.price}
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={upgradeToPremium}
-                  size="sm"
-                >
-                  J'ai payé
-                </Button>
+              <div className="space-y-4">
+                <CryptoDepositSystem />
+                <div className="flex gap-2">
+                  <Button 
+                    variant="crypto" 
+                    onClick={purchasePremiumBattlePass}
+                    className="flex-1"
+                  >
+                    <Crown className="w-4 h-4 mr-2" />
+                    Passer Premium - ${SEASON_DATA.price}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={upgradeToPremium}
+                    size="sm"
+                  >
+                    J'ai payé
+                  </Button>
+                </div>
               </div>
             )}
           </div>
