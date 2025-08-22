@@ -367,9 +367,6 @@ const Index = () => {
             <Button variant="crypto" size="xl" className="shadow-glow">
               {t('hero.start_staking')}
             </Button>
-            <Button variant="stake" size="xl">
-              {t('hero.explore_pools')}
-            </Button>
             <Button variant="ghost" size="sm" onClick={signOut} className="mt-4">
               {t('sign_out')}
             </Button>

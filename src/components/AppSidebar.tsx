@@ -95,8 +95,8 @@ export function AppSidebar() {
                     onClick={() => scrollToSection(section.id)}
                     className={getNavCls(section.id)}
                   >
-                    <section.icon className="mr-2 h-4 w-4" />
-                    {!isCollapsed && <span className="text-sm">{section.title}</span>}
+                    <section.icon className="mr-2 h-4 w-4 animate-flash-blue-red" />
+                    {!isCollapsed && <span className="text-sm animate-flash-blue-red">{section.title}</span>}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
