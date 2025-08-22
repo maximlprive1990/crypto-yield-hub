@@ -1,10 +1,12 @@
 export interface PlayerStats {
   attack: number;
-  attackSpeed: number;
   defense: number;
+  speedAttack: number;
+  speedDefense: number;
+  agility: number;
   dodge: number;
   luck: number;
-  speed: number;
+  energy: number;
   health: number;
   mana: number;
 }
@@ -74,4 +76,5 @@ export interface CombatResult {
   equipment?: Equipment;
   damage: number;
   enemyDamage: number;
+  energyUsed: number;
 }

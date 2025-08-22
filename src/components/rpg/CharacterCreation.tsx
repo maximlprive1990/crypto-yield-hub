@@ -75,8 +75,8 @@ export const CharacterCreation: React.FC<CharacterCreationProps> = ({ classes, o
                             <Badge variant="outline">{playerClass.baseStats.defense}</Badge>
                           </div>
                           <div className="flex justify-between text-xs">
-                            <span>{t('character.speed')}:</span>
-                            <Badge variant="outline">{playerClass.baseStats.speed}</Badge>
+                            <span>{t('character.agility')}:</span>
+                            <Badge variant="outline">{playerClass.baseStats.agility}</Badge>
                           </div>
                           <div className="flex justify-between text-xs">
                             <span>{t('character.luck')}:</span>

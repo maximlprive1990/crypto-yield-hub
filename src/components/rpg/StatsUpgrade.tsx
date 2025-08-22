@@ -21,22 +21,26 @@ export const StatsUpgrade: React.FC<StatsUpgradeProps> = ({
 
   const statLabels: Record<keyof PlayerStats, string> = {
     attack: 'Attaque',
-    attackSpeed: 'Vitesse d\'Attaque',
+    speedAttack: 'Vitesse d\'Attaque',
+    speedDefense: 'Vitesse de Défense',
+    agility: 'Agilité',
     defense: 'Défense',
     dodge: 'Esquive',
     luck: 'Chance',
-    speed: 'Vitesse',
+    energy: 'Énergie',
     health: 'Points de Vie',
     mana: 'Points de Mana'
   };
 
   const statDescriptions: Record<keyof PlayerStats, string> = {
     attack: 'Augmente les dégâts infligés aux ennemis',
-    attackSpeed: 'Améliore la fréquence des attaques',
+    speedAttack: 'Améliore la vitesse des attaques',
+    speedDefense: 'Améliore la vitesse de défense',
+    agility: 'Augmente la mobilité et l\'esquive',
     defense: 'Réduit les dégâts reçus des ennemis',
     dodge: 'Augmente les chances d\'éviter les attaques',
     luck: 'Améliore les chances de coups critiques et de butin',
-    speed: 'Influence l\'ordre des tours en combat',
+    energy: 'Augmente l\'énergie pour attaquer',
     health: 'Augmente les points de vie maximum',
     mana: 'Augmente les points de mana maximum'
   };

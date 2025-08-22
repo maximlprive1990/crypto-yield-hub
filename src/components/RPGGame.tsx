@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { PlayerStats, Player, Enemy, PlayerClass, Equipment, CombatResult } from '@/types/rpg';
-import { playerClasses, generateEnemy, baseEquipment, getEquipmentPrice } from '@/data/rpgData';
+import { playerClasses, baseEquipment, getEquipmentPrice } from '@/data/rpgData';
+import { generateEnemy } from '@/data/rpgEnemies';
 import { CharacterCreation } from './rpg/CharacterCreation';
-import { CombatSystem } from './rpg/CombatSystem';
+import { CombatSystemNew } from './rpg/CombatSystemNew';
 import { PlayerPanel } from './rpg/PlayerPanel';
 import { InventorySystem } from './rpg/InventorySystem';
 import { StatsUpgrade } from './rpg/StatsUpgrade';
@@ -118,7 +119,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
       class: selectedClass,
       level: 1,
       experience: 0,
-      experienceToNext: 100,
+      experienceToNext: 10, // Premier niveau: 10 exp
       baseStats: { ...selectedClass.baseStats },
       currentStats: { ...selectedClass.baseStats },
       equipment: {},
@@ -219,21 +220,27 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
         });
       }
 
-      // Level up check
+      // Level up check with new formula
       while (newPlayer.experience >= newPlayer.experienceToNext) {
         newPlayer.experience -= newPlayer.experienceToNext;
         newPlayer.level += 1;
-        newPlayer.experienceToNext = Math.floor(newPlayer.experienceToNext * 1.5);
-        newPlayer.statPoints += 5;
         
-        // Increase base stats on level up
+        // New level up formula: +2.78% for each level
+        const nextLevelExp = Math.floor(newPlayer.experienceToNext * 1.0278);
+        newPlayer.experienceToNext = nextLevelExp;
+        
+        // +1.5 stat points per level up
+        newPlayer.statPoints += 1.5;
+        
+        // Automatic stat increases on level up
+        const statIncrease = 0.5; // Small automatic increase
         Object.keys(newPlayer.baseStats).forEach(key => {
-          (newPlayer.baseStats as any)[key] += Math.floor(Math.random() * 3) + 1;
+          (newPlayer.baseStats as any)[key] += statIncrease;
         });
 
         toast({
           title: t('rpg.level_up'),
-          description: `${t('rpg.level_up_desc')} ${newPlayer.level}!`
+          description: `${t('rpg.level_up_desc')} ${newPlayer.level}! +1.5 Points de Stats`
         });
       }
 
@@ -424,7 +431,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
             )}
 
             {gameState === 'combat' && currentEnemy && (
-              <CombatSystem
+              <CombatSystemNew
                 player={player}
                 enemy={currentEnemy}
                 onCombatEnd={onCombatEnd}

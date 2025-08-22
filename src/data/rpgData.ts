@@ -6,13 +6,15 @@ export const playerClasses: PlayerClass[] = [
     name: "Guerrier",
     description: "Combattant puissant avec une forte défense",
     baseStats: {
-      attack: 25,
-      attackSpeed: 45.2,
-      defense: 30,
+      attack: 35,
+      defense: 40,
+      speedAttack: 25,
+      speedDefense: 35,
+      agility: 20,
       dodge: 15,
       luck: 20,
-      speed: 25,
-      health: 120,
+      energy: 100,
+      health: 150,
       mana: 30
     },
     icon: "⚔️",
@@ -23,14 +25,16 @@ export const playerClasses: PlayerClass[] = [
     name: "Magicien",
     description: "Maître des arts magiques avec haute intelligence",
     baseStats: {
-      attack: 35,
-      attackSpeed: 65.8,
-      defense: 12,
+      attack: 45,
+      defense: 15,
+      speedAttack: 40,
+      speedDefense: 25,
+      agility: 30,
       dodge: 25,
-      luck: 40,
-      speed: 30,
+      luck: 50,
+      energy: 120,
       health: 80,
-      mana: 150
+      mana: 180
     },
     icon: "🧙‍♂️",
     color: "from-blue-600 to-purple-800"
@@ -40,12 +44,14 @@ export const playerClasses: PlayerClass[] = [
     name: "Archer",
     description: "Expert du tir à distance avec grande précision",
     baseStats: {
-      attack: 30,
-      attackSpeed: 85.4,
-      defense: 18,
+      attack: 40,
+      defense: 20,
+      speedAttack: 55,
+      speedDefense: 30,
+      agility: 50,
       dodge: 45,
       luck: 35,
-      speed: 50,
+      energy: 110,
       health: 90,
       mana: 60
     },
@@ -57,13 +63,15 @@ export const playerClasses: PlayerClass[] = [
     name: "Moine",
     description: "Combattant équilibré maîtrisant corps et esprit",
     baseStats: {
-      attack: 22,
-      attackSpeed: 75.6,
-      defense: 25,
+      attack: 30,
+      defense: 30,
+      speedAttack: 45,
+      speedDefense: 40,
+      agility: 60,
       dodge: 55,
       luck: 45,
-      speed: 65,
-      health: 100,
+      energy: 130,
+      health: 110,
       mana: 100
     },
     icon: "🙏",
@@ -74,13 +82,15 @@ export const playerClasses: PlayerClass[] = [
     name: "Berserker",
     description: "Guerrier sauvage sacrifiant défense pour attaque",
     baseStats: {
-      attack: 45,
-      attackSpeed: 95.2,
-      defense: 8,
+      attack: 60,
+      defense: 10,
+      speedAttack: 50,
+      speedDefense: 15,
+      agility: 35,
       dodge: 20,
       luck: 25,
-      speed: 40,
-      health: 110,
+      energy: 80,
+      health: 130,
       mana: 20
     },
     icon: "🪓",
@@ -91,14 +101,16 @@ export const playerClasses: PlayerClass[] = [
     name: "Nécromancien",
     description: "Maître des arts sombres et de la mort",
     baseStats: {
-      attack: 40,
-      attackSpeed: 55.3,
-      defense: 15,
+      attack: 50,
+      defense: 18,
+      speedAttack: 35,
+      speedDefense: 20,
+      agility: 25,
       dodge: 30,
       luck: 80,
-      speed: 35,
+      energy: 140,
       health: 70,
-      mana: 180
+      mana: 200
     },
     icon: "💀",
     color: "from-purple-900 to-black"
@@ -108,34 +120,19 @@ export const playerClasses: PlayerClass[] = [
     name: "Paladin",
     description: "Guerrier saint avec défense et magie",
     baseStats: {
-      attack: 28,
-      attackSpeed: 50.7,
-      defense: 35,
+      attack: 38,
+      defense: 45,
+      speedAttack: 30,
+      speedDefense: 50,
+      agility: 25,
       dodge: 20,
-      luck: 30,
-      speed: 28,
-      health: 130,
-      mana: 90
+      luck: 40,
+      energy: 105,
+      health: 140,
+      mana: 120
     },
     icon: "🛡️",
     color: "from-yellow-500 to-white"
-  },
-  {
-    id: "assassin",
-    name: "Assassin",
-    description: "Tueur silencieux privilégiant vitesse et esquive",
-    baseStats: {
-      attack: 38,
-      attackSpeed: 120.8,
-      defense: 10,
-      dodge: 70,
-      luck: 55,
-      speed: 85,
-      health: 75,
-      mana: 40
-    },
-    icon: "🗡️",
-    color: "from-gray-800 to-black"
   }
 ];
 
@@ -148,7 +145,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "common",
     level: 1,
     description: "Une épée basique en fer",
-    statsBonus: { attack: 5, attackSpeed: 2.1 }
+    statsBonus: { attack: 5, speedAttack: 2 }
   },
   {
     id: "wooden_club",
@@ -157,7 +154,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "common",
     level: 1,
     description: "Arme primitive mais efficace",
-    statsBonus: { attack: 8, speed: -2 }
+    statsBonus: { attack: 8, agility: -2 }
   },
   {
     id: "bronze_dagger",
@@ -166,7 +163,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "common", 
     level: 2,
     description: "Lame rapide et précise",
-    statsBonus: { attack: 6, attackSpeed: 8.5, dodge: 3 }
+    statsBonus: { attack: 6, speedAttack: 8, dodge: 3 }
   },
   {
     id: "steel_bow",
@@ -175,7 +172,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "uncommon",
     level: 3,
     description: "Arc précis en acier trempé",
-    statsBonus: { attack: 12, attackSpeed: 5.5, dodge: 5 }
+    statsBonus: { attack: 12, speedAttack: 5, dodge: 5 }
   },
   {
     id: "silver_blade",
@@ -184,7 +181,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "uncommon",
     level: 4,
     description: "Épée bénie contre les créatures des ténèbres",
-    statsBonus: { attack: 15, attackSpeed: 3.2, luck: 8 }
+    statsBonus: { attack: 15, speedAttack: 3, luck: 8 }
   },
   {
     id: "enchanted_staff",
@@ -204,7 +201,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "rare",
     level: 6,
     description: "Lame taillée dans un cristal magique",
-    statsBonus: { attack: 22, attackSpeed: 4.8, mana: 15 }
+    statsBonus: { attack: 22, speedAttack: 4, mana: 15 }
   },
   {
     id: "demon_axe",
@@ -213,7 +210,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "epic",
     level: 8,
     description: "Hache forgée dans les flammes infernales",
-    statsBonus: { attack: 35, attackSpeed: -2.1, defense: 8 }
+    statsBonus: { attack: 35, speedAttack: -2, defense: 8 }
   },
   {
     id: "shadow_blade",
@@ -222,7 +219,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "epic",
     level: 10,
     description: "Lame maudite des ténèbres",
-    statsBonus: { attack: 28, attackSpeed: 15.2, dodge: 15, speed: 12 }
+    statsBonus: { attack: 28, speedAttack: 15, dodge: 15, agility: 12 }
   },
 
   // Armes Niveau 11-20
@@ -233,7 +230,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "epic",
     level: 12,
     description: "Bâton imprégné du feu éternel",
-    statsBonus: { attack: 32, mana: 80, luck: 18, attackSpeed: 6.5 }
+    statsBonus: { attack: 32, mana: 80, luck: 18, speedAttack: 6 }
   },
   {
     id: "void_bow",
@@ -242,7 +239,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "epic",
     level: 15,
     description: "Arc tirant des flèches dimensionnelles",
-    statsBonus: { attack: 40, attackSpeed: 12.8, dodge: 20, speed: 25 }
+    statsBonus: { attack: 40, speedAttack: 12, dodge: 20, agility: 25 }
   },
   {
     id: "dragon_slayer",
@@ -251,7 +248,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "legendary",
     level: 20,
     description: "Épée légendaire forgée dans le sang de dragon",
-    statsBonus: { attack: 55, attackSpeed: 8.7, defense: 15, luck: 25, health: 50 }
+    statsBonus: { attack: 55, speedAttack: 8, defense: 15, luck: 25, health: 50 }
   },
 
   // Armures Niveau 1-5
@@ -289,7 +286,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "uncommon",
     level: 4,
     description: "Armure flexible en mailles",
-    statsBonus: { defense: 18, health: 40, speed: -3 }
+    statsBonus: { defense: 18, health: 40, agility: -3 }
   },
   {
     id: "scale_armor",
@@ -309,7 +306,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "rare",
     level: 8,
     description: "Lourde armure en plaques d'acier",
-    statsBonus: { defense: 35, health: 80, speed: -8, dodge: -5 }
+    statsBonus: { defense: 35, health: 80, agility: -8, dodge: -5 }
   },
   {
     id: "mage_robes",
@@ -318,7 +315,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "epic",
     level: 12,
     description: "Robes enchantées des arcanes",
-    statsBonus: { defense: 25, mana: 120, luck: 20, speed: 8 }
+    statsBonus: { defense: 25, mana: 120, luck: 20, agility: 8 }
   },
   {
     id: "celestial_armor",
@@ -356,7 +353,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "rare",
     level: 6,
     description: "Anneau augmentant la force",
-    statsBonus: { attack: 12, attackSpeed: 5.2, health: 30 }
+    statsBonus: { attack: 12, speedAttack: 5, health: 30 }
   },
   {
     id: "master_ring",
@@ -385,7 +382,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "uncommon",
     level: 4,
     description: "Cristal amplifiant les énergies magiques",
-    statsBonus: { mana: 40, luck: 12, speed: 5 }
+    statsBonus: { mana: 40, luck: 12, agility: 5 }
   },
   {
     id: "luck_amulet",
@@ -394,7 +391,7 @@ export const baseEquipment: Equipment[] = [
     rarity: "epic",
     level: 8,
     description: "Amulette portant une chance extraordinaire",
-    statsBonus: { luck: 35, dodge: 15, speed: 12, attackSpeed: 8.5 }
+    statsBonus: { luck: 35, dodge: 15, agility: 12, speedAttack: 8 }
   },
   {
     id: "soul_pendant",
@@ -418,7 +415,7 @@ export const baseEquipment: Equipment[] = [
     description: "Épée légendaire forgée dans l'argent pur des étoiles",
     priceType: "gold",
     customPrice: 15000,
-    statsBonus: { attack: 75, attackSpeed: 12.5, defense: 20, luck: 35, health: 80 }
+    statsBonus: { attack: 75, speedAttack: 12, defense: 20, luck: 35, health: 80 }
   },
   {
     id: "silver_bow_cosmos",
@@ -429,7 +426,7 @@ export const baseEquipment: Equipment[] = [
     description: "Arc tirant des flèches stellaires argentées",
     priceType: "gold",
     customPrice: 18000,
-    statsBonus: { attack: 85, attackSpeed: 25.8, dodge: 40, speed: 50, luck: 30 }
+    statsBonus: { attack: 85, speedAttack: 25, dodge: 40, agility: 50, luck: 30 }
   },
 
   // Armes Gold (Niveau 35-40)
@@ -442,7 +439,7 @@ export const baseEquipment: Equipment[] = [
     description: "Masse de guerre dorée capable de briser les réalités",
     priceType: "diamonds",
     customPrice: 500,
-    statsBonus: { attack: 120, attackSpeed: 8.2, defense: 35, health: 150, luck: 45 }
+    statsBonus: { attack: 120, speedAttack: 8, defense: 35, health: 150, luck: 45 }
   },
   {
     id: "golden_staff_midas",
@@ -453,7 +450,7 @@ export const baseEquipment: Equipment[] = [
     description: "Bâton transformant tout en or magique",
     priceType: "diamonds",
     customPrice: 750,
-    statsBonus: { attack: 95, mana: 300, luck: 80, speed: 25, attackSpeed: 15.5 }
+    statsBonus: { attack: 95, mana: 300, luck: 80, agility: 25, speedAttack: 15 }
   },
 
   // Armes Platinum (Niveau 45-50)
@@ -466,7 +463,7 @@ export const baseEquipment: Equipment[] = [
     description: "Épée divine forgée dans le platine céleste",
     priceType: "diamonds", 
     customPrice: 1200,
-    statsBonus: { attack: 180, attackSpeed: 18.7, defense: 50, health: 200, mana: 150, luck: 60 }
+    statsBonus: { attack: 180, speedAttack: 18, defense: 50, health: 200, mana: 150, luck: 60 }
   },
 
   // Armes Sparkling (Niveau 55)
@@ -479,7 +476,7 @@ export const baseEquipment: Equipment[] = [
     description: "Arme étincelante déchirant l'espace-temps",
     priceType: "diamonds",
     customPrice: 2000,
-    statsBonus: { attack: 250, attackSpeed: 35.2, dodge: 60, speed: 80, luck: 100, mana: 200 }
+    statsBonus: { attack: 250, speedAttack: 35, dodge: 60, agility: 80, luck: 100, mana: 200 }
   },
 
   // Armes Elite (Niveau 60)
@@ -492,7 +489,7 @@ export const baseEquipment: Equipment[] = [
     description: "Arme d'élite capable de détruire des galaxies entières",
     priceType: "diamonds",
     customPrice: 3500,
-    statsBonus: { attack: 320, attackSpeed: 25.8, defense: 80, health: 300, mana: 250, luck: 120 }
+    statsBonus: { attack: 320, speedAttack: 25, defense: 80, health: 300, mana: 250, luck: 120 }
   },
 
   // Armes Supreme Sparkling (Niveau 70)
@@ -505,7 +502,7 @@ export const baseEquipment: Equipment[] = [
     description: "L'arme ultime transcendant toutes les réalités",
     priceType: "diamonds",
     customPrice: 7500,
-    statsBonus: { attack: 500, attackSpeed: 50.0, defense: 150, health: 500, mana: 400, luck: 200, speed: 120, dodge: 100 }
+    statsBonus: { attack: 500, speedAttack: 50, defense: 150, health: 500, mana: 400, luck: 200, agility: 120, dodge: 100 }
   },
 
   // Armures Premium
@@ -529,7 +526,7 @@ export const baseEquipment: Equipment[] = [
     description: "Armure des empereurs divins",
     priceType: "diamonds",
     customPrice: 800,
-    statsBonus: { defense: 150, health: 400, mana: 200, luck: 60, speed: 15 }
+    statsBonus: { defense: 150, health: 400, mana: 200, luck: 60, agility: 15 }
   },
   {
     id: "platinum_titan_armor",
@@ -551,7 +548,7 @@ export const baseEquipment: Equipment[] = [
     description: "Armure forgée dans les étoiles scintillantes",
     priceType: "diamonds",
     customPrice: 2500,
-    statsBonus: { defense: 300, health: 800, mana: 350, dodge: 50, speed: 40, luck: 120 }
+    statsBonus: { defense: 300, health: 800, mana: 350, dodge: 50, agility: 40, luck: 120 }
   },
   {
     id: "elite_cosmos_armor",
@@ -573,7 +570,7 @@ export const baseEquipment: Equipment[] = [
     description: "L'armure ultime contenant la puissance de l'univers",
     priceType: "diamonds",
     customPrice: 8500,
-    statsBonus: { defense: 600, health: 1500, mana: 600, attack: 150, luck: 250, dodge: 120, speed: 80 }
+    statsBonus: { defense: 600, health: 1500, mana: 600, attack: 150, luck: 250, dodge: 120, agility: 80 }
   },
 
   // Anneaux Premium
@@ -597,7 +594,7 @@ export const baseEquipment: Equipment[] = [
     description: "Anneau doré de maîtrise absolue",
     priceType: "diamonds",
     customPrice: 600,
-    statsBonus: { attack: 60, defense: 40, luck: 90, mana: 150, attackSpeed: 20.5, dodge: 30 }
+    statsBonus: { attack: 60, defense: 40, luck: 90, mana: 150, speedAttack: 20, dodge: 30 }
   },
   {
     id: "platinum_ring_dominion",
@@ -608,7 +605,7 @@ export const baseEquipment: Equipment[] = [
     description: "Anneau de platine conférant la domination",
     priceType: "diamonds",
     customPrice: 1300,
-    statsBonus: { attack: 90, defense: 60, luck: 120, mana: 200, health: 250, speed: 50 }
+    statsBonus: { attack: 90, defense: 60, luck: 120, mana: 200, health: 250, agility: 50 }
   },
   {
     id: "sparkling_ring_infinity",
@@ -619,7 +616,7 @@ export const baseEquipment: Equipment[] = [
     description: "Anneau étincelant aux pouvoirs infinis",
     priceType: "diamonds",
     customPrice: 2200,
-    statsBonus: { attack: 120, defense: 80, luck: 180, mana: 300, health: 350, attackSpeed: 30.0, dodge: 70 }
+    statsBonus: { attack: 120, defense: 80, luck: 180, mana: 300, health: 350, speedAttack: 30, dodge: 70 }
   },
   {
     id: "elite_ring_transcendence",
@@ -630,7 +627,7 @@ export const baseEquipment: Equipment[] = [
     description: "Anneau d'élite transcendant les limites",
     priceType: "diamonds",
     customPrice: 3800,
-    statsBonus: { attack: 150, defense: 100, luck: 220, mana: 400, health: 450, speed: 80, dodge: 90 }
+    statsBonus: { attack: 150, defense: 100, luck: 220, mana: 400, health: 450, agility: 80, dodge: 90 }
   },
   {
     id: "supreme_ring_omnipotence",
@@ -641,7 +638,7 @@ export const baseEquipment: Equipment[] = [
     description: "L'anneau ultime de l'omnipotence absolue",
     priceType: "diamonds",
     customPrice: 9000,
-    statsBonus: { attack: 250, defense: 200, luck: 350, mana: 600, health: 700, attackSpeed: 60.0, dodge: 150, speed: 120 }
+    statsBonus: { attack: 250, defense: 200, luck: 350, mana: 600, health: 700, speedAttack: 60, dodge: 150, agility: 120 }
   },
 
   // Amulettes Premium
@@ -654,7 +651,7 @@ export const baseEquipment: Equipment[] = [
     description: "Amulette capturant la lumière des étoiles",
     priceType: "gold",
     customPrice: 14000,
-    statsBonus: { luck: 80, mana: 200, speed: 40, dodge: 35, attackSpeed: 15.2 }
+    statsBonus: { luck: 80, mana: 200, agility: 40, dodge: 35, speedAttack: 15 }
   },
   {
     id: "golden_amulet_wisdom",
@@ -665,7 +662,7 @@ export const baseEquipment: Equipment[] = [
     description: "Amulette dorée de la sagesse éternelle",
     priceType: "diamonds",
     customPrice: 700,
-    statsBonus: { luck: 120, mana: 350, speed: 60, dodge: 50, health: 200, defense: 35 }
+    statsBonus: { luck: 120, mana: 350, agility: 60, dodge: 50, health: 200, defense: 35 }
   },
   {
     id: "platinum_amulet_destiny",
@@ -676,7 +673,7 @@ export const baseEquipment: Equipment[] = [
     description: "Amulette de platine contrôlant le destin",
     priceType: "diamonds",
     customPrice: 1400,
-    statsBonus: { luck: 180, mana: 450, speed: 80, dodge: 70, health: 300, attack: 60, defense: 50 }
+    statsBonus: { luck: 180, mana: 450, agility: 80, dodge: 70, health: 300, attack: 60, defense: 50 }
   },
   {
     id: "sparkling_amulet_eternity",
@@ -687,7 +684,7 @@ export const baseEquipment: Equipment[] = [
     description: "Amulette étincelante de l'éternité",
     priceType: "diamonds",
     customPrice: 2300,
-    statsBonus: { luck: 250, mana: 600, speed: 100, dodge: 100, health: 400, attack: 80, defense: 80, attackSpeed: 40.0 }
+    statsBonus: { luck: 250, mana: 600, agility: 100, dodge: 100, health: 400, attack: 80, defense: 80, speedAttack: 40 }
   },
   {
     id: "elite_amulet_creation",
@@ -698,7 +695,7 @@ export const baseEquipment: Equipment[] = [
     description: "Amulette d'élite de la création primordiale",
     priceType: "diamonds",
     customPrice: 4200,
-    statsBonus: { luck: 320, mana: 750, speed: 120, dodge: 120, health: 500, attack: 120, defense: 100 }
+    statsBonus: { luck: 320, mana: 750, agility: 120, dodge: 120, health: 500, attack: 120, defense: 100 }
   },
   {
     id: "supreme_amulet_reality",
@@ -709,7 +706,7 @@ export const baseEquipment: Equipment[] = [
     description: "L'amulette ultime qui façonne la réalité elle-même",
     priceType: "diamonds",
     customPrice: 10000,
-    statsBonus: { luck: 500, mana: 1000, speed: 200, dodge: 200, health: 800, attack: 200, defense: 150, attackSpeed: 80.0 }
+    statsBonus: { luck: 500, mana: 1000, agility: 200, dodge: 200, health: 800, attack: 200, defense: 150, speedAttack: 80 }
   }
 ];
 
@@ -769,11 +766,13 @@ export function generateEnemy(playerLevel: number): Enemy {
     icon: randomType.icon,
     stats: {
       attack: Math.floor(10 * enemyLevel * baseMultiplier), // Réduit de 15 à 10
-      attackSpeed: Math.floor(35 * baseMultiplier), // Réduit de 40 à 35
+      speedAttack: Math.floor(35 * baseMultiplier), // Réduit de 40 à 35
+      speedDefense: Math.floor(25 * baseMultiplier),
+      agility: Math.floor(20 * baseMultiplier), // Nouvelle stat
+      energy: Math.floor(80 * baseMultiplier), // Nouvelle stat
       defense: Math.floor(6 * enemyLevel * baseMultiplier), // Réduit de 10 à 6
       dodge: Math.floor(15 * baseMultiplier), // Réduit de 20 à 15
       luck: Math.floor(20 * baseMultiplier), // Réduit de 25 à 20
-      speed: Math.floor(25 * baseMultiplier), // Réduit de 30 à 25
       health: Math.floor(60 * enemyLevel * baseMultiplier), // Réduit de 80 à 60
       mana: Math.floor(40 * enemyLevel * baseMultiplier) // Réduit de 50 à 40
     },

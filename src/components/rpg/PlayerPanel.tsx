@@ -49,8 +49,8 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ player }) => {
               <Badge variant="outline" className="text-xs h-5">{Math.round(player.currentStats.defense)}</Badge>
             </div>
             <div className="flex justify-between">
-              <span>VIT:</span>
-              <Badge variant="outline" className="text-xs h-5">{Math.round(player.currentStats.speed)}</Badge>
+              <span>AGL:</span>
+              <Badge variant="outline" className="text-xs h-5">{Math.round(player.currentStats.agility)}</Badge>
             </div>
             <div className="flex justify-between">
               <span>ESQ:</span>
@@ -61,8 +61,8 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({ player }) => {
               <Badge variant="outline" className="text-xs h-5">{Math.round(player.currentStats.luck)}</Badge>
             </div>
             <div className="flex justify-between">
-              <span>A.SPD:</span>
-              <Badge variant="outline" className="text-xs h-5">{player.currentStats.attackSpeed.toFixed(1)}</Badge>
+              <span>S.ATK:</span>
+              <Badge variant="outline" className="text-xs h-5">{Math.round(player.currentStats.speedAttack)}</Badge>
             </div>
           </div>
           <div className="space-y-1">

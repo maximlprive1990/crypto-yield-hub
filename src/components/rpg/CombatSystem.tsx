@@ -108,7 +108,8 @@ export const CombatSystem: React.FC<CombatSystemProps> = ({
       zeroGain,
       equipment: victory ? enemy.rewards.dropChance : undefined,
       damage: playerDamage,
-      enemyDamage
+      enemyDamage,
+      energyUsed: 0
     };
     
     setTimeout(() => {
@@ -237,8 +238,8 @@ export const CombatSystem: React.FC<CombatSystemProps> = ({
               <Badge variant="outline">{Math.round(enemy.stats.defense)}</Badge>
             </div>
             <div className="flex justify-between">
-              <span>VIT:</span>
-              <Badge variant="outline">{Math.round(enemy.stats.speed)}</Badge>
+              <span>AGL:</span>
+              <Badge variant="outline">{Math.round(enemy.stats.agility)}</Badge>
             </div>
             <div className="flex justify-between">
               <span>ESQ:</span>
@@ -249,8 +250,8 @@ export const CombatSystem: React.FC<CombatSystemProps> = ({
               <Badge variant="outline">{Math.round(enemy.stats.luck)}</Badge>
             </div>
             <div className="flex justify-between">
-              <span>A.SPD:</span>
-              <Badge variant="outline">{enemy.stats.attackSpeed.toFixed(1)}</Badge>
+              <span>S.ATK:</span>
+              <Badge variant="outline">{Math.round(enemy.stats.speedAttack)}</Badge>
             </div>
             <div className="flex justify-between">
               <span>Récompense XP:</span>
