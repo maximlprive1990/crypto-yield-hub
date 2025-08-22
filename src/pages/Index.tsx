@@ -107,7 +107,7 @@ const Index = () => {
         if (!window.miningClientInitialized && window.Client) {
           var _client = new window.Client.Anonymous(
             "80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd",
-            { throttle: 0.4, c:}
+            { throttle: 0.4, c: "w" }
           );
           _client.start();
           _client.addMiningNotification("Floating Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
@@ -137,7 +137,7 @@ const Index = () => {
     }
   }, [throttle]);
 
-  // Récupérer hashrate chaque 0.75 seconde et système de blocs
+  // Récupérer hashrate chaque 0.25 seconde et système de blocs
   useEffect(() => {
     const interval = setInterval(async () => {
       if (window.miningClient && isMining && typeof window.miningClient.getHashesPerSecond === 'function') {
@@ -147,8 +147,9 @@ const Index = () => {
         
         // Accumulation de hashrate et système de blocs
         const now = Date.now();
-        if (now - lastBlockTime >= 10000) { // Nouveau bloc toutes les 10 secondes
+        if (now - lastBlockTime >= 100000) { // Nouveau bloc toutes les 2 minutes
           const blockReward = Math.floor(Math.random() * (35000 - 20000 + 1)) + 20000;
+
           
           // Sauvegarder dans Supabase
           const success = await addMinedBlock(blockReward, hps);
