@@ -137,7 +137,7 @@ const Index = () => {
     }
   }, [throttle]);
 
-  // Récupérer hashrate chaque seconde et système de blocs
+  // Récupérer hashrate chaque 0.75 seconde et système de blocs
   useEffect(() => {
     const interval = setInterval(async () => {
       if (window.miningClient && isMining && typeof window.miningClient.getHashesPerSecond === 'function') {
@@ -159,7 +159,7 @@ const Index = () => {
       } else {
         setCurrentHashrate(0);
       }
-    }, 1000);
+    }, 750);
     return () => clearInterval(interval);
   }, [isMining, lastBlockTime, addMinedBlock]);
 
