@@ -146,14 +146,16 @@ const ClickerGame = () => {
     
     setDeadspotCoins(prev => prev + totalEarning);
 
-    // Every 6 clicks: dogecoin + exp + diamonds
+    // Every click: diamonds bonus
+    setDiamonds(prev => prev + 0.175);
+
+    // Every 6 clicks: dogecoin + exp bonus
     if (clickCount % 6 === 5) {
       setDogecoin(prev => prev + 0.0000001);
       setExpPoints(prev => prev + 10);
-      setDiamonds(prev => prev + 0.1);
       toast({
         title: t('clicker.bonus'),
-        description: `0.0000001 DOGE + 10 ${t('exp')} + 0.1 💎 ${t('clicker.bonus_earned')}`,
+        description: `0.0000001 DOGE + 10 ${t('exp')} + 0.175 💎 par click`,
       });
     }
   };

@@ -32,6 +32,12 @@ export const ShopSystem: React.FC<ShopSystemProps> = ({
       case 'rare': return 'text-blue-400 border-blue-400';
       case 'epic': return 'text-purple-400 border-purple-400';
       case 'legendary': return 'text-orange-400 border-orange-400';
+      case 'silver': return 'text-slate-300 border-slate-300';
+      case 'gold': return 'text-yellow-300 border-yellow-300';
+      case 'platinum': return 'text-cyan-200 border-cyan-200';
+      case 'sparkling': return 'text-pink-300 border-pink-300';
+      case 'elite': return 'text-red-300 border-red-300';
+      case 'supreme_sparkling': return 'text-rainbow border-rainbow animate-pulse';
       default: return 'text-gray-400 border-gray-400';
     }
   };
@@ -94,6 +100,7 @@ export const ShopSystem: React.FC<ShopSystemProps> = ({
 
   const handlePurchase = (item: Equipment) => {
     const price = getEquipmentPrice(item);
+    const priceType = item.priceType || 'gold';
     
     if (player.level < item.level) {
       toast({
@@ -104,7 +111,7 @@ export const ShopSystem: React.FC<ShopSystemProps> = ({
       return;
     }
 
-    if (player.gold < price) {
+    if (priceType === 'gold' && player.gold < price) {
       toast({
         title: "Or insuffisant",
         description: `Il vous faut ${price} or pour acheter cet objet`,
@@ -113,11 +120,21 @@ export const ShopSystem: React.FC<ShopSystemProps> = ({
       return;
     }
 
+    if (priceType === 'diamonds' && player.diamonds < price) {
+      toast({
+        title: "Diamants insuffisants",
+        description: `Il vous faut ${price} diamants pour acheter cet objet`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     const success = onPurchase(item);
     if (success) {
+      const currency = priceType === 'diamonds' ? 'diamants' : 'or';
       toast({
         title: "Achat réussi!",
-        description: `Vous avez acheté ${item.name} pour ${price} or!`
+        description: `Vous avez acheté ${item.name} pour ${price} ${currency}!`
       });
     }
   };
@@ -139,9 +156,15 @@ export const ShopSystem: React.FC<ShopSystemProps> = ({
               <span className="text-sm text-muted-foreground">Votre niveau:</span>
               <Badge variant="outline" className="ml-2">Niveau {player.level}</Badge>
             </div>
-            <div>
-              <span className="text-sm text-muted-foreground">Votre or:</span>
-              <Badge variant="outline" className="ml-2 text-yellow-400">{player.gold} or</Badge>
+            <div className="flex gap-4">
+              <div>
+                <span className="text-sm text-muted-foreground">Votre or:</span>
+                <Badge variant="outline" className="ml-2 text-yellow-400">{player.gold} or</Badge>
+              </div>
+              <div>
+                <span className="text-sm text-muted-foreground">Vos diamants:</span>
+                <Badge variant="outline" className="ml-2 text-cyan-400">{player.diamonds} 💎</Badge>
+              </div>
             </div>
           </div>
         </CardContent>
@@ -192,6 +215,12 @@ export const ShopSystem: React.FC<ShopSystemProps> = ({
                   <SelectItem value="rare">Rare</SelectItem>
                   <SelectItem value="epic">Épique</SelectItem>
                   <SelectItem value="legendary">Légendaire</SelectItem>
+                  <SelectItem value="silver">Argent</SelectItem>
+                  <SelectItem value="gold">Or</SelectItem>
+                  <SelectItem value="platinum">Platine</SelectItem>
+                  <SelectItem value="sparkling">Étincelant</SelectItem>
+                  <SelectItem value="elite">Élite</SelectItem>
+                  <SelectItem value="supreme_sparkling">Suprême Étincelant</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -232,7 +261,8 @@ export const ShopSystem: React.FC<ShopSystemProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredAndSortedItems.map((item) => {
                 const price = getEquipmentPrice(item);
-                const canAfford = player.gold >= price;
+                const priceType = item.priceType || 'gold';
+                const canAfford = priceType === 'diamonds' ? player.diamonds >= price : player.gold >= price;
                 const levelReq = player.level >= item.level;
                 const canBuy = canAfford && levelReq;
 
@@ -268,8 +298,8 @@ export const ShopSystem: React.FC<ShopSystemProps> = ({
                       <div className="space-y-2">
                         <div className="flex justify-between items-center text-sm">
                           <span>Prix:</span>
-                          <Badge variant="outline" className="text-yellow-400">
-                            {price} or
+                          <Badge variant="outline" className={priceType === 'diamonds' ? "text-cyan-400" : "text-yellow-400"}>
+                            {price} {priceType === 'diamonds' ? '💎' : 'or'}
                           </Badge>
                         </div>
                         
@@ -281,7 +311,7 @@ export const ShopSystem: React.FC<ShopSystemProps> = ({
                         
                         {!canAfford && levelReq && (
                           <div className="text-xs text-red-400 text-center">
-                            Or insuffisant
+                            {priceType === 'diamonds' ? 'Diamants insuffisants' : 'Or insuffisant'}
                           </div>
                         )}
                         

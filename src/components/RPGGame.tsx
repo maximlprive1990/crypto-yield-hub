@@ -289,13 +289,26 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
     if (!player) return false;
 
     const price = getEquipmentPrice(item);
+    const priceType = item.priceType || 'gold';
     
-    if (player.level < item.level || player.gold < price) {
+    if (player.level < item.level) {
+      return false;
+    }
+    
+    if (priceType === 'gold' && player.gold < price) {
+      return false;
+    }
+    
+    if (priceType === 'diamonds' && player.diamonds < price) {
       return false;
     }
 
     const newPlayer = { ...player };
-    newPlayer.gold -= price;
+    if (priceType === 'diamonds') {
+      newPlayer.diamonds -= price;
+    } else {
+      newPlayer.gold -= price;
+    }
     newPlayer.inventory.push(item);
     
     updatePlayerStats(newPlayer);

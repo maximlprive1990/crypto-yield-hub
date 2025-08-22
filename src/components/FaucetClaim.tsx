@@ -132,9 +132,12 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenRPG, onOpenSpin 
         setNextClaimTime(new Date(data.next_claim_at));
         setTotalClaimed(prev => prev + roundedAmount);
 
+        // Gain de diamants pour le faucet claim
+        const diamondGain = 0.583;
+
         toast({
           title: "🎉 Faucet Claim Réussi!",
-          description: `Vous avez reçu ${roundedAmount.toFixed(5)} ZERO tokens!`,
+          description: `Vous avez reçu ${roundedAmount.toFixed(5)} ZERO tokens + ${diamondGain} 💎 diamants!`,
         });
       }
 

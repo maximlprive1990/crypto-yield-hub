@@ -404,11 +404,322 @@ export const baseEquipment: Equipment[] = [
     level: 15,
     description: "Amulette contenant le pouvoir des âmes anciennes",
     statsBonus: { mana: 200, luck: 50, health: 100, defense: 20, attack: 25 }
+  },
+
+  // Nouveaux équipements Premium
+  
+  // Armes Silver (Niveau 25-30)
+  {
+    id: "silver_excalibur",
+    name: "Excalibur d'Argent",
+    type: "weapon",
+    rarity: "silver",
+    level: 25,
+    description: "Épée légendaire forgée dans l'argent pur des étoiles",
+    priceType: "gold",
+    customPrice: 15000,
+    statsBonus: { attack: 75, attackSpeed: 12.5, defense: 20, luck: 35, health: 80 }
+  },
+  {
+    id: "silver_bow_cosmos",
+    name: "Arc Cosmique d'Argent",
+    type: "weapon",
+    rarity: "silver",
+    level: 28,
+    description: "Arc tirant des flèches stellaires argentées",
+    priceType: "gold",
+    customPrice: 18000,
+    statsBonus: { attack: 85, attackSpeed: 25.8, dodge: 40, speed: 50, luck: 30 }
+  },
+
+  // Armes Gold (Niveau 35-40)
+  {
+    id: "golden_destroyer",
+    name: "Destructeur Doré",
+    type: "weapon",
+    rarity: "gold",
+    level: 35,
+    description: "Masse de guerre dorée capable de briser les réalités",
+    priceType: "diamonds",
+    customPrice: 500,
+    statsBonus: { attack: 120, attackSpeed: 8.2, defense: 35, health: 150, luck: 45 }
+  },
+  {
+    id: "golden_staff_midas",
+    name: "Bâton de Midas",
+    type: "weapon",
+    rarity: "gold",
+    level: 38,
+    description: "Bâton transformant tout en or magique",
+    priceType: "diamonds",
+    customPrice: 750,
+    statsBonus: { attack: 95, mana: 300, luck: 80, speed: 25, attackSpeed: 15.5 }
+  },
+
+  // Armes Platinum (Niveau 45-50)
+  {
+    id: "platinum_divine_blade",
+    name: "Lame Divine de Platine",
+    type: "weapon",
+    rarity: "platinum",
+    level: 45,
+    description: "Épée divine forgée dans le platine céleste",
+    priceType: "diamonds", 
+    customPrice: 1200,
+    statsBonus: { attack: 180, attackSpeed: 18.7, defense: 50, health: 200, mana: 150, luck: 60 }
+  },
+
+  // Armes Sparkling (Niveau 55)
+  {
+    id: "sparkling_void_reaper",
+    name: "Faucheuse du Vide Étincelante",
+    type: "weapon",
+    rarity: "sparkling",
+    level: 55,
+    description: "Arme étincelante déchirant l'espace-temps",
+    priceType: "diamonds",
+    customPrice: 2000,
+    statsBonus: { attack: 250, attackSpeed: 35.2, dodge: 60, speed: 80, luck: 100, mana: 200 }
+  },
+
+  // Armes Elite (Niveau 60)
+  {
+    id: "elite_galaxy_crusher",
+    name: "Briseur de Galaxie Élite",
+    type: "weapon",
+    rarity: "elite",
+    level: 60,
+    description: "Arme d'élite capable de détruire des galaxies entières",
+    priceType: "diamonds",
+    customPrice: 3500,
+    statsBonus: { attack: 320, attackSpeed: 25.8, defense: 80, health: 300, mana: 250, luck: 120 }
+  },
+
+  // Armes Supreme Sparkling (Niveau 70)
+  {
+    id: "supreme_infinity_edge",
+    name: "Lame de l'Infini Suprême",
+    type: "weapon",
+    rarity: "supreme_sparkling",
+    level: 70,
+    description: "L'arme ultime transcendant toutes les réalités",
+    priceType: "diamonds",
+    customPrice: 7500,
+    statsBonus: { attack: 500, attackSpeed: 50.0, defense: 150, health: 500, mana: 400, luck: 200, speed: 120, dodge: 100 }
+  },
+
+  // Armures Premium
+  {
+    id: "silver_celestial_armor",
+    name: "Armure Céleste d'Argent",
+    type: "armor",
+    rarity: "silver",
+    level: 26,
+    description: "Armure argentée bénie par les anges",
+    priceType: "gold",
+    customPrice: 20000,
+    statsBonus: { defense: 90, health: 250, mana: 120, luck: 40, dodge: 25 }
+  },
+  {
+    id: "golden_emperor_plate",
+    name: "Armure Impériale Dorée",
+    type: "armor",
+    rarity: "gold",
+    level: 36,
+    description: "Armure des empereurs divins",
+    priceType: "diamonds",
+    customPrice: 800,
+    statsBonus: { defense: 150, health: 400, mana: 200, luck: 60, speed: 15 }
+  },
+  {
+    id: "platinum_titan_armor",
+    name: "Armure de Titan en Platine",
+    type: "armor",
+    rarity: "platinum",
+    level: 46,
+    description: "Armure des titans de platine",
+    priceType: "diamonds",
+    customPrice: 1500,
+    statsBonus: { defense: 220, health: 600, mana: 250, attack: 50, luck: 80 }
+  },
+  {
+    id: "sparkling_void_armor",
+    name: "Armure du Vide Étincelante",
+    type: "armor",
+    rarity: "sparkling",
+    level: 56,
+    description: "Armure forgée dans les étoiles scintillantes",
+    priceType: "diamonds",
+    customPrice: 2500,
+    statsBonus: { defense: 300, health: 800, mana: 350, dodge: 50, speed: 40, luck: 120 }
+  },
+  {
+    id: "elite_cosmos_armor",
+    name: "Armure Cosmique Élite",
+    type: "armor",
+    rarity: "elite",
+    level: 61,
+    description: "Armure d'élite forgée avec la matière cosmique",
+    priceType: "diamonds",
+    customPrice: 4000,
+    statsBonus: { defense: 400, health: 1000, mana: 400, attack: 80, luck: 150, dodge: 60 }
+  },
+  {
+    id: "supreme_universe_armor",
+    name: "Armure Universelle Suprême",
+    type: "armor",
+    rarity: "supreme_sparkling",
+    level: 71,
+    description: "L'armure ultime contenant la puissance de l'univers",
+    priceType: "diamonds",
+    customPrice: 8500,
+    statsBonus: { defense: 600, health: 1500, mana: 600, attack: 150, luck: 250, dodge: 120, speed: 80 }
+  },
+
+  // Anneaux Premium
+  {
+    id: "silver_ring_power",
+    name: "Anneau de Puissance d'Argent",
+    type: "ring",
+    rarity: "silver",
+    level: 27,
+    description: "Anneau amplifiant toutes les capacités",
+    priceType: "gold",
+    customPrice: 12000,
+    statsBonus: { attack: 40, defense: 25, luck: 50, mana: 80, health: 120 }
+  },
+  {
+    id: "golden_ring_mastery",
+    name: "Anneau de Maîtrise Doré",
+    type: "ring",
+    rarity: "gold",
+    level: 37,
+    description: "Anneau doré de maîtrise absolue",
+    priceType: "diamonds",
+    customPrice: 600,
+    statsBonus: { attack: 60, defense: 40, luck: 90, mana: 150, attackSpeed: 20.5, dodge: 30 }
+  },
+  {
+    id: "platinum_ring_dominion",
+    name: "Anneau de Domination en Platine",
+    type: "ring",
+    rarity: "platinum",
+    level: 47,
+    description: "Anneau de platine conférant la domination",
+    priceType: "diamonds",
+    customPrice: 1300,
+    statsBonus: { attack: 90, defense: 60, luck: 120, mana: 200, health: 250, speed: 50 }
+  },
+  {
+    id: "sparkling_ring_infinity",
+    name: "Anneau de l'Infini Étincelant",
+    type: "ring",
+    rarity: "sparkling",
+    level: 57,
+    description: "Anneau étincelant aux pouvoirs infinis",
+    priceType: "diamonds",
+    customPrice: 2200,
+    statsBonus: { attack: 120, defense: 80, luck: 180, mana: 300, health: 350, attackSpeed: 30.0, dodge: 70 }
+  },
+  {
+    id: "elite_ring_transcendence",
+    name: "Anneau de Transcendance Élite",
+    type: "ring",
+    rarity: "elite",
+    level: 62,
+    description: "Anneau d'élite transcendant les limites",
+    priceType: "diamonds",
+    customPrice: 3800,
+    statsBonus: { attack: 150, defense: 100, luck: 220, mana: 400, health: 450, speed: 80, dodge: 90 }
+  },
+  {
+    id: "supreme_ring_omnipotence",
+    name: "Anneau d'Omnipotence Suprême",
+    type: "ring",
+    rarity: "supreme_sparkling",
+    level: 72,
+    description: "L'anneau ultime de l'omnipotence absolue",
+    priceType: "diamonds",
+    customPrice: 9000,
+    statsBonus: { attack: 250, defense: 200, luck: 350, mana: 600, health: 700, attackSpeed: 60.0, dodge: 150, speed: 120 }
+  },
+
+  // Amulettes Premium
+  {
+    id: "silver_amulet_stars",
+    name: "Amulette des Étoiles d'Argent",
+    type: "amulet",
+    rarity: "silver",
+    level: 29,
+    description: "Amulette capturant la lumière des étoiles",
+    priceType: "gold",
+    customPrice: 14000,
+    statsBonus: { luck: 80, mana: 200, speed: 40, dodge: 35, attackSpeed: 15.2 }
+  },
+  {
+    id: "golden_amulet_wisdom",
+    name: "Amulette de Sagesse Dorée",
+    type: "amulet",
+    rarity: "gold",
+    level: 39,
+    description: "Amulette dorée de la sagesse éternelle",
+    priceType: "diamonds",
+    customPrice: 700,
+    statsBonus: { luck: 120, mana: 350, speed: 60, dodge: 50, health: 200, defense: 35 }
+  },
+  {
+    id: "platinum_amulet_destiny",
+    name: "Amulette du Destin en Platine",
+    type: "amulet",
+    rarity: "platinum",
+    level: 49,
+    description: "Amulette de platine contrôlant le destin",
+    priceType: "diamonds",
+    customPrice: 1400,
+    statsBonus: { luck: 180, mana: 450, speed: 80, dodge: 70, health: 300, attack: 60, defense: 50 }
+  },
+  {
+    id: "sparkling_amulet_eternity",
+    name: "Amulette de l'Éternité Étincelante",
+    type: "amulet",
+    rarity: "sparkling",
+    level: 59,
+    description: "Amulette étincelante de l'éternité",
+    priceType: "diamonds",
+    customPrice: 2300,
+    statsBonus: { luck: 250, mana: 600, speed: 100, dodge: 100, health: 400, attack: 80, defense: 80, attackSpeed: 40.0 }
+  },
+  {
+    id: "elite_amulet_creation",
+    name: "Amulette de Création Élite",
+    type: "amulet",
+    rarity: "elite",
+    level: 63,
+    description: "Amulette d'élite de la création primordiale",
+    priceType: "diamonds",
+    customPrice: 4200,
+    statsBonus: { luck: 320, mana: 750, speed: 120, dodge: 120, health: 500, attack: 120, defense: 100 }
+  },
+  {
+    id: "supreme_amulet_reality",
+    name: "Amulette de la Réalité Suprême",
+    type: "amulet",
+    rarity: "supreme_sparkling",
+    level: 75,
+    description: "L'amulette ultime qui façonne la réalité elle-même",
+    priceType: "diamonds",
+    customPrice: 10000,
+    statsBonus: { luck: 500, mana: 1000, speed: 200, dodge: 200, health: 800, attack: 200, defense: 150, attackSpeed: 80.0 }
   }
 ];
 
 // Prix de base pour chaque type et rareté
 export const getEquipmentPrice = (equipment: Equipment): number => {
+  // Si l'équipement a un prix personnalisé, l'utiliser
+  if (equipment.customPrice && equipment.priceType) {
+    return equipment.customPrice;
+  }
+
   const basePrice = {
     weapon: 50,
     armor: 80,
@@ -421,7 +732,13 @@ export const getEquipmentPrice = (equipment: Equipment): number => {
     uncommon: 2.5,
     rare: 6,
     epic: 15,
-    legendary: 40
+    legendary: 40,
+    silver: 80,
+    gold: 150,
+    platinum: 250,
+    sparkling: 400,
+    elite: 600,
+    supreme_sparkling: 1000
   };
 
   const levelMultiplier = 1 + (equipment.level - 1) * 0.3;
@@ -470,17 +787,23 @@ export function generateEnemy(playerLevel: number): Enemy {
 
 function generateRandomEquipment(level: number): Equipment {
   const types: Equipment['type'][] = ['weapon', 'armor', 'ring', 'amulet'];
-  const rarities: Equipment['rarity'][] = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+  const rarities: Equipment['rarity'][] = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'silver', 'gold', 'platinum', 'sparkling', 'elite', 'supreme_sparkling'];
   
   const type = types[Math.floor(Math.random() * types.length)];
-  const rarity = rarities[Math.floor(Math.random() * Math.min(rarities.length, Math.floor(level / 3) + 2))];
+  const rarity = rarities[Math.floor(Math.random() * Math.min(rarities.length, Math.floor(level / 8) + 2))];
   
   const rarityMultipliers = {
     common: 1,
     uncommon: 1.5,
     rare: 2,
     epic: 3,
-    legendary: 5
+    legendary: 5,
+    silver: 8,
+    gold: 12,
+    platinum: 18,
+    sparkling: 25,
+    elite: 35,
+    supreme_sparkling: 50
   };
 
   const multiplier = rarityMultipliers[rarity];
