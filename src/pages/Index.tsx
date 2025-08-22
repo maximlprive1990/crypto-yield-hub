@@ -356,8 +356,35 @@ const Index = () => {
         </div>
       </section>
 
+          {/* News Center Section - 2ème position */}
+          <section id="news" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Centre d'Actualités</h2>
+              <p className="text-muted-foreground">Restez informé des dernières nouvelles crypto</p>
+            </div>
+            <NewsCenter />
+          </section>
+
+          {/* Portfolio Tracker Section - 3ème position */}
+          <section id="portfolio" className="container mx-auto px-6 py-12 bg-secondary/20">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Suivi de Portefeuille</h2>
+              <p className="text-muted-foreground">Analysez la performance de votre portefeuille</p>
+            </div>
+            <PortfolioTracker />
+          </section>
+
+          {/* Security Center Section - 4ème position */}
+          <section id="security" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Centre de Sécurité</h2>
+              <p className="text-muted-foreground">Gérez la sécurité de votre compte</p>
+            </div>
+            <SecurityCenter />
+          </section>
+
           {/* Features Section */}
-          <section id="features" className="container mx-auto px-6 py-12">
+          <section id="features" className="container mx-auto px-6 py-12 bg-secondary/20">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Pourquoi Choisir CryptoStake Pro ?</h2>
               <p className="text-muted-foreground">Découvrez nos avantages</p>
@@ -391,6 +418,24 @@ const Index = () => {
                 </p>
               </div>
             </div>
+          </section>
+
+          {/* Statistics Section */}
+          <section id="stats" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Statistiques de la Plateforme</h2>
+              <p className="text-muted-foreground">Des chiffres réels qui témoignent de la croissance de notre communauté</p>
+            </div>
+            <PlatformStats />
+          </section>
+
+          {/* Custom Staking Section - 7ème position */}
+          <section id="custom-staking" className="container mx-auto px-6 py-12 bg-secondary/20">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Staking Personnalisé</h2>
+              <p className="text-muted-foreground">Personnalisez votre stratégie de staking</p>
+            </div>
+            <CustomStaking />
           </section>
 
           {/* Gaming Section */}
@@ -611,32 +656,6 @@ const Index = () => {
             <CustomizationSystem />
           </section>
 
-          {/* Security Center Section */}
-          <section id="security" className="container mx-auto px-6 py-12 bg-secondary/20">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Centre de Sécurité</h2>
-              <p className="text-muted-foreground">Gérez la sécurité de votre compte</p>
-            </div>
-            <SecurityCenter />
-          </section>
-
-          {/* News Center Section */}
-          <section id="news" className="container mx-auto px-6 py-12">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Centre d'Actualités</h2>
-              <p className="text-muted-foreground">Restez informé des dernières nouvelles crypto</p>
-            </div>
-            <NewsCenter />
-          </section>
-
-          {/* Custom Staking Section */}
-          <section id="custom-staking" className="container mx-auto px-6 py-12 bg-secondary/20">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Staking Personnalisé</h2>
-              <p className="text-muted-foreground">Personnalisez votre stratégie de staking</p>
-            </div>
-            <CustomStaking />
-          </section>
 
           {/* Withdrawal Section */}
           <section id="withdrawal" className="container mx-auto px-6 py-12">
@@ -647,14 +666,6 @@ const Index = () => {
             <WithdrawalSection />
           </section>
 
-          {/* Portfolio Tracker Section */}
-          <section id="portfolio" className="container mx-auto px-6 py-12 bg-secondary/20">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Suivi de Portefeuille</h2>
-              <p className="text-muted-foreground">Analysez la performance de votre portefeuille</p>
-            </div>
-            <PortfolioTracker />
-          </section>
 
           {/* Referral System Section */}
           <section id="referral-system" className="container mx-auto px-6 py-12">
