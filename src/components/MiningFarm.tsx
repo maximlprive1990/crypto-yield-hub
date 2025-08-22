@@ -19,11 +19,11 @@ interface Miner {
   name: string;
   hashrate: number;
   unit: "GH/s" | "TH/s";
-  price_deadspot: number;
   price_diamonds: number;
   power_consumption: number;
   efficiency: number;
   owned: number;
+  rarity: string;
 }
 
 interface MiningSession {
@@ -46,17 +46,49 @@ const MiningFarm = ({
   const { toast } = useToast();
 
   const [miners, setMiners] = useState<Miner[]>([
-    { id: "basic", name: "Mineur Basic", hashrate: 1, unit: "GH/s", price_deadspot: 10, price_diamonds: 0, power_consumption: 50, efficiency: 0.02, owned: 0 },
-    { id: "standard", name: "Mineur Standard", hashrate: 5, unit: "GH/s", price_deadspot: 45, price_diamonds: 2, power_consumption: 200, efficiency: 0.025, owned: 0 },
-    { id: "advanced", name: "Mineur Avancé", hashrate: 15, unit: "GH/s", price_deadspot: 120, price_diamonds: 8, power_consumption: 500, efficiency: 0.03, owned: 0 },
-    { id: "pro", name: "Mineur Pro", hashrate: 50, unit: "GH/s", price_deadspot: 350, price_diamonds: 25, power_consumption: 1200, efficiency: 0.042, owned: 0 },
-    { id: "expert", name: "Mineur Expert", hashrate: 150, unit: "GH/s", price_deadspot: 900, price_diamonds: 75, power_consumption: 2500, efficiency: 0.06, owned: 0 },
-    { id: "master", name: "Mineur Master", hashrate: 500, unit: "GH/s", price_deadspot: 2500, price_diamonds: 200, power_consumption: 5000, efficiency: 0.1, owned: 0 },
-    { id: "titan_1", name: "Titan T1", hashrate: 1, unit: "TH/s", price_deadspot: 6000, price_diamonds: 500, power_consumption: 8000, efficiency: 0.125, owned: 0 },
-    { id: "titan_5", name: "Titan T5", hashrate: 5, unit: "TH/s", price_deadspot: 25000, price_diamonds: 2000, power_consumption: 30000, efficiency: 0.167, owned: 0 },
-    { id: "titan_15", name: "Titan T15", hashrate: 15, unit: "TH/s", price_deadspot: 65000, price_diamonds: 5500, power_consumption: 75000, efficiency: 0.2, owned: 0 },
-    { id: "quantum", name: "Quantum Miner", hashrate: 50, unit: "TH/s", price_deadspot: 200000, price_diamonds: 15000, power_consumption: 150000, efficiency: 0.333, owned: 0 },
-    { id: "singularity", name: "Singularity", hashrate: 100, unit: "TH/s", price_deadspot: 500000, price_diamonds: 40000, power_consumption: 250000, efficiency: 0.4, owned: 0 },
+    // Mineurs de base (1-11 existants avec nouveaux prix en diamants)
+    { id: "basic", name: "Mineur Basic", hashrate: 1, unit: "GH/s", price_diamonds: 1000, power_consumption: 50, efficiency: 0.02, owned: 0, rarity: "Commun" },
+    { id: "standard", name: "Mineur Standard", hashrate: 5, unit: "GH/s", price_diamonds: 8000, power_consumption: 200, efficiency: 0.025, owned: 0, rarity: "Commun" },
+    { id: "advanced", name: "Mineur Avancé", hashrate: 15, unit: "GH/s", price_diamonds: 17500, power_consumption: 500, efficiency: 0.03, owned: 0, rarity: "Peu Commun" },
+    { id: "pro", name: "Mineur Pro", hashrate: 50, unit: "GH/s", price_diamonds: 35000, power_consumption: 1200, efficiency: 0.042, owned: 0, rarity: "Peu Commun" },
+    { id: "expert", name: "Mineur Expert", hashrate: 150, unit: "GH/s", price_diamonds: 60000, power_consumption: 2500, efficiency: 0.06, owned: 0, rarity: "Rare" },
+    { id: "master", name: "Mineur Master", hashrate: 500, unit: "GH/s", price_diamonds: 100000, power_consumption: 5000, efficiency: 0.1, owned: 0, rarity: "Rare" },
+    { id: "titan_1", name: "Titan T1", hashrate: 1, unit: "TH/s", price_diamonds: 150000, power_consumption: 8000, efficiency: 0.125, owned: 0, rarity: "Épique" },
+    { id: "titan_5", name: "Titan T5", hashrate: 5, unit: "TH/s", price_diamonds: 250000, power_consumption: 30000, efficiency: 0.167, owned: 0, rarity: "Épique" },
+    { id: "titan_15", name: "Titan T15", hashrate: 15, unit: "TH/s", price_diamonds: 400000, power_consumption: 75000, efficiency: 0.2, owned: 0, rarity: "Légendaire" },
+    { id: "quantum", name: "Quantum Miner", hashrate: 50, unit: "TH/s", price_diamonds: 750000, power_consumption: 150000, efficiency: 0.333, owned: 0, rarity: "Légendaire" },
+    { id: "singularity", name: "Singularity", hashrate: 100, unit: "TH/s", price_diamonds: 1200000, power_consumption: 250000, efficiency: 0.4, owned: 0, rarity: "Mythique" },
+    
+    // 28 nouveaux mineurs avec des noms créatifs et des raretés variées
+    { id: "crystal_forge", name: "Crystal Forge", hashrate: 200, unit: "TH/s", price_diamonds: 1800000, power_consumption: 400000, efficiency: 0.5, owned: 0, rarity: "Mythique" },
+    { id: "void_ripper", name: "Void Ripper", hashrate: 350, unit: "TH/s", price_diamonds: 2500000, power_consumption: 600000, efficiency: 0.583, owned: 0, rarity: "Mythique" },
+    { id: "stellar_harvester", name: "Stellar Harvester", hashrate: 500, unit: "TH/s", price_diamonds: 3500000, power_consumption: 850000, efficiency: 0.588, owned: 0, rarity: "Ascendant" },
+    { id: "nebula_crusher", name: "Nebula Crusher", hashrate: 750, unit: "TH/s", price_diamonds: 5000000, power_consumption: 1200000, efficiency: 0.625, owned: 0, rarity: "Ascendant" },
+    { id: "cosmic_drill", name: "Cosmic Drill", hashrate: 1000, unit: "TH/s", price_diamonds: 7000000, power_consumption: 1600000, efficiency: 0.625, owned: 0, rarity: "Ascendant" },
+    { id: "galactic_extractor", name: "Galactic Extractor", hashrate: 1500, unit: "TH/s", price_diamonds: 10000000, power_consumption: 2300000, efficiency: 0.652, owned: 0, rarity: "Divin" },
+    { id: "antimatter_engine", name: "Antimatter Engine", hashrate: 2000, unit: "TH/s", price_diamonds: 14000000, power_consumption: 3000000, efficiency: 0.667, owned: 0, rarity: "Divin" },
+    { id: "dark_matter_rig", name: "Dark Matter Rig", hashrate: 3000, unit: "TH/s", price_diamonds: 20000000, power_consumption: 4200000, efficiency: 0.714, owned: 0, rarity: "Divin" },
+    { id: "phoenix_miner", name: "Phoenix Miner", hashrate: 4500, unit: "TH/s", price_diamonds: 28000000, power_consumption: 6000000, efficiency: 0.75, owned: 0, rarity: "Céleste" },
+    { id: "dragon_forge", name: "Dragon Forge", hashrate: 6000, unit: "TH/s", price_diamonds: 38000000, power_consumption: 7800000, efficiency: 0.769, owned: 0, rarity: "Céleste" },
+    { id: "shadow_ripper", name: "Shadow Ripper", hashrate: 8000, unit: "TH/s", price_diamonds: 50000000, power_consumption: 10000000, efficiency: 0.8, owned: 0, rarity: "Céleste" },
+    { id: "inferno_drill", name: "Inferno Drill", hashrate: 10000, unit: "TH/s", price_diamonds: 65000000, power_consumption: 12500000, efficiency: 0.8, owned: 0, rarity: "Transcendant" },
+    { id: "thunder_crusher", name: "Thunder Crusher", hashrate: 12500, unit: "TH/s", price_diamonds: 82000000, power_consumption: 15000000, efficiency: 0.833, owned: 0, rarity: "Transcendant" },
+    { id: "lightning_extractor", name: "Lightning Extractor", hashrate: 15000, unit: "TH/s", price_diamonds: 105000000, power_consumption: 17500000, efficiency: 0.857, owned: 0, rarity: "Transcendant" },
+    { id: "storm_generator", name: "Storm Generator", hashrate: 18000, unit: "TH/s", price_diamonds: 130000000, power_consumption: 20000000, efficiency: 0.9, owned: 0, rarity: "Éternel" },
+    { id: "chaos_engine", name: "Chaos Engine", hashrate: 22000, unit: "TH/s", price_diamonds: 160000000, power_consumption: 24000000, efficiency: 0.917, owned: 0, rarity: "Éternel" },
+    { id: "void_devourer", name: "Void Devourer", hashrate: 27000, unit: "TH/s", price_diamonds: 195000000, power_consumption: 28000000, efficiency: 0.964, owned: 0, rarity: "Éternel" },
+    { id: "reality_shaper", name: "Reality Shaper", hashrate: 33000, unit: "TH/s", price_diamonds: 240000000, power_consumption: 33000000, efficiency: 1.0, owned: 0, rarity: "Omnipotent" },
+    { id: "dimension_ripper", name: "Dimension Ripper", hashrate: 40000, unit: "TH/s", price_diamonds: 295000000, power_consumption: 38000000, efficiency: 1.053, owned: 0, rarity: "Omnipotent" },
+    { id: "universe_forge", name: "Universe Forge", hashrate: 48000, unit: "TH/s", price_diamonds: 360000000, power_consumption: 44000000, efficiency: 1.091, owned: 0, rarity: "Omnipotent" },
+    { id: "infinity_drill", name: "Infinity Drill", hashrate: 58000, unit: "TH/s", price_diamonds: 440000000, power_consumption: 51000000, efficiency: 1.137, owned: 0, rarity: "Suprême" },
+    { id: "eternity_crusher", name: "Eternity Crusher", hashrate: 70000, unit: "TH/s", price_diamonds: 540000000, power_consumption: 59000000, efficiency: 1.186, owned: 0, rarity: "Suprême" },
+    { id: "genesis_extractor", name: "Genesis Extractor", hashrate: 85000, unit: "TH/s", price_diamonds: 660000000, power_consumption: 68000000, efficiency: 1.25, owned: 0, rarity: "Suprême" },
+    { id: "omega_engine", name: "Omega Engine", hashrate: 100000, unit: "TH/s", price_diamonds: 800000000, power_consumption: 78000000, efficiency: 1.282, owned: 0, rarity: "Absolu" },
+    { id: "alpha_generator", name: "Alpha Generator", hashrate: 120000, unit: "TH/s", price_diamonds: 970000000, power_consumption: 90000000, efficiency: 1.333, owned: 0, rarity: "Absolu" },
+    { id: "god_miner", name: "God Miner", hashrate: 145000, unit: "TH/s", price_diamonds: 1200000000, power_consumption: 103000000, efficiency: 1.408, owned: 0, rarity: "Absolu" },
+    { id: "primordial_forge", name: "Primordial Forge", hashrate: 175000, unit: "TH/s", price_diamonds: 1500000000, power_consumption: 118000000, efficiency: 1.483, owned: 0, rarity: "Primordial" },
+    { id: "celestial_ripper", name: "Celestial Ripper", hashrate: 210000, unit: "TH/s", price_diamonds: 1900000000, power_consumption: 135000000, efficiency: 1.556, owned: 0, rarity: "Primordial" },
+    { id: "ultimate_destroyer", name: "Ultimate Destroyer", hashrate: 250000, unit: "TH/s", price_diamonds: 2500000000, power_consumption: 155000000, efficiency: 1.613, owned: 0, rarity: "Ultime" },
   ]);
 
   const [miningSessions, setMiningSessions] = useState<MiningSession[]>([
@@ -101,16 +133,15 @@ const MiningFarm = ({
     const miner = miners.find(m => m.id === minerId);
     if (!miner) return;
 
-    if (deadspotCoins < miner.price_deadspot || diamonds < miner.price_diamonds) {
+    if (diamonds < miner.price_diamonds) {
       toast({
         title: "Fonds insuffisants!",
-        description: `Il vous faut ${miner.price_deadspot} DeadSpot coins et ${miner.price_diamonds} diamants`,
+        description: `Il vous faut ${miner.price_diamonds} diamants`,
         variant: "destructive"
       });
       return;
     }
 
-    setDeadspotCoins(prev => prev - miner.price_deadspot);
     setDiamonds(prev => prev - miner.price_diamonds);
 
     setMiners(prev => prev.map(m => 
@@ -118,8 +149,7 @@ const MiningFarm = ({
         ? { 
             ...m, 
             owned: m.owned + 1,
-            price_deadspot: Math.floor(m.price_deadspot * 1.15),
-            price_diamonds: Math.floor(m.price_diamonds * 1.1)
+            price_diamonds: Math.floor(m.price_diamonds * 1.15)
           }
         : m
     ));
@@ -134,10 +164,8 @@ const MiningFarm = ({
     const miner = miners.find(m => m.id === minerId);
     if (!miner || miner.owned === 0) return;
 
-    const sellPriceDeadspot = Math.floor(miner.price_deadspot * 0.7);
     const sellPriceDiamonds = Math.floor(miner.price_diamonds * 0.7);
 
-    setDeadspotCoins(prev => prev + sellPriceDeadspot);
     setDiamonds(prev => prev + sellPriceDiamonds);
 
     setMiners(prev => prev.map(m => 
@@ -145,15 +173,14 @@ const MiningFarm = ({
         ? { 
             ...m, 
             owned: m.owned - 1,
-            price_deadspot: Math.floor(m.price_deadspot / 1.15),
-            price_diamonds: Math.floor(m.price_diamonds / 1.1)
+            price_diamonds: Math.floor(m.price_diamonds / 1.15)
           }
         : m
     ));
 
     toast({
       title: "Mineur vendu!",
-      description: `+${sellPriceDeadspot} DeadSpot coins et +${sellPriceDiamonds} diamants`,
+      description: `+${sellPriceDiamonds} diamants`,
     });
   };
 
@@ -196,7 +223,12 @@ const MiningFarm = ({
             {miners.map((miner) => (
               <div key={miner.id} className="flex items-center justify-between p-3 rounded-lg bg-card/50 border border-border/50">
                 <div className="flex-1">
-                  <div className="font-medium">{miner.name}</div>
+                  <div className="font-medium flex items-center gap-2">
+                    {miner.name}
+                    <Badge variant="secondary" className="text-xs">
+                      {miner.rarity}
+                    </Badge>
+                  </div>
                   <div className="text-sm text-muted-foreground">
                     {miner.hashrate} {miner.unit} • {miner.power_consumption}W
                   </div>
@@ -210,12 +242,12 @@ const MiningFarm = ({
                 <div className="flex flex-col gap-2 ml-4">
                   <Button
                     onClick={() => buyMiner(miner.id)}
-                    disabled={deadspotCoins < miner.price_deadspot || diamonds < miner.price_diamonds}
+                    disabled={diamonds < miner.price_diamonds}
                     variant="outline"
                     size="sm"
                   >
                     <ShoppingCart className="w-4 h-4 mr-1" />
-                    {miner.price_deadspot}💰 {miner.price_diamonds}💎
+                    {miner.price_diamonds.toLocaleString()}💎
                   </Button>
                   {miner.owned > 0 && (
                     <Button
