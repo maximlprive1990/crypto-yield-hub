@@ -278,30 +278,8 @@ export const DataPersistenceDashboard = () => {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle>Farming</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Niveau:</span>
-                    <span className="font-bold">{gameData.farmingLevel}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Expérience:</span>
-                    <span>{gameData.farmingExperience}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Diamants:</span>
-                    <span className="text-purple-500 font-bold">{gameData.diamonds}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Activités</CardTitle>
+               <CardHeader>
+                 <CardTitle>Activités</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">

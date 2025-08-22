@@ -11,8 +11,6 @@ export interface GameDataState {
   totalSpins: number;
   miningLevel: number;
   miningExperience: number;
-  farmingLevel: number;
-  farmingExperience: number;
   diamonds: number;
   experience: number;
   lastDailyBonus: string | null;
@@ -29,8 +27,6 @@ export const usePersistentGameData = () => {
     totalSpins: 0,
     miningLevel: 1,
     miningExperience: 0,
-    farmingLevel: 1,
-    farmingExperience: 0,
     diamonds: 0,
     experience: 0,
     lastDailyBonus: null,
@@ -38,22 +34,10 @@ export const usePersistentGameData = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
-  // Charger les données de farming depuis Supabase
   const loadGameData = useCallback(async () => {
     if (!user) return;
 
     try {
-      // Charger les données de farming
-      const { data: farmingData, error: farmingError } = await supabase
-        .from('farming_data')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (farmingError && farmingError.code !== 'PGRST116') {
-        console.error('Erreur lors du chargement des données de farming:', farmingError);
-      }
-
       // Charger les données de profil
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
@@ -96,10 +80,8 @@ export const usePersistentGameData = () => {
         totalSpins: spinData?.total_spins || 0,
         miningLevel: profileData?.hashrate_level || 1,
         miningExperience: profileData?.experience_points || 0,
-        farmingLevel: 1, // À calculer depuis l'expérience de farming
-        farmingExperience: farmingData?.experience || 0,
-        diamonds: farmingData?.diamonds || 0,
-        experience: farmingData?.experience || 0,
+        diamonds: 0,
+        experience: 0,
         lastDailyBonus: null, // À implémenter
         consecutiveDays: profileData?.loyalty_days || 0,
       });
@@ -116,23 +98,6 @@ export const usePersistentGameData = () => {
     if (!user) return false;
 
     try {
-      // Mettre à jour les données de farming si nécessaire
-      if (updates.farmingExperience !== undefined || updates.diamonds !== undefined) {
-        const { error: farmingError } = await supabase
-          .from('farming_data')
-          .upsert({
-            user_id: user.id,
-            experience: updates.farmingExperience || gameData.farmingExperience,
-            diamonds: updates.diamonds || gameData.diamonds,
-            deadspot_coins: 0, // À synchroniser avec le système principal
-            zero_tokens: 0,
-          });
-
-        if (farmingError) {
-          console.error('Erreur lors de la sauvegarde des données de farming:', farmingError);
-        }
-      }
-
       // Mettre à jour les données de profil si nécessaire
       if (updates.miningExperience !== undefined || updates.clickerExperience !== undefined) {
         const { error: profileError } = await supabase
@@ -160,7 +125,7 @@ export const usePersistentGameData = () => {
   }, [user, gameData]);
 
   // Ajouter de l'expérience
-  const addExperience = useCallback(async (amount: number, type: 'mining' | 'farming' | 'clicker') => {
+  const addExperience = useCallback(async (amount: number, type: 'mining' | 'clicker') => {
     const updates: Partial<GameDataState> = {};
     
     switch (type) {
@@ -168,10 +133,6 @@ export const usePersistentGameData = () => {
         updates.miningExperience = gameData.miningExperience + amount;
         // Calculer le niveau (exemple: niveau = sqrt(experience / 100))
         updates.miningLevel = Math.floor(Math.sqrt(updates.miningExperience / 100)) + 1;
-        break;
-      case 'farming':
-        updates.farmingExperience = gameData.farmingExperience + amount;
-        updates.farmingLevel = Math.floor(Math.sqrt(updates.farmingExperience / 100)) + 1;
         break;
       case 'clicker':
         updates.clickerExperience = gameData.clickerExperience + amount;

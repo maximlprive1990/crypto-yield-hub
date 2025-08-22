@@ -9,7 +9,7 @@ import NewsCenter from "@/components/NewsCenter";
 import DepositTracker from "@/components/DepositTracker";
 import StakingTracker from "@/components/StakingTracker";
 import CustomStaking from "@/components/CustomStaking";
-import { FarmingSystem } from "@/components/FarmingSystem";
+
 import MiningFarm from "@/components/MiningFarm";
 import RewardsSystem from "@/components/RewardsSystem";
 import MissionsSystem from "@/components/MissionsSystem";
@@ -63,7 +63,7 @@ const Index = () => {
   
   const [showSpinWheel, setShowSpinWheel] = useState(false);
   const [showFaucet, setShowFaucet] = useState(false);
-  const [showFarm, setShowFarm] = useState(false);
+  
   const [userZeroBalance, setUserZeroBalance] = useState(0);
   const [showDepositBonus, setShowDepositBonus] = useState(true);
 
@@ -324,24 +324,6 @@ const Index = () => {
         </div>
       )}
 
-      {/* Farm System Slide */}
-      {showFarm && (
-        <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-auto">
-          <div className="container mx-auto p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-bold gradient-text">🌾 {t('gaming.farm.title')}</h2>
-              <Button 
-                variant="ghost" 
-                onClick={() => setShowFarm(false)}
-                className="text-2xl"
-              >
-                {t('close')}
-              </Button>
-            </div>
-            <FarmingSystem />
-          </div>
-        </div>
-      )}
 
       <DepositBonusPopup 
         isOpen={showDepositBonus} 
@@ -418,20 +400,6 @@ const Index = () => {
               <p className="text-muted-foreground">{t('gaming.subtitle')}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
-                <div className="text-4xl mb-4">🌾</div>
-                <h3 className="text-lg font-bold mb-2">{t('gaming.farm.title')}</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  {t('gaming.farm.description')}
-                </p>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setShowFarm(true)}
-                  className="w-full shadow-glow"
-                >
-                  {t('gaming.farm.cultivate')}
-                </Button>
-              </div>
               
               <div className="text-center p-6 bg-card rounded-lg border border-primary/20 hover:shadow-glow transition-all">
                 <div className="text-4xl mb-4">💧</div>
@@ -518,15 +486,6 @@ const Index = () => {
                 onExchange={exchangeHashrate}
               />
             </div>
-          </section>
-
-          {/* Farming System Section */}
-          <section id="farming" className="container mx-auto px-6 py-12">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">🌾 {t('gaming.farm.title')}</h2>
-              <p className="text-muted-foreground">{t('gaming.farm.description')}</p>
-            </div>
-            <FarmingSystem />
           </section>
 
           {/* Statistics Section */}

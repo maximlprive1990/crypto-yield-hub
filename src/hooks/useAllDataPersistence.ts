@@ -60,11 +60,11 @@ export const useAllDataPersistence = () => {
       const checks = await Promise.all([
         supabase.from('profiles').select('id').eq('user_id', user.id).single(),
         supabase.from('mining_data').select('id').eq('user_id', user.id).maybeSingle(),
-        supabase.from('farming_data').select('id').eq('user_id', user.id).maybeSingle(),
+        
       ]);
 
       // Créer les données manquantes
-      const [profileCheck, miningCheck, farmingCheck] = checks;
+      const [profileCheck, miningCheck] = checks;
 
       if (profileCheck.error) {
         console.log('🔧 Création du profil utilisateur manquant');
@@ -81,12 +81,6 @@ export const useAllDataPersistence = () => {
         });
       }
 
-      if (!farmingCheck.data) {
-        console.log('🔧 Création des données de farming manquantes');
-        await supabase.from('farming_data').insert({
-          user_id: user.id,
-        });
-      }
 
       return true;
     } catch (error) {
@@ -106,7 +100,7 @@ export const useAllDataPersistence = () => {
         export_date: new Date().toISOString(),
         profile: null,
         mining_data: null,
-        farming_data: null,
+        farmingData: null,
         transactions: [],
         sessions: [],
         achievements: [],
@@ -116,7 +110,6 @@ export const useAllDataPersistence = () => {
       const [
         profileData,
         miningData,
-        farmingData,
         deposits,
         withdrawals,
         miningBlocks,
@@ -126,7 +119,6 @@ export const useAllDataPersistence = () => {
       ] = await Promise.all([
         supabase.from('profiles').select('*').eq('user_id', user.id).single(),
         supabase.from('mining_data').select('*').eq('user_id', user.id).single(),
-        supabase.from('farming_data').select('*').eq('user_id', user.id).single(),
         supabase.from('deposits').select('*').eq('user_id', user.id),
         supabase.from('withdrawal_requests').select('*').eq('user_id', user.id),
         supabase.from('mining_blocks').select('*').eq('user_id', user.id),
@@ -137,7 +129,7 @@ export const useAllDataPersistence = () => {
 
       userData.profile = profileData.data;
       userData.mining_data = miningData.data;
-      userData.farming_data = farmingData.data;
+      
       userData.transactions = [
         ...(deposits.data || []),
         ...(withdrawals.data || []),
@@ -146,7 +138,7 @@ export const useAllDataPersistence = () => {
       ];
       userData.sessions = [
         ...(miningBlocks.data || []),
-        ...(miningSessions.data || []),
+        ...(miningSessions?.data || []),
       ];
 
       return userData;
