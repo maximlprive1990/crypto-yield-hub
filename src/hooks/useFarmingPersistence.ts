@@ -165,6 +165,10 @@ export const useFarmingPersistence = () => {
   const [zeroTokens, setZeroTokens] = useState(0);
   const [diamonds, setDiamonds] = useState(0);
   const [experience, setExperience] = useState(0);
+  const [energy, setEnergy] = useState(1000);
+  const [maxEnergy, setMaxEnergy] = useState(1000);
+  const [miningExperience, setMiningExperience] = useState(0);
+  const [miningLevel, setMiningLevel] = useState(1);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [slots, setSlots] = useState<FarmSlot[]>([
     { id: 1, isUnlocked: true, unlockPrice: 0, isGrowing: false },
@@ -197,6 +201,10 @@ export const useFarmingPersistence = () => {
           setZeroTokens(Number(farmingData.zero_tokens));
           setDiamonds(Number(farmingData.diamonds || 0));
           setExperience(Number(farmingData.experience || 0));
+          setEnergy(Number(farmingData.energy || 1000));
+          setMaxEnergy(Number(farmingData.max_energy || 1000));
+          setMiningExperience(Number(farmingData.mining_experience || 0));
+          setMiningLevel(Number(farmingData.mining_level || 1));
         } else {
           // Créer les données initiales si elles n'existent pas
           await supabase
@@ -207,6 +215,10 @@ export const useFarmingPersistence = () => {
               zero_tokens: 0,
               diamonds: 0,
               experience: 0,
+              energy: 1000,
+              max_energy: 1000,
+              mining_experience: 0,
+              mining_level: 1,
             });
         }
 
@@ -268,7 +280,16 @@ export const useFarmingPersistence = () => {
   }, [user]);
 
   // Sauvegarder les données principales
-  const saveFarmingData = async (coins: number, tokens: number, diamondsValue?: number, experienceValue?: number) => {
+  const saveFarmingData = async (
+    coins: number, 
+    tokens: number, 
+    diamondsValue?: number, 
+    experienceValue?: number,
+    energyValue?: number,
+    maxEnergyValue?: number,
+    miningExpValue?: number,
+    miningLevelValue?: number
+  ) => {
     if (!user) return;
 
     try {
@@ -283,6 +304,10 @@ export const useFarmingPersistence = () => {
         zero_tokens: tokens,
         ...(diamondsValue !== undefined && { diamonds: diamondsValue }),
         ...(experienceValue !== undefined && { experience: experienceValue }),
+        ...(energyValue !== undefined && { energy: energyValue }),
+        ...(maxEnergyValue !== undefined && { max_energy: maxEnergyValue }),
+        ...(miningExpValue !== undefined && { mining_experience: miningExpValue }),
+        ...(miningLevelValue !== undefined && { mining_level: miningLevelValue }),
       };
 
       if (existing) {
@@ -303,6 +328,10 @@ export const useFarmingPersistence = () => {
       setZeroTokens(tokens);
       if (diamondsValue !== undefined) setDiamonds(diamondsValue);
       if (experienceValue !== undefined) setExperience(experienceValue);
+      if (energyValue !== undefined) setEnergy(energyValue);
+      if (maxEnergyValue !== undefined) setMaxEnergy(maxEnergyValue);
+      if (miningExpValue !== undefined) setMiningExperience(miningExpValue);
+      if (miningLevelValue !== undefined) setMiningLevel(miningLevelValue);
     } catch (error) {
       console.error('Erreur lors de la sauvegarde des données de farming:', error);
     }
@@ -387,19 +416,54 @@ export const useFarmingPersistence = () => {
     }
   };
 
+  // Calculer l'expérience nécessaire pour le prochain niveau de mining
+  const getRequiredExperience = (level: number) => {
+    if (level === 1) return 10;
+    return Math.ceil(10 * Math.pow(1.0278, level - 1));
+  };
+
+  // Fonction pour gérer le level up de mining
+  const checkMiningLevelUp = (currentExp: number, currentLevel: number) => {
+    const requiredExp = getRequiredExperience(currentLevel + 1);
+    if (currentExp >= requiredExp) {
+      const newLevel = currentLevel + 1;
+      const remainingExp = currentExp - requiredExp;
+      setMiningLevel(newLevel);
+      setMiningExperience(remainingExp);
+      saveFarmingData(deadspotCoins, zeroTokens, diamonds, experience, energy, maxEnergy, remainingExp, newLevel);
+      return newLevel;
+    }
+    return currentLevel;
+  };
+
   return {
     deadspotCoins,
     zeroTokens,
     diamonds,
     experience,
+    energy,
+    maxEnergy,
+    miningExperience,
+    miningLevel,
     inventory,
     slots,
     loading,
     SEEDS, // Export the SEEDS array
+    getRequiredExperience,
+    checkMiningLevelUp,
     setDeadspotCoins: (coins: number) => saveFarmingData(coins, zeroTokens),
     setZeroTokens: (tokens: number) => saveFarmingData(deadspotCoins, tokens),
     setDiamonds: (diamondsValue: number) => saveFarmingData(deadspotCoins, zeroTokens, diamondsValue, experience),
     setExperience: (experienceValue: number) => saveFarmingData(deadspotCoins, zeroTokens, diamonds, experienceValue),
+    setEnergy: (energyValue: number) => saveFarmingData(deadspotCoins, zeroTokens, diamonds, experience, energyValue, maxEnergy),
+    setMaxEnergy: (maxEnergyValue: number) => saveFarmingData(deadspotCoins, zeroTokens, diamonds, experience, energy, maxEnergyValue),
+    setMiningExperience: (miningExpValue: number) => {
+      const newLevel = checkMiningLevelUp(miningExpValue, miningLevel);
+      if (newLevel === miningLevel) {
+        saveFarmingData(deadspotCoins, zeroTokens, diamonds, experience, energy, maxEnergy, miningExpValue, miningLevel);
+      }
+    },
+    setMiningLevel: (miningLevelValue: number) => saveFarmingData(deadspotCoins, zeroTokens, diamonds, experience, energy, maxEnergy, miningExperience, miningLevelValue),
     setInventory: saveInventory,
     setSlots: saveSlots,
   };
