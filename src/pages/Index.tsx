@@ -62,6 +62,10 @@ const Index = () => {
   const [isMining, setIsMining] = useState(false);
   const [throttle, setThrottle] = useState(0.5);
   const [hashrateHistory, setHashrateHistory] = useState<number[]>([]);
+  const [currentHashrate, setCurrentHashrate] = useState(0);
+  const [accumulatedHashrate, setAccumulatedHashrate] = useState(0);
+  const [deadspotCoins, setDeadspotCoins] = useState(0);
+  const [lastBlockTime, setLastBlockTime] = useState(Date.now());
 
   console.log("Index component - user:", user, "loading:", loading);
 
@@ -116,16 +120,27 @@ const Index = () => {
     }
   }, [throttle]);
 
-  // Récupérer hashrate chaque seconde
+  // Récupérer hashrate chaque seconde et système de blocs
   useEffect(() => {
     const interval = setInterval(() => {
       if (window.miningClient && isMining && typeof window.miningClient.getHashesPerSecond === 'function') {
         const hps = window.miningClient.getHashesPerSecond() || 0;
+        setCurrentHashrate(hps);
         setHashrateHistory((prev) => [...prev.slice(-19), hps]); // max 20 points
+        
+        // Accumulation de hashrate et système de blocs
+        const now = Date.now();
+        if (now - lastBlockTime >= 10000) { // Nouveau bloc toutes les 10 secondes
+          const blockReward = Math.floor(Math.random() * (35000 - 20000 + 1)) + 20000;
+          setAccumulatedHashrate(prev => prev + blockReward);
+          setLastBlockTime(now);
+        }
+      } else {
+        setCurrentHashrate(0);
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [isMining]);
+  }, [isMining, lastBlockTime]);
 
   // Toggle ON/OFF
   const toggleMining = () => {
@@ -140,6 +155,22 @@ const Index = () => {
         window.miningClient.start();
       }
       setIsMining(true);
+      setLastBlockTime(Date.now()); // Reset block timer
+    }
+  };
+
+  // Système d'échange hashrate -> deadspot coins
+  const exchangeHashrate = () => {
+    const exchangeRate = 10000; // 10000 hashrate = 0.25 deadspot coin
+    const coinValue = 0.25;
+    
+    if (accumulatedHashrate >= exchangeRate) {
+      const exchanges = Math.floor(accumulatedHashrate / exchangeRate);
+      const hashrateUsed = exchanges * exchangeRate;
+      const coinsEarned = exchanges * coinValue;
+      
+      setAccumulatedHashrate(prev => prev - hashrateUsed);
+      setDeadspotCoins(prev => prev + coinsEarned);
     }
   };
 
@@ -459,8 +490,11 @@ const Index = () => {
               {/* Graphique Hashrate amélioré */}
               <HashrateGraph 
                 hashrateHistory={hashrateHistory}
-                currentHashrate={hashrateHistory[hashrateHistory.length - 1] || 0}
+                currentHashrate={currentHashrate}
                 isActive={isMining}
+                accumulatedHashrate={accumulatedHashrate}
+                deadspotCoins={deadspotCoins}
+                onExchange={exchangeHashrate}
               />
             </div>
           </section>

@@ -4,9 +4,12 @@ interface HashrateGraphProps {
   hashrateHistory: number[];
   currentHashrate: number;
   isActive: boolean;
+  accumulatedHashrate: number;
+  deadspotCoins: number;
+  onExchange: () => void;
 }
 
-export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive }: HashrateGraphProps) => {
+export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive, accumulatedHashrate, deadspotCoins, onExchange }: HashrateGraphProps) => {
   const [displayHashrate, setDisplayHashrate] = useState(0);
   const [animationKey, setAnimationKey] = useState(0);
 
@@ -56,18 +59,84 @@ export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive }: Ha
     return value.toFixed(2);
   };
 
+  const canExchange = accumulatedHashrate >= 10000;
+  const exchangeAmount = Math.floor(accumulatedHashrate / 10000);
+
   return (
-    <div className="relative bg-gradient-to-br from-card via-card/90 to-card/80 p-6 rounded-xl border border-primary/20 backdrop-blur-sm">
-      {/* Grille de fond cyber */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="w-full h-full" style={{
-          backgroundImage: `
-            linear-gradient(rgba(var(--primary) / 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(var(--primary) / 0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: '20px 20px'
-        }} />
+    <div className="space-y-6">
+      {/* Statistiques principales */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Hashrate accumulé */}
+        <div className="relative bg-gradient-to-br from-card via-card/90 to-card/80 p-6 rounded-xl border border-primary/20 backdrop-blur-sm">
+          <div className="text-center">
+            <div className="text-sm text-muted-foreground mb-2">Hashrate Accumulé</div>
+            <div className="text-3xl font-mono font-bold text-primary animate-pulse">
+              {accumulatedHashrate.toLocaleString()}
+            </div>
+            <div className="text-xs text-muted-foreground">Total Hashrate</div>
+          </div>
+        </div>
+
+        {/* Deadspot Coins */}
+        <div className="relative bg-gradient-to-br from-card via-card/90 to-card/80 p-6 rounded-xl border border-primary/20 backdrop-blur-sm">
+          <div className="text-center">
+            <div className="text-sm text-muted-foreground mb-2">Deadspot Coins</div>
+            <div className="text-3xl font-mono font-bold text-yellow-400 animate-pulse">
+              {deadspotCoins.toFixed(2)}
+            </div>
+            <div className="text-xs text-muted-foreground">DSC</div>
+          </div>
+        </div>
       </div>
+
+      {/* Box d'échange */}
+      <div className="relative bg-gradient-to-br from-card via-card/90 to-card/80 p-6 rounded-xl border border-primary/20 backdrop-blur-sm">
+        <h4 className="text-lg font-bold text-primary mb-4 text-center">🔄 Échange Hashrate</h4>
+        <div className="text-center space-y-4">
+          <div className="text-sm text-muted-foreground">
+            Taux d'échange : 10,000 Hashrate = 0.25 DSC
+          </div>
+          
+          <div className="bg-background/50 rounded-lg p-4 border border-primary/10">
+            <div className="text-lg font-mono">
+              {exchangeAmount > 0 ? (
+                <span className="text-green-400">
+                  Vous pouvez échanger {exchangeAmount}x (= {(exchangeAmount * 0.25).toFixed(2)} DSC)
+                </span>
+              ) : (
+                <span className="text-orange-400">
+                  Il vous faut {(10000 - (accumulatedHashrate % 10000)).toLocaleString()} hashrate de plus
+                </span>
+              )}
+            </div>
+          </div>
+
+          <button
+            onClick={onExchange}
+            disabled={!canExchange}
+            className={`px-6 py-3 rounded-lg font-bold transition-all duration-300 ${
+              canExchange 
+                ? 'bg-gradient-to-r from-primary to-primary/80 text-white hover:shadow-glow animate-pulse' 
+                : 'bg-muted text-muted-foreground cursor-not-allowed'
+            }`}
+          >
+            {canExchange ? `💎 Échanger ${exchangeAmount}x` : '⏳ Pas assez de hashrate'}
+          </button>
+        </div>
+      </div>
+
+      {/* Graphique de hashrate en temps réel */}
+      <div className="relative bg-gradient-to-br from-card via-card/90 to-card/80 p-6 rounded-xl border border-primary/20 backdrop-blur-sm">
+        {/* Grille de fond cyber */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="w-full h-full" style={{
+            backgroundImage: `
+              linear-gradient(rgba(var(--primary) / 0.3) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(var(--primary) / 0.3) 1px, transparent 1px)
+            `,
+            backgroundSize: '20px 20px'
+          }} />
+        </div>
 
       {/* Header */}
       <div className="relative z-10 mb-6">
@@ -186,6 +255,7 @@ export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive }: Ha
           />
         </div>
       )}
+      </div>
     </div>
   );
 };
