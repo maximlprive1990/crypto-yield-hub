@@ -42,11 +42,16 @@ export const ClickToEarn: React.FC<ClickToEarnProps> = ({ onFreeSpinEarned }) =>
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: stats } = await supabase
+      const { data: stats, error } = await supabase
         .from('click_to_earn_stats')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error loading click stats:', error);
+        return;
+      }
 
       if (stats) {
         setClickStats({
@@ -101,7 +106,7 @@ export const ClickToEarn: React.FC<ClickToEarnProps> = ({ onFreeSpinEarned }) =>
       await addZero(earnedAmount);
 
       // Sauvegarder en base de données
-      await supabase
+      const { error } = await supabase
         .from('click_to_earn_stats')
         .upsert({
           user_id: user.id,
@@ -110,6 +115,10 @@ export const ClickToEarn: React.FC<ClickToEarnProps> = ({ onFreeSpinEarned }) =>
           free_spins_earned: clickStats.freeSpinsEarned + (earnedFreeSpin ? 1 : 0),
           updated_at: new Date().toISOString()
         });
+
+      if (error) {
+        console.error('Error saving click stats:', error);
+      }
 
       if (earnedFreeSpin) {
         toast({

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -79,11 +80,16 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: clickStats } = await supabase
+      const { data: clickStats, error } = await supabase
         .from('click_to_earn_stats')
         .select('free_spins_earned, free_spins_used')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error loading bonus spins:', error);
+        return;
+      }
 
       if (clickStats) {
         const availableSpins = (clickStats.free_spins_earned || 0) - (clickStats.free_spins_used || 0);
@@ -99,11 +105,16 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: status } = await supabase
+      const { data: status, error } = await supabase
         .from('user_spin_status')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error checking spin status:', error);
+        return;
+      }
 
       if (status) {
         setUserStats({
@@ -168,7 +179,7 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
       .from('farming_data')
       .select('zero_tokens')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     if (error && error.code !== 'PGRST116') {
       console.error('Erreur lecture zero_tokens:', error);
@@ -237,15 +248,16 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
 
         if (useBonusSpin) {
           // Update click stats to mark spin as used
+          const { data: currentStats } = await supabase
+            .from('click_to_earn_stats')
+            .select('free_spins_used')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
           await supabase
             .from('click_to_earn_stats')
             .update({ 
-              free_spins_used: (await supabase
-                .from('click_to_earn_stats')
-                .select('free_spins_used')
-                .eq('user_id', user.id)
-                .single()
-              ).data?.free_spins_used || 0 + 1
+              free_spins_used: (currentStats?.free_spins_used || 0) + 1
             })
             .eq('user_id', user.id);
           

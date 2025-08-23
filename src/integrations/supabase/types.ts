@@ -83,6 +83,39 @@ export type Database = {
         }
         Relationships: []
       }
+      click_to_earn_stats: {
+        Row: {
+          created_at: string
+          free_spins_earned: number
+          free_spins_used: number
+          id: string
+          total_clicks: number
+          total_zero_earned: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          free_spins_earned?: number
+          free_spins_used?: number
+          id?: string
+          total_clicks?: number
+          total_zero_earned?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          free_spins_earned?: number
+          free_spins_used?: number
+          id?: string
+          total_clicks?: number
+          total_zero_earned?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       coin_purchases: {
         Row: {
           amount_deadspot: number
