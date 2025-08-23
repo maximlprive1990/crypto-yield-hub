@@ -59,8 +59,8 @@ export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive, accu
     return value.toFixed(2);
   };
 
-  const canExchange = accumulatedHashrate >= 10000;
-  const exchangeAmount = Math.floor(accumulatedHashrate / 10000);
+  const canExchange = accumulatedHashrate >= 100000;
+  const exchangeAmount = Math.floor(accumulatedHashrate / 100000);
 
   return (
     <div className="space-y-6">
@@ -94,18 +94,18 @@ export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive, accu
         <h4 className="text-lg font-bold text-primary mb-4 text-center">🔄 Échange Hashrate</h4>
         <div className="text-center space-y-4">
           <div className="text-sm text-muted-foreground">
-            Taux d'échange : 10,000 Hashrate = 0.25 DSC
+            Taux d'échange : 100,000 Hashrate = 0.15 DSC
           </div>
           
           <div className="bg-background/50 rounded-lg p-4 border border-primary/10">
             <div className="text-lg font-mono">
               {exchangeAmount > 0 ? (
                 <span className="text-green-400">
-                  Vous pouvez échanger {exchangeAmount}x (= {(exchangeAmount * 0.25).toFixed(2)} DSC)
+                  Vous pouvez échanger {exchangeAmount}x (= {(exchangeAmount * 0.15).toFixed(2)} DSC)
                 </span>
               ) : (
                 <span className="text-orange-400">
-                  Il vous faut {(10000 - (accumulatedHashrate % 10000)).toLocaleString()} hashrate de plus
+                  Il vous faut {(100000 - (accumulatedHashrate % 100000)).toLocaleString()} hashrate de plus
                 </span>
               )}
             </div>

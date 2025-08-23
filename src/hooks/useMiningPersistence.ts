@@ -150,8 +150,8 @@ export const useMiningPersistence = () => {
   const exchangeHashrate = useCallback(async () => {
     if (!user) return false;
 
-    const exchangeRate = 10000; // 10000 hashrate = 0.25 deadspot coin
-    const coinValue = 0.25;
+    const exchangeRate = 100000; // 100000 hashrate = 0.15 deadspot coin
+    const coinValue = 0.15;
     
     if (miningData.accumulated_hashrate < exchangeRate) {
       toast.error('Pas assez de hashrate pour l\'échange');
