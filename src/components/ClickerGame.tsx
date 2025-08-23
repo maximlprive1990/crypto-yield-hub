@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Skull, Zap, Plus } from "lucide-react";
 import skullIcon from "@/assets/skull-icon.png";
+import { useFarmingData } from "@/hooks/useFarmingData";
 
 interface PowerUp {
   id: string;
@@ -20,15 +21,12 @@ interface PowerUp {
 const ClickerGame = () => {
   const { toast } = useToast();
   const { t } = useLanguage();
+  const { state: farm, addDeadspot, addDiamonds, changeEnergy, increaseMaxEnergy } = useFarmingData();
   
-  // Game state
-  const [deadspotCoins, setDeadspotCoins] = useState(0);
-  const [diamonds, setDiamonds] = useState(0);
+  // Game-only state (non critique à persister)
   const [dogecoin, setDogecoin] = useState(0);
   const [expPoints, setExpPoints] = useState(0);
   const [level, setLevel] = useState(1);
-  const [energy, setEnergy] = useState(500);
-  const [maxEnergy, setMaxEnergy] = useState(500);
   const [clickCount, setClickCount] = useState(0);
   const [clickPower, setClickPower] = useState(1);
   const [doubleClickActive, setDoubleClickActive] = useState(false);
@@ -81,24 +79,24 @@ const ClickerGame = () => {
   // Auto energy regeneration (base)
   useEffect(() => {
     const interval = setInterval(() => {
-      setEnergy(prev => Math.min(prev + 1, maxEnergy));
-    }, 2000); // 1 energy every 2 seconds
+      // +1 énergie/2s
+      changeEnergy(1);
+    }, 2000);
     return () => clearInterval(interval);
-  }, [maxEnergy]);
+  }, [changeEnergy]);
 
   // Level up effect with progressive XP requirements
   useEffect(() => {
     const expNeeded = level * 150 + (level - 1) * 50; // Progressive increase
     if (expPoints >= expNeeded) {
       setLevel(prev => prev + 1);
-      setMaxEnergy(prev => prev + 50);
-      setEnergy(prev => prev + 50);
+      increaseMaxEnergy(50);
       toast({
         title: t('clicker.level_up'),
         description: `${t('level')} ${level + 1} ${t('clicker.level_reached')}`,
       });
     }
-  }, [expPoints, level, toast]);
+  }, [expPoints, level, increaseMaxEnergy, toast, t]);
 
   // Double click timer
   useEffect(() => {
@@ -120,14 +118,14 @@ const ClickerGame = () => {
     
     if (totalRegen > 0) {
       const interval = setInterval(() => {
-        setEnergy(prev => Math.min(prev + totalRegen, maxEnergy));
+        changeEnergy(totalRegen);
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [powerUps, maxEnergy]);
+  }, [powerUps, changeEnergy]);
 
-  const handleClick = () => {
-    if (energy <= 0) {
+  const handleClick = async () => {
+    if (farm.energy <= 0) {
       toast({
         title: t('clicker.no_energy'),
         description: t('clicker.wait_energy'),
@@ -136,7 +134,7 @@ const ClickerGame = () => {
       return;
     }
 
-    setEnergy(prev => Math.max(0, prev - 1));
+    await changeEnergy(-1);
     setClickCount(prev => prev + 1);
 
     // Calculate earnings
@@ -144,10 +142,10 @@ const ClickerGame = () => {
     const multiplier = doubleClickActive ? 2 : 1;
     const totalEarning = baseEarning * clickPower * multiplier;
     
-    setDeadspotCoins(prev => prev + totalEarning);
+    await addDeadspot(totalEarning);
 
     // Every click: diamonds bonus
-    setDiamonds(prev => prev + 0.175);
+    await addDiamonds(0.175);
 
     // Every 6 clicks: dogecoin + exp bonus
     if (clickCount % 6 === 5) {
@@ -160,9 +158,9 @@ const ClickerGame = () => {
     }
   };
 
-  const buyPowerUp = (powerUpId: string) => {
+  const buyPowerUp = async (powerUpId: string) => {
     const powerUp = powerUps.find(p => p.id === powerUpId);
-    if (!powerUp || deadspotCoins < powerUp.cost) {
+    if (!powerUp || farm.deadspotCoins < powerUp.cost) {
       toast({
         title: t('clicker.insufficient_funds'),
         description: `${t('clicker.need_coins')} ${powerUp?.cost} ${t('deadspot_coins')}`,
@@ -171,7 +169,7 @@ const ClickerGame = () => {
       return;
     }
 
-    setDeadspotCoins(prev => prev - powerUp.cost);
+    await addDeadspot(-powerUp.cost);
 
     switch (powerUpId) {
       case "double_click":
@@ -182,8 +180,7 @@ const ClickerGame = () => {
         setClickPower(prev => prev + 3);
         break;
       case "energy_boost":
-        setMaxEnergy(prev => prev + 200);
-        setEnergy(prev => prev + 200);
+        await increaseMaxEnergy(200);
         break;
     }
 
@@ -205,14 +202,14 @@ const ClickerGame = () => {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Card className="gradient-card border-primary/20">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-primary">{deadspotCoins.toFixed(3)}</div>
+            <div className="text-2xl font-bold text-primary">{farm.deadspotCoins.toFixed(3)}</div>
             <div className="text-sm text-muted-foreground">{t('deadspot_coins')}</div>
           </CardContent>
         </Card>
         
         <Card className="gradient-card border-primary/20">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-blue-400">{diamonds.toFixed(1)}</div>
+            <div className="text-2xl font-bold text-blue-400">{farm.diamonds.toFixed(1)}</div>
             <div className="text-sm text-muted-foreground">{t('diamonds')}</div>
           </CardContent>
         </Card>
@@ -258,16 +255,16 @@ const ClickerGame = () => {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>{t('clicker.energy')}</span>
-                <span>{energy}/{maxEnergy}</span>
+                <span>{farm.energy}/{farm.maxEnergy}</span>
               </div>
-              <Progress value={(energy / maxEnergy) * 100} className="h-3" />
+              <Progress value={(farm.energy / farm.maxEnergy) * 100} className="h-3" />
             </div>
 
             {/* Click Button */}
             <div className="flex flex-col items-center space-y-4">
               <Button
                 onClick={handleClick}
-                disabled={energy <= 0}
+                disabled={farm.energy <= 0}
                 className="w-32 h-32 rounded-full p-0 bg-gradient-to-br from-destructive/20 to-destructive/40 border-2 border-destructive/50 hover:shadow-glow hover:scale-110 transition-smooth"
               >
                 <img 
@@ -308,7 +305,7 @@ const ClickerGame = () => {
                 </div>
                 <Button
                   onClick={() => buyPowerUp(powerUp.id)}
-                  disabled={deadspotCoins < powerUp.cost}
+                  disabled={farm.deadspotCoins < powerUp.cost}
                   variant="outline"
                   size="sm"
                   className="ml-4"

