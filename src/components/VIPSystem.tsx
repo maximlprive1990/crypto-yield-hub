@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,13 +30,23 @@ const VIP_TIERS = {
   platinum: { name: "Platinum VIP", price: 500, color: "text-primary", bonuses: { mining: 50, staking: 35, click: 2.5 } }
 };
 
+const CRYPTO_WALLETS = {
+  BTC: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+  ETH: "0x742d35cc6131b4c4e4c4d7b6c4f8c4d8c4d8c4d8",
+  USDT: "TQn9Y2khEsLJW1ChVWFMSMeRDow5oNDMtb",
+  DOGE: "DGZfwCxLFMEXiCqj62Q3XpYvPLJ4VcYCPG",
+  LTC: "ltc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+};
+
 const VIPSystem = () => {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [vipAccount, setVipAccount] = useState<VIPAccount | null>(null);
   const [loading, setLoading] = useState(true);
-  const [transactionId, setTransactionId] = useState("");
   const [selectedTier, setSelectedTier] = useState("bronze");
+  const [selectedCrypto, setSelectedCrypto] = useState("BTC");
+  const [transactionId, setTransactionId] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -63,48 +74,7 @@ const VIPSystem = () => {
     }
   };
 
-  const generatePayeerPayment = (tier: string) => {
-    const tierData = VIP_TIERS[tier as keyof typeof VIP_TIERS];
-    const orderId = `VIP_${tier.toUpperCase()}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-    // Créer le formulaire Payeer
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = 'https://payeer.com/merchant/';
-    form.target = '_blank';
-
-    const fields = {
-      'm_shop': 'P1112145219',
-      'm_orderid': orderId,
-      'm_amount': tierData.price.toFixed(2),
-      'm_curr': 'USD',
-      'm_desc': btoa(`VIP ${tier.toUpperCase()} Account - DeadSpot`),
-      'm_sign': 'SIGNATURE_REQUIRED' // À remplacer par la vraie signature
-    };
-
-    Object.entries(fields).forEach(([name, value]) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = name;
-      input.value = value.toString();
-      form.appendChild(input);
-    });
-
-    const submitBtn = document.createElement('input');
-    submitBtn.type = 'submit';
-    submitBtn.name = 'm_process';
-    submitBtn.value = 'send';
-    form.appendChild(submitBtn);
-
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-
-    // Créer l'enregistrement en attente
-    createPendingVIPAccount(orderId, tier, tierData.price);
-  };
-
-  const createPendingVIPAccount = async (orderId: string, tier: string, amount: number) => {
+  const createPendingVIPAccount = async (tier: string) => {
     try {
       const tierData = VIP_TIERS[tier as keyof typeof VIP_TIERS];
       
@@ -113,18 +83,19 @@ const VIPSystem = () => {
         .upsert({
           user_id: user?.id,
           tier,
-          deposit_amount: amount,
-          transaction_id: orderId,
+          deposit_amount: tierData.price,
+          transaction_id: null,
           status: 'pending',
           bonus_mining_rate: tierData.bonuses.mining,
           bonus_staking_apy: tierData.bonuses.staking,
           bonus_click_multiplier: tierData.bonuses.click,
-          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 jours
+          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         });
 
       if (error) throw error;
 
-      toast.success("Commande VIP créée ! Complétez le paiement Payeer.");
+      toast.success(`Commande VIP ${tierData.name} créée ! Effectuez le paiement et soumettez l'ID de transaction.`);
+      setSelectedTier(tier);
       fetchVIPAccount();
     } catch (error) {
       console.error("Erreur création compte VIP:", error);
@@ -138,13 +109,14 @@ const VIPSystem = () => {
       return;
     }
 
+    setIsVerifying(true);
+
     try {
-      // Simulation de vérification - En réalité, vous voudriez vérifier avec l'API Payeer
       const { error } = await supabase
         .from("vip_accounts")
         .update({ 
           status: 'active',
-          transaction_id: transactionId 
+          transaction_id: transactionId.trim()
         })
         .eq("user_id", user?.id);
 
@@ -156,6 +128,8 @@ const VIPSystem = () => {
     } catch (error) {
       console.error("Erreur vérification:", error);
       toast.error("Erreur lors de la vérification");
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -255,14 +229,21 @@ const VIPSystem = () => {
                         </div>
                       </div>
                       
-                      <Button 
-                        variant="crypto" 
-                        size="sm" 
-                        className="w-full"
-                        onClick={() => generatePayeerPayment(tier)}
-                      >
-                        Payer avec Payeer
-                      </Button>
+                      {vipAccount?.status === 'pending' && vipAccount.tier === tier ? (
+                        <Badge variant="secondary" className="w-full justify-center">
+                          En attente de paiement
+                        </Badge>
+                      ) : (
+                        <Button 
+                          variant="crypto" 
+                          size="sm" 
+                          className="w-full"
+                          onClick={() => createPendingVIPAccount(tier)}
+                          disabled={vipAccount?.status === 'pending'}
+                        >
+                          Commander VIP
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
@@ -274,26 +255,81 @@ const VIPSystem = () => {
                   <CardHeader>
                     <CardTitle className="text-warning">Paiement en Attente</CardTitle>
                     <CardDescription>
-                      Entrez votre ID de transaction Payeer pour activer votre compte VIP
+                      Effectuez le paiement sur l'une de nos adresses crypto et entrez l'ID de transaction
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-6">
+                    {/* Adresses de paiement */}
+                    <div className="space-y-4">
+                      <Label className="text-base font-semibold">Adresses de Paiement</Label>
+                      <div className="space-y-3">
+                        {Object.entries(CRYPTO_WALLETS).map(([crypto, address]) => (
+                          <div key={crypto} className="flex items-center justify-between p-3 rounded-lg bg-secondary/20 border border-primary/10">
+                            <div className="flex items-center gap-3">
+                              <div className="font-bold text-primary">{crypto}</div>
+                              <div className="font-mono text-sm text-muted-foreground">{address}</div>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                navigator.clipboard.writeText(address);
+                                toast.success(`Adresse ${crypto} copiée !`);
+                              }}
+                            >
+                              Copier
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Sélection crypto */}
                     <div className="space-y-2">
-                      <Label htmlFor="transactionId">ID de Transaction Payeer</Label>
+                      <Label htmlFor="cryptoSelect">Crypto utilisée pour le paiement</Label>
+                      <select
+                        id="cryptoSelect"
+                        value={selectedCrypto}
+                        onChange={(e) => setSelectedCrypto(e.target.value)}
+                        className="w-full p-2 rounded-md bg-secondary/50 border border-primary/20"
+                      >
+                        {Object.keys(CRYPTO_WALLETS).map((crypto) => (
+                          <option key={crypto} value={crypto}>{crypto}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* ID de transaction */}
+                    <div className="space-y-2">
+                      <Label htmlFor="transactionId">ID de Transaction</Label>
                       <Input
                         id="transactionId"
-                        placeholder="Entrez l'ID de votre transaction"
+                        placeholder="Entrez l'ID de votre transaction de paiement"
                         value={transactionId}
                         onChange={(e) => setTransactionId(e.target.value)}
                         className="bg-secondary/50 border-primary/20"
                       />
                     </div>
+
+                    {/* Montant à payer */}
+                    <div className="p-4 rounded-lg bg-info/10 border border-info/20">
+                      <div className="text-center">
+                        <div className="text-lg font-bold">
+                          Montant à payer: ${VIP_TIERS[vipAccount.tier as keyof typeof VIP_TIERS]?.price}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Tier: {VIP_TIERS[vipAccount.tier as keyof typeof VIP_TIERS]?.name}
+                        </div>
+                      </div>
+                    </div>
+                    
                     <Button 
                       variant="crypto" 
                       onClick={verifyTransaction}
-                      disabled={!transactionId.trim()}
+                      disabled={!transactionId.trim() || isVerifying}
+                      className="w-full"
                     >
-                      Vérifier et Activer VIP
+                      {isVerifying ? "Vérification en cours..." : "Vérifier et Activer VIP"}
                     </Button>
                   </CardContent>
                 </Card>
@@ -301,23 +337,25 @@ const VIPSystem = () => {
             </>
           )}
 
-          {/* Informations Payeer */}
+          {/* Informations de Paiement */}
           <Card className="gradient-card border-info/20">
             <CardHeader>
               <CardTitle className="text-info">Informations de Paiement</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Compte Payeer:</span>
-                  <span className="font-mono">P1112145219</span>
+              <div className="space-y-3 text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="font-semibold">Cryptos acceptées:</div>
+                    <div className="text-muted-foreground">BTC, ETH, USDT, DOGE, LTC</div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Confirmation:</div>
+                    <div className="text-muted-foreground">Automatique après vérification</div>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Devises acceptées:</span>
-                  <span>USD, EUR, BTC, USDT, ETH</span>
-                </div>
-                <div className="text-muted-foreground text-xs mt-4">
-                  ⚠️ Conservez votre ID de transaction Payeer pour la vérification
+                <div className="text-muted-foreground text-xs mt-4 p-3 bg-warning/10 rounded-md">
+                  ⚠️ Conservez précieusement votre ID de transaction pour la vérification. Les paiements sont vérifiés manuellement dans les 24h.
                 </div>
               </div>
             </CardContent>
