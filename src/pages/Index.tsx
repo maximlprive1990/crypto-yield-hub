@@ -12,6 +12,34 @@ import { useState } from "react";
 import { FaucetClaim } from "@/components/FaucetClaim";
 import { SpinWheel } from "@/components/SpinWheel";
 
+/* Sections & systèmes (réintégration) */
+import PlatformStats from "@/components/PlatformStats";
+import StakingTracker from "@/components/StakingTracker";
+import CryptoDepositSystem from "@/components/CryptoDepositSystem";
+import DepositTracker from "@/components/DepositTracker";
+import PaymentSection from "@/components/PaymentSection";
+import ClickerGame from "@/components/ClickerGame";
+import ClickToEarn from "@/components/ClickToEarn";
+import MiningFarm from "@/components/MiningFarm";
+import RewardsSystem from "@/components/RewardsSystem";
+import DeadSpotShop from "@/components/DeadSpotShop";
+import ReferralLinksSection from "@/components/ReferralLinksSection";
+import ReferralSystem from "@/components/ReferralSystem";
+import VIPSystem from "@/components/VIPSystem";
+import LootBoxSystem from "@/components/LootBoxSystem";
+import BattlePassSystem from "@/components/BattlePassSystem";
+import MissionsSystem from "@/components/MissionsSystem";
+import EventsSystem from "@/components/EventsSystem";
+import LeaderboardSystem from "@/components/LeaderboardSystem";
+import CustomizationSystem from "@/components/CustomizationSystem";
+import SecurityCenter from "@/components/SecurityCenter";
+import NewsCenter from "@/components/NewsCenter";
+import PortfolioTracker from "@/components/PortfolioTracker";
+import { HashrateTicker } from "@/components/HashrateTicker";
+import ZeroWallet from "@/components/rpg/ZeroWallet";
+
+/* NOTE: Les imports ci-dessus existent déjà dans le projet (liste en lecture seule). */
+
 const Index = () => {
   const { user, signOut, loading } = useAuth();
   const { t } = useLanguage();
@@ -175,7 +203,23 @@ const Index = () => {
             </div>
           </section>
 
-          {/* Gaming Section */}
+          {/* FEATURES */}
+          <section id="features" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Avantages</h2>
+              <p className="text-muted-foreground">Aperçu des chiffres clés</p>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <PlatformStats />
+              </div>
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <StakingTracker />
+              </div>
+            </div>
+          </section>
+
+          {/* GAMING */}
           <section id="gaming" className="container mx-auto px-6 py-12">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">{t('gaming.title')}</h2>
@@ -211,6 +255,221 @@ const Index = () => {
                   {t('gaming.spin.turn')}
                 </Button>
               </div>
+            </div>
+          </section>
+
+          {/* MINING CONTROL */}
+          <section id="mining-control" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Contrôle du Mineur</h2>
+              <p className="text-muted-foreground">Suivi de votre hashrate</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <HashrateTicker />
+            </div>
+          </section>
+
+          {/* STATS */}
+          <section id="stats" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Statistiques</h2>
+              <p className="text-muted-foreground">Résumé de la plateforme</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <PlatformStats />
+            </div>
+          </section>
+
+          {/* DEPOSITS */}
+          <section id="deposits" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Dépôts & Paiements</h2>
+              <p className="text-muted-foreground">Déposer des cryptos et suivre vos dépôts</p>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <CryptoDepositSystem />
+              </div>
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <DepositTracker />
+              </div>
+              <div className="bg-card rounded-lg border border-primary/20 p-4 lg:col-span-2">
+                <PaymentSection />
+              </div>
+            </div>
+          </section>
+
+          {/* CLICKER */}
+          <section id="clicker" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">DeadSpot Click</h2>
+              <p className="text-muted-foreground">Cliquez pour gagner et montez en niveau</p>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <ClickerGame />
+              </div>
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <ClickToEarn />
+              </div>
+            </div>
+          </section>
+
+          {/* MINING FARM */}
+          <section id="mining-farm" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Ferme de Mining</h2>
+              <p className="text-muted-foreground">Gérez votre ferme et optimisez vos gains</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <MiningFarm />
+            </div>
+          </section>
+
+          {/* REWARDS */}
+          <section id="rewards" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Récompenses</h2>
+              <p className="text-muted-foreground">Gagnez et dépensez vos DeadSpot</p>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <RewardsSystem />
+              </div>
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <DeadSpotShop />
+              </div>
+            </div>
+          </section>
+
+          {/* REFERRALS */}
+          <section id="referrals" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Liens Référents</h2>
+              <p className="text-muted-foreground">Partagez et gagnez avec vos amis</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <ReferralLinksSection />
+            </div>
+          </section>
+
+          {/* VIP */}
+          <section id="vip" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">VIP & Monétisation</h2>
+              <p className="text-muted-foreground">Débloquez des bonus exclusifs</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <VIPSystem />
+            </div>
+          </section>
+
+          {/* GAMING FEATURES */}
+          <section id="gaming-features" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Gaming Features</h2>
+              <p className="text-muted-foreground">Loot boxes, missions, événements, et plus</p>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <LootBoxSystem />
+              </div>
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <BattlePassSystem />
+              </div>
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <MissionsSystem />
+              </div>
+              <div className="bg-card rounded-lg border border-primary/20 p-4">
+                <EventsSystem />
+              </div>
+            </div>
+          </section>
+
+          {/* LEADERBOARD */}
+          <section id="leaderboard" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Classements</h2>
+              <p className="text-muted-foreground">Mesurez-vous aux autres</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <LeaderboardSystem />
+            </div>
+          </section>
+
+          {/* CUSTOMIZATION */}
+          <section id="customization" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Personnalisation</h2>
+              <p className="text-muted-foreground">Skins et personnalisations</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <CustomizationSystem />
+            </div>
+          </section>
+
+          {/* SECURITY */}
+          <section id="security" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Sécurité</h2>
+              <p className="text-muted-foreground">Protégez votre compte</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <SecurityCenter />
+            </div>
+          </section>
+
+          {/* NEWS */}
+          <section id="news" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Actualités</h2>
+              <p className="text-muted-foreground">Restez informé des nouveautés</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <NewsCenter />
+            </div>
+          </section>
+
+          {/* CUSTOM STAKING */}
+          <section id="custom-staking" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Staking Custom</h2>
+              <p className="text-muted-foreground">Construisez vos propres pools</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <CustomStaking />
+            </div>
+          </section>
+
+          {/* WITHDRAWAL */}
+          <section id="withdrawal" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Retrait ZERO</h2>
+              <p className="text-muted-foreground">Gérez vos retraits et votre wallet</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <ZeroWallet />
+            </div>
+          </section>
+
+          {/* PORTFOLIO */}
+          <section id="portfolio" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Portfolio</h2>
+              <p className="text-muted-foreground">Suivi de vos actifs</p>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <PortfolioTracker />
+            </div>
+          </section>
+
+          {/* REFERRAL SYSTEM */}
+          <section id="referral-system" className="container mx-auto px-6 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Système de Parrainage</h2>
+            </div>
+            <div className="bg-card rounded-lg border border-primary/20 p-4">
+              <ReferralSystem />
             </div>
           </section>
 
