@@ -1,4 +1,3 @@
-
 import StakingCard from "@/components/StakingCard";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -51,13 +50,19 @@ const Index = () => {
   const [diamonds, setDiamonds] = useState(0);
   const [miningExp, setMiningExp] = useState(0);
   const [level, setLevel] = useState(1);
+  const [zeroBalance, setZeroBalance] = useState(0);
 
   const handleZeroWin = (amount: number) => {
     console.log('Zero win:', amount);
+    setZeroBalance(prev => prev + amount);
   };
 
   const handleFreeSpinEarned = () => {
     console.log('Free spin earned from ClickToEarn');
+  };
+
+  const handleWithdraw = (amount: number) => {
+    setZeroBalance(prev => prev - amount);
   };
 
   // Loading state
@@ -315,12 +320,7 @@ const Index = () => {
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-card rounded-lg border border-primary/20 p-4">
-                <ClickerGame 
-                  deadspotCoins={deadspotCoins}
-                  setDeadspotCoins={setDeadspotCoins}
-                  diamonds={diamonds}
-                  setDiamonds={setDiamonds}
-                />
+                <ClickerGame />
               </div>
               <div className="bg-card rounded-lg border border-primary/20 p-4">
                 <ClickToEarn onFreeSpinEarned={handleFreeSpinEarned} />
@@ -340,10 +340,6 @@ const Index = () => {
                 setDeadspotCoins={setDeadspotCoins}
                 diamonds={diamonds}
                 setDiamonds={setDiamonds}
-                miningExp={miningExp}
-                setMiningExp={setMiningExp}
-                level={level}
-                setLevel={setLevel}
               />
             </div>
           </section>
@@ -356,7 +352,16 @@ const Index = () => {
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-card rounded-lg border border-primary/20 p-4">
-                <RewardsSystem />
+                <RewardsSystem 
+                  deadspotCoins={deadspotCoins}
+                  setDeadspotCoins={setDeadspotCoins}
+                  diamonds={diamonds}
+                  setDiamonds={setDiamonds}
+                  miningExp={miningExp}
+                  setMiningExp={setMiningExp}
+                  level={level}
+                  setLevel={setLevel}
+                />
               </div>
               <div className="bg-card rounded-lg border border-primary/20 p-4">
                 <DeadSpotShop />
@@ -470,7 +475,10 @@ const Index = () => {
               <p className="text-muted-foreground">Gérez vos retraits et votre wallet</p>
             </div>
             <div className="bg-card rounded-lg border border-primary/20 p-4">
-              <ZeroWallet />
+              <ZeroWallet 
+                zeroBalance={zeroBalance}
+                onWithdraw={handleWithdraw}
+              />
             </div>
           </section>
 
