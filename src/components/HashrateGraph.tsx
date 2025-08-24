@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 interface HashrateGraphProps {
@@ -6,7 +7,7 @@ interface HashrateGraphProps {
   isActive: boolean;
   accumulatedHashrate: number;
   deadspotCoins: number;
-  onExchange: () => void;
+  onExchange: (hashrateAmount: number) => Promise<boolean>;
 }
 
 export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive, accumulatedHashrate, deadspotCoins, onExchange }: HashrateGraphProps) => {
@@ -60,7 +61,13 @@ export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive, accu
   };
 
   const canExchange = accumulatedHashrate >= 100000;
-  const exchangeAmount = Math.floor(accumulatedHashrate / 100000);
+  const exchangeAmount = Math.floor(accumulatedHashrate / 100000) * 100000;
+
+  const handleExchange = async () => {
+    if (canExchange && exchangeAmount > 0) {
+      await onExchange(exchangeAmount);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -99,9 +106,9 @@ export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive, accu
           
           <div className="bg-background/50 rounded-lg p-4 border border-primary/10">
             <div className="text-lg font-mono">
-              {exchangeAmount > 0 ? (
+              {canExchange ? (
                 <span className="text-green-400">
-                  Vous pouvez échanger {exchangeAmount}x (= {(exchangeAmount * 0.15).toFixed(2)} DSC)
+                  Vous pouvez échanger {exchangeAmount.toLocaleString()} hashrate (= {((exchangeAmount / 100000) * 0.15).toFixed(2)} DSC)
                 </span>
               ) : (
                 <span className="text-orange-400">
@@ -112,7 +119,7 @@ export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive, accu
           </div>
 
           <button
-            onClick={onExchange}
+            onClick={handleExchange}
             disabled={!canExchange}
             className={`px-6 py-3 rounded-lg font-bold transition-all duration-300 ${
               canExchange 
@@ -120,7 +127,7 @@ export const HashrateGraph = ({ hashrateHistory, currentHashrate, isActive, accu
                 : 'bg-muted text-muted-foreground cursor-not-allowed'
             }`}
           >
-            {canExchange ? `💎 Échanger ${exchangeAmount}x` : '⏳ Pas assez de hashrate'}
+            {canExchange ? `💎 Échanger ${(exchangeAmount / 100000)}x` : '⏳ Pas assez de hashrate'}
           </button>
         </div>
       </div>
