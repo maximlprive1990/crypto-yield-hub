@@ -58,7 +58,7 @@ export const useMiningPersistence = () => {
           .insert({
             user_id: user.id,
             ...DEFAULT_MINING_DATA,
-          })
+          } as any) // ... keep existing code (cast to any to align with DB shape if needed) the same ...
           .select()
           .single();
 
@@ -80,7 +80,7 @@ export const useMiningPersistence = () => {
 
       const { error } = await supabase
         .from('mining_data')
-        .update(updates)
+        .update(updates as any) // ... keep existing code (cast to any to align with DB shape if needed) the same ...
         .eq('id', miningData.id);
 
       if (error) throw error;
@@ -103,11 +103,11 @@ export const useMiningPersistence = () => {
         last_block_time: new Date().toISOString(),
       });
 
-      // Enregistrer le bloc dans l'historique
+      // Enregistrer le bloc dans l'historique (current_hashrate est la colonne correcte)
       await supabase.from('mining_blocks').insert({
-        user_id: user?.id,
+        user_id: user?.id as string,
         block_reward: blockReward,
-        hashrate_at_time: currentHashrate,
+        current_hashrate: currentHashrate,
       });
 
       return true;
@@ -128,21 +128,23 @@ export const useMiningPersistence = () => {
 
     const exchangeCount = Math.floor(hashrateAmount / exchangeRate);
     const coinsEarned = exchangeCount * coinsPerExchange;
+    const totalHashrateToExchange = exchangeCount * exchangeRate;
 
     try {
       await saveMutation.mutateAsync({
-        accumulated_hashrate: miningData.accumulated_hashrate - (exchangeCount * exchangeRate),
+        accumulated_hashrate: miningData.accumulated_hashrate - totalHashrateToExchange,
         deadspot_coins: miningData.deadspot_coins + coinsEarned,
       });
 
-      // Enregistrer la transaction
+      // Enregistrer la transaction (colonnes correctes: hashrate_amount, deadspot_coins_received, exchange_rate)
       await supabase.from('hashrate_exchanges').insert({
-        user_id: user?.id,
-        hashrate_exchanged: exchangeCount * exchangeRate,
+        user_id: user?.id as string,
+        hashrate_amount: totalHashrateToExchange,
         deadspot_coins_received: coinsEarned,
+        exchange_rate: exchangeRate,
       });
 
-      toast.success(`🎉 Échangé ${exchangeCount * exchangeRate} hashrate contre ${coinsEarned} DSC!`);
+      toast.success(`🎉 Échangé ${totalHashrateToExchange.toLocaleString()} hashrate contre ${coinsEarned} DSC!`);
       return true;
     } catch (error) {
       console.error('Error exchanging hashrate:', error);
