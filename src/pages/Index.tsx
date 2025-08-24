@@ -12,18 +12,18 @@ import { useState } from "react";
 import { FaucetClaim } from "@/components/FaucetClaim";
 import { SpinWheel } from "@/components/SpinWheel";
 
-/* Sections & systèmes (réintégration) */
+/* Sections & systèmes (réintégration avec imports corrects) */
 import PlatformStats from "@/components/PlatformStats";
 import StakingTracker from "@/components/StakingTracker";
-import CryptoDepositSystem from "@/components/CryptoDepositSystem";
+import { CryptoDepositSystem } from "@/components/CryptoDepositSystem";
 import DepositTracker from "@/components/DepositTracker";
 import PaymentSection from "@/components/PaymentSection";
 import ClickerGame from "@/components/ClickerGame";
-import ClickToEarn from "@/components/ClickToEarn";
+import { ClickToEarn } from "@/components/ClickToEarn";
 import MiningFarm from "@/components/MiningFarm";
 import RewardsSystem from "@/components/RewardsSystem";
 import DeadSpotShop from "@/components/DeadSpotShop";
-import ReferralLinksSection from "@/components/ReferralLinksSection";
+import { ReferralLinksSection } from "@/components/ReferralLinksSection";
 import ReferralSystem from "@/components/ReferralSystem";
 import VIPSystem from "@/components/VIPSystem";
 import LootBoxSystem from "@/components/LootBoxSystem";
@@ -35,10 +35,9 @@ import CustomizationSystem from "@/components/CustomizationSystem";
 import SecurityCenter from "@/components/SecurityCenter";
 import NewsCenter from "@/components/NewsCenter";
 import PortfolioTracker from "@/components/PortfolioTracker";
-import { HashrateTicker } from "@/components/HashrateTicker";
-import ZeroWallet from "@/components/rpg/ZeroWallet";
-
-/* NOTE: Les imports ci-dessus existent déjà dans le projet (liste en lecture seule). */
+import HashrateTicker from "@/components/HashrateTicker";
+import { ZeroWallet } from "@/components/rpg/ZeroWallet";
+import CustomStaking from "@/components/CustomStaking";
 
 const Index = () => {
   const { user, signOut, loading } = useAuth();
@@ -46,9 +45,19 @@ const Index = () => {
   
   const [showSpinWheel, setShowSpinWheel] = useState(false);
   const [showFaucet, setShowFaucet] = useState(false);
+  
+  // État pour les composants qui nécessitent des props
+  const [deadspotCoins, setDeadspotCoins] = useState(0);
+  const [diamonds, setDiamonds] = useState(0);
+  const [miningExp, setMiningExp] = useState(0);
+  const [level, setLevel] = useState(1);
 
   const handleZeroWin = (amount: number) => {
     console.log('Zero win:', amount);
+  };
+
+  const handleFreeSpinEarned = () => {
+    console.log('Free spin earned from ClickToEarn');
   };
 
   // Loading state
@@ -63,7 +72,6 @@ const Index = () => {
     );
   }
 
-  // Redirect if not authenticated
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
@@ -307,10 +315,15 @@ const Index = () => {
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-card rounded-lg border border-primary/20 p-4">
-                <ClickerGame />
+                <ClickerGame 
+                  deadspotCoins={deadspotCoins}
+                  setDeadspotCoins={setDeadspotCoins}
+                  diamonds={diamonds}
+                  setDiamonds={setDiamonds}
+                />
               </div>
               <div className="bg-card rounded-lg border border-primary/20 p-4">
-                <ClickToEarn />
+                <ClickToEarn onFreeSpinEarned={handleFreeSpinEarned} />
               </div>
             </div>
           </section>
@@ -322,7 +335,16 @@ const Index = () => {
               <p className="text-muted-foreground">Gérez votre ferme et optimisez vos gains</p>
             </div>
             <div className="bg-card rounded-lg border border-primary/20 p-4">
-              <MiningFarm />
+              <MiningFarm 
+                deadspotCoins={deadspotCoins}
+                setDeadspotCoins={setDeadspotCoins}
+                diamonds={diamonds}
+                setDiamonds={setDiamonds}
+                miningExp={miningExp}
+                setMiningExp={setMiningExp}
+                level={level}
+                setLevel={setLevel}
+              />
             </div>
           </section>
 
