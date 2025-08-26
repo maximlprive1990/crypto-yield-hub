@@ -150,7 +150,12 @@ const Index = () => {
               Achetez des mineurs et générez des cryptomonnaies!
             </p>
           </div>
-          <MiningFarm />
+          <MiningFarm
+            deadspotCoins={farm.deadspotCoins}
+            setDeadspotCoins={addDeadspot}
+            diamonds={farm.diamonds}
+            setDiamonds={addDiamonds}
+          />
         </section>
 
         {/* Rewards Section */}
