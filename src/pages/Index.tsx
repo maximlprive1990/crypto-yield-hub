@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,7 +34,7 @@ const Index = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/login");
+      navigate("/auth");
     }
   }, [user, navigate]);
 
