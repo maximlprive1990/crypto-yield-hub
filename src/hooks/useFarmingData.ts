@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -10,6 +9,8 @@ export interface FarmingState {
   maxEnergy: number;
   miningExperience: number;
   miningLevel: number;
+  miningExp: number;
+  level: number;
 }
 
 export const useFarmingData = () => {
@@ -21,6 +22,8 @@ export const useFarmingData = () => {
     maxEnergy: 1000,
     miningExperience: 0,
     miningLevel: 1,
+    miningExp: 0,
+    level: 1,
   });
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
@@ -73,6 +76,8 @@ export const useFarmingData = () => {
           maxEnergy: Number(created.max_energy ?? 1000),
           miningExperience: Number(created.mining_experience ?? 0),
           miningLevel: Number(created.mining_level ?? 1),
+          miningExp: Number(created.mining_experience ?? 0),
+          level: Number(created.mining_level ?? 1),
         });
       }
       setLoading(false);
@@ -87,6 +92,8 @@ export const useFarmingData = () => {
       maxEnergy: Number(data.max_energy ?? 1000),
       miningExperience: Number(data.mining_experience ?? 0),
       miningLevel: Number(data.mining_level ?? 1),
+      miningExp: Number(data.mining_experience ?? 0),
+      level: Number(data.mining_level ?? 1),
     });
     setLoading(false);
   }, []);

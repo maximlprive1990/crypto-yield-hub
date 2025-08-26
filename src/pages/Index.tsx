@@ -17,10 +17,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useFarmingData } from "@/hooks/useFarmingData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles } from "lucide-react";
-import { ClickerGame } from "@/components/ClickerGame";
-import { MiningFarm } from "@/components/MiningFarm";
+import ClickerGame from "@/components/ClickerGame";
+import MiningFarm from "@/components/MiningFarm";
 import MiningSection from "@/components/MiningSection";
-import { RewardsSystem } from "@/components/RewardsSystem";
+import RewardsSystem from "@/components/RewardsSystem";
 import { ZeroWallet } from "@/components/rpg/ZeroWallet";
 
 const Index = () => {
@@ -150,12 +150,7 @@ const Index = () => {
               Achetez des mineurs et générez des cryptomonnaies!
             </p>
           </div>
-          <MiningFarm
-            deadspotCoins={farm.deadspotCoins}
-            setDeadspotCoins={addDeadspot}
-            diamonds={farm.diamonds}
-            setDiamonds={addDiamonds}
-          />
+          <MiningFarm />
         </section>
 
         {/* Rewards Section */}
@@ -191,7 +186,7 @@ const Index = () => {
             </p>
           </div>
           <ZeroWallet
-            zeroBalance={0}
+            zeroBalance={farm.zeroTokens}
             onWithdraw={() => {}}
           />
         </section>
