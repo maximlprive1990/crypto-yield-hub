@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,18 +12,20 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "next/router";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useFarmingData } from "@/hooks/useFarmingData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles } from "lucide-react";
-import ClickerGame from "@/components/ClickerGame";
-import MiningFarm from "@/components/MiningFarm";
+import { ClickerGame } from "@/components/ClickerGame";
+import { MiningFarm } from "@/components/MiningFarm";
 import MiningSection from "@/components/MiningSection";
+import { RewardsSystem } from "@/components/RewardsSystem";
+import { ZeroWallet } from "@/components/rpg/ZeroWallet";
 
 const Index = () => {
-  const { user, isLoading: authLoading } = useAuth();
-  const router = useRouter();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useLanguage();
   const { state: farm, addDeadspot, addDiamonds } = useFarmingData();
@@ -31,10 +34,10 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/login");
+    if (!user) {
+      navigate("/login");
     }
-  }, [user, authLoading, router]);
+  }, [user, navigate]);
 
   const handleSaveName = async () => {
     setIsLoading(true);
@@ -47,7 +50,7 @@ const Index = () => {
     setIsLoading(false);
   };
 
-  if (authLoading) {
+  if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Skeleton className="w-[300px] h-[40px]" />
@@ -152,6 +155,44 @@ const Index = () => {
             setDeadspotCoins={addDeadspot}
             diamonds={farm.diamonds}
             setDiamonds={addDiamonds}
+          />
+        </section>
+
+        {/* Rewards Section */}
+        <section id="rewards" className="space-y-6">
+          <div className="text-center space-y-4">
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              🎁 Récompenses
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Réclamez vos récompenses quotidiennes et bonus spéciaux
+            </p>
+          </div>
+          <RewardsSystem
+            deadspotCoins={farm.deadspotCoins}
+            setDeadspotCoins={addDeadspot}
+            diamonds={farm.diamonds}
+            setDiamonds={addDiamonds}
+            miningExp={farm.miningExp}
+            setMiningExp={(value) => {}}
+            level={farm.level}
+            setLevel={(value) => {}}
+          />
+        </section>
+
+        {/* Zero Wallet Section */}
+        <section id="zero-wallet" className="space-y-6">
+          <div className="text-center space-y-4">
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              💼 Zero Wallet
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Gérez vos retraits et votre portefeuille zéro
+            </p>
+          </div>
+          <ZeroWallet
+            zeroBalance={0}
+            onWithdraw={() => {}}
           />
         </section>
 
