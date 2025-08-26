@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,7 +24,7 @@ import RewardsSystem from "@/components/RewardsSystem";
 import { ZeroWallet } from "@/components/rpg/ZeroWallet";
 
 const Index = () => {
-  const { user } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -32,11 +33,12 @@ const Index = () => {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Redirect to auth if not authenticated
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       navigate("/auth");
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
 
   const handleSaveName = async () => {
     setIsLoading(true);
@@ -49,19 +51,38 @@ const Index = () => {
     setIsLoading(false);
   };
 
-  if (!user) {
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth");
+  };
+
+  // Show loading while checking authentication
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Skeleton className="w-[300px] h-[40px]" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-foreground">{t('auth.loading')}</p>
+        </div>
       </div>
     );
   }
 
+  // If not authenticated, this will redirect to /auth via useEffect
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
-      {/* Hero Section */}
+      {/* Hero Section with Authentication Info */}
       <section className="bg-primary/10 py-24">
         <div className="container mx-auto text-center">
+          <div className="flex justify-end mb-4">
+            <Button variant="outline" onClick={handleSignOut}>
+              {t("auth.signout")}
+            </Button>
+          </div>
           <h1 className="text-5xl font-bold text-primary mb-4">
             {t("index.welcome")}
             {user ? `, ${user.email}!` : "!"}
