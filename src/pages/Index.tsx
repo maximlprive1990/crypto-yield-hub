@@ -178,8 +178,22 @@ const Index = () => {
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">💎 Dépôts & Staking</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <TonStaking />
-                <CustomStaking />
+                <TonStaking 
+                  deadspotCoins={deadspotCoins}
+                  setDeadspotCoins={setDeadspotCoins}
+                  diamonds={diamonds}
+                  setDiamonds={setDiamonds}
+                />
+                <CustomStaking 
+                  deadspotCoins={deadspotCoins}
+                  setDeadspotCoins={setDeadspotCoins}
+                  diamonds={diamonds}
+                  setDiamonds={setDiamonds}
+                  miningExp={miningExp}
+                  setMiningExp={setMiningExp}
+                  level={level}
+                  setLevel={setLevel}
+                />
               </div>
             </div>
           </section>
