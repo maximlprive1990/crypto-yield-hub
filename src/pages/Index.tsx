@@ -22,24 +22,24 @@ import { useAllDataPersistence } from "@/hooks/useAllDataPersistence";
 
 // Components
 import MiningSection from "@/components/MiningSection";
-import ClickToEarn from "@/components/ClickToEarn";
-import SpinWheel from "@/components/SpinWheel";
-import FaucetClaim from "@/components/FaucetClaim";
+import { ClickToEarn } from "@/components/ClickToEarn";
+import { SpinWheel } from "@/components/SpinWheel";
+import { FaucetClaim } from "@/components/FaucetClaim";
 import ReferralSystem from "@/components/ReferralSystem";
 import StakingCard from "@/components/StakingCard";
 import TonStaking from "@/components/TonStaking";
 import CustomStaking from "@/components/CustomStaking";
-import CryptoDepositSystem from "@/components/CryptoDepositSystem";
+import { CryptoDepositSystem } from "@/components/CryptoDepositSystem";
 import PaymentSection from "@/components/PaymentSection";
 import DepositTracker from "@/components/DepositTracker";
 import StakingTracker from "@/components/StakingTracker";
 import PortfolioTracker from "@/components/PortfolioTracker";
 import SecurityCenter from "@/components/SecurityCenter";
-import DataPersistenceDashboard from "@/components/DataPersistenceDashboard";
+import { DataPersistenceDashboard } from "@/components/DataPersistenceDashboard";
 import LiveChat from "@/components/LiveChat";
 import NewsCenter from "@/components/NewsCenter";
 import DeadSpotShop from "@/components/DeadSpotShop";
-import RPGGame from "@/components/RPGGame";
+import { RPGGame } from "@/components/RPGGame";
 import VIPSystem from "@/components/VIPSystem";
 import BattlePassSystem from "@/components/BattlePassSystem";
 import LootBoxSystem from "@/components/LootBoxSystem";
@@ -47,7 +47,7 @@ import MissionsSystem from "@/components/MissionsSystem";
 import EventsSystem from "@/components/EventsSystem";
 import LeaderboardSystem from "@/components/LeaderboardSystem";
 import RewardsSystem from "@/components/RewardsSystem";
-import LanguageSelector from "@/components/LanguageSelector";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import ComingSoonSection from "@/components/ComingSoonSection";
 
 const Index = () => {
@@ -202,7 +202,15 @@ const Index = () => {
             
             {/* Staking */}
             <section id="staking" className="space-y-6">
-              <StakingCard />
+              <StakingCard 
+                name="Bitcoin"
+                symbol="BTC"
+                network="Bitcoin Network"
+                apy="5.2"
+                icon="₿"
+                color="bg-orange-500"
+                walletAddress="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+              />
               <TonStaking />
               <CustomStaking />
             </section>
@@ -268,7 +276,7 @@ const Index = () => {
             </div>
           </section>
 
-          {/* Coming Soon Section - Une seule section principale */}
+          {/* Coming Soon Section */}
           <section id="coming-soon" className="py-12">
             <div className="container mx-auto">
               <ComingSoonSection />
