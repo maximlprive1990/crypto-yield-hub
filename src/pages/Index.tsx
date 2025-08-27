@@ -1,258 +1,270 @@
 
 import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { 
+  Activity, 
+  Coins, 
+  Diamond, 
+  Zap, 
+  Users, 
+  TrendingUp,
+  Shield,
+  Gamepad2,
+  Gift
+} from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import StatsCard from "@/components/StatsCard";
-import TonStaking from "@/components/TonStaking";
-import { Navigate } from "react-router-dom";
-import MiningSection from "@/components/MiningSection";
-import { ClickToEarn } from "@/components/ClickToEarn";
-import { SpinWheel } from "@/components/SpinWheel";
-import { RPGGame } from "@/components/RPGGame";
-import MiningFarm from "@/components/MiningFarm";
-import VIPSystem from "@/components/VIPSystem";
-import RewardsSystem from "@/components/RewardsSystem";
-import ReferralSystem from "@/components/ReferralSystem";
-import SecurityCenter from "@/components/SecurityCenter";
-import NewsCenter from "@/components/NewsCenter";
-import CustomStaking from "@/components/CustomStaking";
-import PortfolioTracker from "@/components/PortfolioTracker";
-import LeaderboardSystem from "@/components/LeaderboardSystem";
-import CustomizationSystem from "@/components/CustomizationSystem";
-import ComingSoonSection from "@/components/ComingSoonSection";
-import ClickerGame from "@/components/ClickerGame";
-import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useMiningPersistence } from "@/hooks/useMiningPersistence";
 import { useFarmingData } from "@/hooks/useFarmingData";
+import { useAllDataPersistence } from "@/hooks/useAllDataPersistence";
+
+// Components
+import MiningSection from "@/components/MiningSection";
+import ClickToEarn from "@/components/ClickToEarn";
+import SpinWheel from "@/components/SpinWheel";
+import FaucetClaim from "@/components/FaucetClaim";
+import ReferralSystem from "@/components/ReferralSystem";
+import StakingCard from "@/components/StakingCard";
+import TonStaking from "@/components/TonStaking";
+import CustomStaking from "@/components/CustomStaking";
+import CryptoDepositSystem from "@/components/CryptoDepositSystem";
+import PaymentSection from "@/components/PaymentSection";
+import DepositTracker from "@/components/DepositTracker";
+import StakingTracker from "@/components/StakingTracker";
+import PortfolioTracker from "@/components/PortfolioTracker";
+import SecurityCenter from "@/components/SecurityCenter";
+import DataPersistenceDashboard from "@/components/DataPersistenceDashboard";
+import LiveChat from "@/components/LiveChat";
+import NewsCenter from "@/components/NewsCenter";
+import DeadSpotShop from "@/components/DeadSpotShop";
+import RPGGame from "@/components/RPGGame";
+import VIPSystem from "@/components/VIPSystem";
+import BattlePassSystem from "@/components/BattlePassSystem";
+import LootBoxSystem from "@/components/LootBoxSystem";
+import MissionsSystem from "@/components/MissionsSystem";
+import EventsSystem from "@/components/EventsSystem";
+import LeaderboardSystem from "@/components/LeaderboardSystem";
+import RewardsSystem from "@/components/RewardsSystem";
+import LanguageSelector from "@/components/LanguageSelector";
+import ComingSoonSection from "@/components/ComingSoonSection";
 
 const Index = () => {
-  const { user, signOut, loading } = useAuth();
-  const { state: farmingState } = useFarmingData();
-  const [showRPG, setShowRPG] = useState(false);
+  const { user } = useAuth();
+  const { miningData } = useMiningPersistence();
+  const { state: farmingState, loading: farmingLoading } = useFarmingData();
+  const { getUserStats } = useAllDataPersistence();
 
-  // State for gaming components
-  const [deadspotCoins, setDeadspotCoins] = useState(farmingState.deadspotCoins);
-  const [diamonds, setDiamonds] = useState(farmingState.diamonds);
-  const [miningExp, setMiningExp] = useState(farmingState.miningExp);
-  const [level, setLevel] = useState(farmingState.level);
+  const [userStats, setUserStats] = useState<any>(null);
 
-  // Sync with farming data
+  // Load user stats
   useEffect(() => {
-    setDeadspotCoins(farmingState.deadspotCoins);
-    setDiamonds(farmingState.diamonds);
-    setMiningExp(farmingState.miningExp);
-    setLevel(farmingState.level);
-  }, [farmingState]);
+    if (user) {
+      getUserStats().then(setUserStats);
+    }
+  }, [user, getUserStats]);
 
-  if (loading) {
+  if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Chargement...</div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold">Welcome to DeadSpot</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center text-muted-foreground">
+            Please sign in to access the platform
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  const handleSignOut = async () => {
-    await signOut();
-  };
-
-  if (showRPG) {
-    return <RPGGame onClose={() => setShowRPG(false)} />;
-  }
-
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background/95 to-primary/5">
-        <AppSidebar />
-        
-        <main className="flex-1 overflow-auto">
-          {/* Header with logout button */}
-          <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-            <div className="container mx-auto flex justify-between items-center py-4">
-              <SidebarTrigger />
-              <h1 className="text-2xl font-bold gradient-text">CryptoStake Pro</h1>
-              <Button variant="outline" onClick={handleSignOut}>
-                Déconnexion
-              </Button>
-            </div>
-          </header>
-
-          {/* Hero Section */}
-          <section id="features" className="bg-primary/10 py-16">
-            <div className="container mx-auto text-center">
-              <h1 className="text-4xl font-bold text-primary mb-4">
-                Bienvenue{user ? `, ${user.email}!` : "!"}
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
+      {/* Header */}
+      <header className="border-b border-border/50 backdrop-blur-sm bg-card/30">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                DeadSpot Platform
               </h1>
-              <p className="text-xl text-muted-foreground mb-8">
-                Plateforme de staking et de minage décentralisée
-              </p>
-              <div className="flex gap-4 justify-center">
-                <Button size="lg" className="animate-pulse">
-                  Commencer
-                </Button>
-                <Button variant="outline" size="lg">
-                  En savoir plus
-                </Button>
-              </div>
+              <Badge variant="secondary" className="animate-pulse">
+                Beta
+              </Badge>
             </div>
-          </section>
-
-          {/* Stats Overview */}
-          <section className="py-12">
-            <div className="container mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatsCard
-                  icon="⛏️"
-                  title="Mining Power"
-                  value="1.2K TH/s"
-                  color="bg-primary/10"
-                />
-                <StatsCard
-                  icon="💰"
-                  title="Total Earned"
-                  value="$2,450"
-                  color="bg-success/10"
-                />
-                <StatsCard
-                  icon="📈"
-                  title="Efficiency"
-                  value="94.5%"
-                  color="bg-warning/10"
-                />
-                <StatsCard
-                  icon="🎯"
-                  title="Active Users"
-                  value="15.2K"
-                  color="bg-info/10"
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* Gaming Section */}
-          <section id="gaming" className="py-12 bg-muted/20">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🎮 Gaming Features</h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                  <ClickToEarn />
+            
+            <div className="flex items-center gap-4">
+              <LanguageSelector />
+              <div className="hidden md:flex items-center gap-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <Coins className="w-4 h-4 text-primary" />
+                  <span className="font-mono">
+                    {farmingState.deadspotCoins.toFixed(2)} DSC
+                  </span>
                 </div>
-                <div>
-                  <SpinWheel />
+                <div className="flex items-center gap-2">
+                  <Diamond className="w-4 h-4 text-blue-500" />
+                  <span className="font-mono">
+                    {farmingState.diamonds.toLocaleString()} 💎
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-yellow-500" />
+                  <span className="font-mono">
+                    {farmingState.energy}/{farmingState.maxEnergy} ⚡
+                  </span>
                 </div>
               </div>
-              <div className="mt-8">
-                <Button 
-                  onClick={() => setShowRPG(true)}
-                  size="lg"
-                  className="w-full h-20 text-xl"
-                >
-                  🏰 Lancer le Jeu RPG
-                </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8 space-y-8">
+        {/* Quick Stats */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card className="gradient-card border-primary/20">
+            <CardContent className="p-4 text-center">
+              <Activity className="w-6 h-6 mx-auto mb-2 text-primary" />
+              <div className="text-lg font-bold">
+                {miningData?.is_currently_mining ? 'Active' : 'Inactive'}
               </div>
-            </div>
-          </section>
+              <div className="text-xs text-muted-foreground">Mining Status</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="gradient-card border-primary/20">
+            <CardContent className="p-4 text-center">
+              <TrendingUp className="w-6 h-6 mx-auto mb-2 text-success" />
+              <div className="text-lg font-bold">
+                {miningData?.total_blocks_mined || 0}
+              </div>
+              <div className="text-xs text-muted-foreground">Blocks Mined</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="gradient-card border-primary/20">
+            <CardContent className="p-4 text-center">
+              <Users className="w-6 h-6 mx-auto mb-2 text-info" />
+              <div className="text-lg font-bold">Lvl {farmingState.level}</div>
+              <div className="text-xs text-muted-foreground">Mining Level</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="gradient-card border-primary/20">
+            <CardContent className="p-4 text-center">
+              <Gift className="w-6 h-6 mx-auto mb-2 text-warning" />
+              <div className="text-lg font-bold">
+                {userStats?.account_age_days || 0}d
+              </div>
+              <div className="text-xs text-muted-foreground">Account Age</div>
+            </CardContent>
+          </Card>
+        </section>
 
-          {/* Clicker Game Section */}
-          <section id="clicker" className="py-12">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🎯 Clicker Game</h2>
-              <ClickerGame />
-            </div>
-          </section>
-
-          {/* Mining Control Section */}
-          <section id="mining-control" className="py-12 bg-muted/20">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">⚙️ Contrôle Mineur</h2>
+        {/* Main Sections */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* Left Column - Mining & Core Features */}
+          <div className="xl:col-span-2 space-y-8">
+            {/* Mining Section */}
+            <section id="mining">
               <MiningSection />
-            </div>
-          </section>
-
-          {/* Deposits & Staking Section */}
-          <section id="deposits" className="py-12">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">💎 Dépôts & Staking</h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <TonStaking />
-                <CustomStaking />
-              </div>
-            </div>
-          </section>
-
-          {/* Mining Farm Section */}
-          <section id="mining-farm" className="py-12 bg-muted/20">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">⛏️ Ferme Mining</h2>
-              <MiningFarm />
-            </div>
-          </section>
-
-          {/* Rewards System */}
-          <section id="rewards" className="py-12">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🎁 Récompenses</h2>
-              <RewardsSystem />
-            </div>
-          </section>
-
-          {/* VIP & Monetization */}
-          <section id="vip" className="py-12 bg-muted/20">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">👑 VIP & Monétisation</h2>
-              <VIPSystem />
-            </div>
-          </section>
-
-          {/* Referral System */}
-          <section id="referrals" className="py-12">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🔗 Système Parrainage</h2>
+            </section>
+            
+            <Separator className="my-8" />
+            
+            {/* Click to Earn */}
+            <section id="click-to-earn">
+              <ClickToEarn />
+            </section>
+            
+            <Separator className="my-8" />
+            
+            {/* Spin Wheel */}
+            <section id="spin-wheel">
+              <SpinWheel />
+            </section>
+          </div>
+          
+          {/* Right Column - Additional Features */}
+          <div className="space-y-8">
+            {/* Faucet */}
+            <section id="faucet">
+              <FaucetClaim />
+            </section>
+            
+            {/* Referral System */}
+            <section id="referral">
               <ReferralSystem />
+            </section>
+            
+            {/* Staking */}
+            <section id="staking" className="space-y-6">
+              <StakingCard />
+              <TonStaking />
+              <CustomStaking />
+            </section>
+          </div>
+        </div>
+        
+        <Separator className="my-12" />
+        
+        {/* Full Width Sections */}
+        <div className="space-y-12">
+          {/* Financial Services */}
+          <section id="financial-services">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <CryptoDepositSystem />
+              <PaymentSection />
             </div>
           </section>
-
-          {/* Leaderboard */}
-          <section id="leaderboard" className="py-12 bg-muted/20">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🏆 Classements</h2>
-              <LeaderboardSystem />
-            </div>
-          </section>
-
-          {/* Portfolio Tracker */}
-          <section id="portfolio" className="py-12">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">📊 Portfolio</h2>
+          
+          {/* Tracking & Analytics */}
+          <section id="tracking" className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <DepositTracker />
+              <StakingTracker />
               <PortfolioTracker />
             </div>
           </section>
-
-          {/* Customization */}
-          <section id="customization" className="py-12 bg-muted/20">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🎨 Personnalisation</h2>
-              <CustomizationSystem />
-            </div>
-          </section>
-
-          {/* Security Center */}
-          <section id="security" className="py-12">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🛡️ Sécurité</h2>
+          
+          {/* Platform Features */}
+          <section id="platform-features">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <SecurityCenter />
+              <DataPersistenceDashboard />
             </div>
           </section>
-
-          {/* News Center */}
-          <section id="news" className="py-12 bg-muted/20">
-            <div className="container mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">📰 Actualités</h2>
+          
+          {/* Social & Communication */}
+          <section id="social">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <LiveChat />
               <NewsCenter />
+            </div>
+          </section>
+          
+          {/* Shop & Gaming */}
+          <section id="gaming" className="space-y-8">
+            <DeadSpotShop />
+            <RPGGame />
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <VIPSystem />
+              <BattlePassSystem />
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <LootBoxSystem />
+              <MissionsSystem />
+              <EventsSystem />
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <LeaderboardSystem />
+              <RewardsSystem />
             </div>
           </section>
 
@@ -262,24 +274,9 @@ const Index = () => {
               <ComingSoonSection />
             </div>
           </section>
-
-          {/* Footer */}
-          <footer className="bg-muted/50 py-12 border-t">
-            <div className="container mx-auto text-center">
-              <h3 className="text-2xl font-bold gradient-text mb-4">CryptoStake Pro</h3>
-              <p className="text-muted-foreground mb-4">
-                La plateforme de staking et mining la plus complète
-              </p>
-              <div className="flex justify-center gap-4">
-                <Button variant="outline" size="sm">Documentation</Button>
-                <Button variant="outline" size="sm">Support</Button>
-                <Button variant="outline" size="sm">API</Button>
-              </div>
-            </div>
-          </footer>
-        </main>
-      </div>
-    </SidebarProvider>
+        </div>
+      </main>
+    </div>
   );
 };
 
