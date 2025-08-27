@@ -7,8 +7,8 @@ import TonStaking from "@/components/TonStaking";
 import { Navigate } from "react-router-dom";
 import MiningSection from "@/components/MiningSection";
 import { ClickToEarn } from "@/components/ClickToEarn";
-import SpinWheel from "@/components/SpinWheel";
-import RPGGame from "@/components/RPGGame";
+import { SpinWheel } from "@/components/SpinWheel";
+import { RPGGame } from "@/components/RPGGame";
 import MiningFarm from "@/components/MiningFarm";
 import VIPSystem from "@/components/VIPSystem";
 import RewardsSystem from "@/components/RewardsSystem";
@@ -20,11 +20,29 @@ import PortfolioTracker from "@/components/PortfolioTracker";
 import LeaderboardSystem from "@/components/LeaderboardSystem";
 import CustomizationSystem from "@/components/CustomizationSystem";
 import ComingSoonSection from "@/components/ComingSoonSection";
+import ClickerGame from "@/components/ClickerGame";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useFarmingData } from "@/hooks/useFarmingData";
 
 const Index = () => {
   const { user, signOut, loading } = useAuth();
+  const { state: farmingState } = useFarmingData();
+  const [showRPG, setShowRPG] = useState(false);
+
+  // State for gaming components
+  const [deadspotCoins, setDeadspotCoins] = useState(farmingState.deadspotCoins);
+  const [diamonds, setDiamonds] = useState(farmingState.diamonds);
+  const [miningExp, setMiningExp] = useState(farmingState.miningExp);
+  const [level, setLevel] = useState(farmingState.level);
+
+  // Sync with farming data
+  useEffect(() => {
+    setDeadspotCoins(farmingState.deadspotCoins);
+    setDiamonds(farmingState.diamonds);
+    setMiningExp(farmingState.miningExp);
+    setLevel(farmingState.level);
+  }, [farmingState]);
 
   if (loading) {
     return (
@@ -41,6 +59,10 @@ const Index = () => {
   const handleSignOut = async () => {
     await signOut();
   };
+
+  if (showRPG) {
+    return <RPGGame onClose={() => setShowRPG(false)} />;
+  }
 
   return (
     <SidebarProvider>
@@ -117,20 +139,39 @@ const Index = () => {
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🎮 Gaming Features</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
-                  <ClickToEarn />
+                  <ClickToEarn 
+                    deadspotCoins={deadspotCoins}
+                    setDeadspotCoins={setDeadspotCoins}
+                    diamonds={diamonds}
+                    setDiamonds={setDiamonds}
+                  />
                 </div>
                 <div>
                   <SpinWheel />
                 </div>
               </div>
               <div className="mt-8">
-                <RPGGame />
+                <Button 
+                  onClick={() => setShowRPG(true)}
+                  size="lg"
+                  className="w-full h-20 text-xl"
+                >
+                  🏰 Lancer le Jeu RPG
+                </Button>
               </div>
             </div>
           </section>
 
+          {/* Clicker Game Section */}
+          <section id="clicker" className="py-12">
+            <div className="container mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🎯 Clicker Game</h2>
+              <ClickerGame />
+            </div>
+          </section>
+
           {/* Mining Control Section */}
-          <section id="mining-control" className="py-12">
+          <section id="mining-control" className="py-12 bg-muted/20">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">⚙️ Contrôle Mineur</h2>
               <MiningSection />
@@ -138,7 +179,7 @@ const Index = () => {
           </section>
 
           {/* Deposits & Staking Section */}
-          <section id="deposits" className="py-12 bg-muted/20">
+          <section id="deposits" className="py-12">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">💎 Dépôts & Staking</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -149,7 +190,7 @@ const Index = () => {
           </section>
 
           {/* Mining Farm Section */}
-          <section id="mining-farm" className="py-12">
+          <section id="mining-farm" className="py-12 bg-muted/20">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">⛏️ Ferme Mining</h2>
               <MiningFarm />
@@ -157,7 +198,7 @@ const Index = () => {
           </section>
 
           {/* Rewards System */}
-          <section id="rewards" className="py-12 bg-muted/20">
+          <section id="rewards" className="py-12">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🎁 Récompenses</h2>
               <RewardsSystem />
@@ -165,7 +206,7 @@ const Index = () => {
           </section>
 
           {/* VIP & Monetization */}
-          <section id="vip" className="py-12">
+          <section id="vip" className="py-12 bg-muted/20">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">👑 VIP & Monétisation</h2>
               <VIPSystem />
@@ -173,7 +214,7 @@ const Index = () => {
           </section>
 
           {/* Referral System */}
-          <section id="referrals" className="py-12 bg-muted/20">
+          <section id="referrals" className="py-12">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🔗 Système Parrainage</h2>
               <ReferralSystem />
@@ -181,7 +222,7 @@ const Index = () => {
           </section>
 
           {/* Leaderboard */}
-          <section id="leaderboard" className="py-12">
+          <section id="leaderboard" className="py-12 bg-muted/20">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🏆 Classements</h2>
               <LeaderboardSystem />
@@ -189,7 +230,7 @@ const Index = () => {
           </section>
 
           {/* Portfolio Tracker */}
-          <section id="portfolio" className="py-12 bg-muted/20">
+          <section id="portfolio" className="py-12">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">📊 Portfolio</h2>
               <PortfolioTracker />
@@ -197,7 +238,7 @@ const Index = () => {
           </section>
 
           {/* Customization */}
-          <section id="customization" className="py-12">
+          <section id="customization" className="py-12 bg-muted/20">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🎨 Personnalisation</h2>
               <CustomizationSystem />
@@ -205,7 +246,7 @@ const Index = () => {
           </section>
 
           {/* Security Center */}
-          <section id="security" className="py-12 bg-muted/20">
+          <section id="security" className="py-12">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🛡️ Sécurité</h2>
               <SecurityCenter />
@@ -213,7 +254,7 @@ const Index = () => {
           </section>
 
           {/* News Center */}
-          <section id="news" className="py-12">
+          <section id="news" className="py-12 bg-muted/20">
             <div className="container mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">📰 Actualités</h2>
               <NewsCenter />
@@ -221,57 +262,39 @@ const Index = () => {
           </section>
 
           {/* Coming Soon Sections */}
-          <section id="stats" className="py-12 bg-muted/20">
+          <section id="stats" className="py-12">
             <div className="container mx-auto">
-              <ComingSoonSection 
-                title="📊 Statistiques Avancées"
-                description="Graphiques détaillés et analyses de performance"
-              />
+              <ComingSoonSection />
             </div>
           </section>
 
-          <section id="clicker" className="py-12">
+          <section id="clicker-pro" className="py-12 bg-muted/20">
             <div className="container mx-auto">
-              <ComingSoonSection 
-                title="🎯 DeadSpot Click Pro"
-                description="Version améliorée du système de clic"
-              />
+              <ComingSoonSection />
             </div>
           </section>
 
-          <section id="gaming-features" className="py-12 bg-muted/20">
+          <section id="gaming-features" className="py-12">
             <div className="container mx-auto">
-              <ComingSoonSection 
-                title="🏆 Gaming Features Avancées"
-                description="Tournois, événements spéciaux et compétitions"
-              />
+              <ComingSoonSection />
             </div>
           </section>
 
-          <section id="custom-staking" className="py-12">
+          <section id="custom-staking" className="py-12 bg-muted/20">
             <div className="container mx-auto">
-              <ComingSoonSection 
-                title="⚡ Staking Custom Pro"
-                description="Options de staking personnalisées et pools privés"
-              />
+              <ComingSoonSection />
             </div>
           </section>
 
-          <section id="withdrawal" className="py-12 bg-muted/20">
+          <section id="withdrawal" className="py-12">
             <div className="container mx-auto">
-              <ComingSoonSection 
-                title="📦 Système de Retrait"
-                description="Interface de retrait sécurisée et automatisée"
-              />
+              <ComingSoonSection />
             </div>
           </section>
 
-          <section id="referral-system" className="py-12">
+          <section id="referral-system" className="py-12 bg-muted/20">
             <div className="container mx-auto">
-              <ComingSoonSection 
-                title="👥 Système Parrainage Pro"
-                description="Programme de parrainage multi-niveaux"
-              />
+              <ComingSoonSection />
             </div>
           </section>
 
