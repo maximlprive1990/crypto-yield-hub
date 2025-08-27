@@ -57,7 +57,17 @@ const TonStaking = () => {
       .order('created_at', { ascending: false });
 
     if (!error && data) {
-      setPositions(data);
+      // Mapper explicitement vers notre interface avec fallbacks
+      const formatted: StakingPosition[] = (data as any[]).map((row) => ({
+        id: row.id,
+        crypto_type: row.crypto_type ?? 'TON',
+        amount_staked: Number(row.amount_staked) ?? 0,
+        apy: Number(row.apy) ?? APY,
+        total_rewards: Number(row.total_rewards) ?? 0,
+        status: row.status ?? 'active',
+        created_at: row.created_at,
+      }));
+      setPositions(formatted);
     }
   };
 
@@ -146,11 +156,11 @@ const TonStaking = () => {
     setIsVerifying(true);
 
     try {
-      // Appel direct à la fonction RPC en utilisant l'API PostgreSQL
-      const { data, error } = await supabase.rpc('verify_deposit_by_txid', {
+      // Appel direct à la fonction RPC en contournant le typage strict
+      const { data, error } = await (supabase as any).rpc('verify_deposit_by_txid', {
         p_user_id: user?.id,
         p_transaction_id: txId.trim()
-      }) as { data: VerifyDepositResponse | null, error: any };
+      });
 
       if (error) throw error;
 
