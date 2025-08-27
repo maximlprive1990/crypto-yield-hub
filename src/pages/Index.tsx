@@ -1,13 +1,25 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { useTranslation } from "react-i18next";
 import StatsCard from "@/components/StatsCard";
 import TonStaking from "@/components/TonStaking";
+import { Navigate } from "react-router-dom";
 
 const Index = () => {
-  const { user, signOut } = useAuth();
-  const { t } = useTranslation();
+  const { user, signOut, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Chargement...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
 
   const handleSignOut = async () => {
     await signOut();
@@ -20,22 +32,21 @@ const Index = () => {
         <div className="container mx-auto text-center">
           <div className="flex justify-end mb-4">
             <Button variant="outline" onClick={handleSignOut}>
-              {t("auth.signout")}
+              Déconnexion
             </Button>
           </div>
           <h1 className="text-5xl font-bold text-primary mb-4">
-            {t("index.welcome")}
-            {user ? `, ${user.email}!` : "!"}
+            Bienvenue{user ? `, ${user.email}!` : "!"}
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            {t("index.subtitle")}
+            Plateforme de staking et de minage décentralisée
           </p>
           <div className="flex gap-4 justify-center">
             <Button size="lg" className="animate-pulse">
-              {t("index.start")}
+              Commencer
             </Button>
             <Button variant="outline" size="lg">
-              {t("index.learn")}
+              En savoir plus
             </Button>
           </div>
         </div>
@@ -52,25 +63,25 @@ const Index = () => {
               icon="⛏️"
               title="Mining Power"
               value="1.2K TH/s"
-              description="Active mining rate"
+              color="bg-primary/10"
             />
             <StatsCard
               icon="💰"
               title="Total Earned"
               value="$2,450"
-              description="Lifetime earnings"
+              color="bg-success/10"
             />
             <StatsCard
               icon="📈"
               title="Efficiency"
               value="94.5%"
-              description="Current efficiency"
+              color="bg-warning/10"
             />
             <StatsCard
               icon="🎯"
               title="Active Users"
               value="15.2K"
-              description="Community size"
+              color="bg-info/10"
             />
           </div>
         </div>

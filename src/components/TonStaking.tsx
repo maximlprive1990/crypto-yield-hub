@@ -20,6 +20,13 @@ interface StakingPosition {
   created_at: string;
 }
 
+interface VerifyDepositResponse {
+  success: boolean;
+  message: string;
+  amount?: number;
+  crypto_type?: string;
+}
+
 const TonStaking = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -139,24 +146,27 @@ const TonStaking = () => {
     setIsVerifying(true);
 
     try {
+      // Appel direct à la fonction RPC en utilisant l'API PostgreSQL
       const { data, error } = await supabase.rpc('verify_deposit_by_txid', {
         p_user_id: user?.id,
         p_transaction_id: txId.trim()
-      });
+      }) as { data: VerifyDepositResponse | null, error: any };
 
       if (error) throw error;
 
-      if (data.success) {
+      const result = data as VerifyDepositResponse;
+      
+      if (result && result.success) {
         toast({
           title: "Transaction vérifiée! ✅",
-          description: `Votre dépôt de ${data.amount} ${data.crypto_type} a été confirmé et votre staking est maintenant actif.`
+          description: `Votre dépôt de ${result.amount} ${result.crypto_type} a été confirmé et votre staking est maintenant actif.`
         });
         setTxId("");
         loadStakingPositions();
       } else {
         toast({
           title: "Vérification échouée",
-          description: data.message,
+          description: result?.message || "Erreur lors de la vérification",
           variant: "destructive"
         });
       }
