@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,7 +40,6 @@ import { DataPersistenceDashboard } from "@/components/DataPersistenceDashboard"
 import LiveChat from "@/components/LiveChat";
 import NewsCenter from "@/components/NewsCenter";
 import DeadSpotShop from "@/components/DeadSpotShop";
-import { RPGGame } from "@/components/RPGGame";
 import VIPSystem from "@/components/VIPSystem";
 import BattlePassSystem from "@/components/BattlePassSystem";
 import LootBoxSystem from "@/components/LootBoxSystem";
@@ -257,7 +257,6 @@ const Index = () => {
           {/* Shop & Gaming */}
           <section id="gaming" className="space-y-8">
             <DeadSpotShop />
-            <RPGGame />
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <VIPSystem />
@@ -289,3 +288,4 @@ const Index = () => {
 };
 
 export default Index;
+
