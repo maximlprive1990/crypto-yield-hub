@@ -256,38 +256,8 @@ const Index = () => {
             </div>
           </section>
 
-          {/* Coming Soon Sections */}
-          <section id="stats" className="py-12">
-            <div className="container mx-auto">
-              <ComingSoonSection />
-            </div>
-          </section>
-
-          <section id="clicker-pro" className="py-12 bg-muted/20">
-            <div className="container mx-auto">
-              <ComingSoonSection />
-            </div>
-          </section>
-
-          <section id="gaming-features" className="py-12">
-            <div className="container mx-auto">
-              <ComingSoonSection />
-            </div>
-          </section>
-
-          <section id="custom-staking" className="py-12 bg-muted/20">
-            <div className="container mx-auto">
-              <ComingSoonSection />
-            </div>
-          </section>
-
-          <section id="withdrawal" className="py-12">
-            <div className="container mx-auto">
-              <ComingSoonSection />
-            </div>
-          </section>
-
-          <section id="referral-system" className="py-12 bg-muted/20">
+          {/* Coming Soon Section - Une seule section principale */}
+          <section id="coming-soon" className="py-12">
             <div className="container mx-auto">
               <ComingSoonSection />
             </div>
