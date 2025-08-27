@@ -139,12 +139,7 @@ const Index = () => {
               <h2 className="text-3xl font-bold text-center mb-8 gradient-text">🎮 Gaming Features</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
-                  <ClickToEarn 
-                    deadspotCoins={deadspotCoins}
-                    setDeadspotCoins={setDeadspotCoins}
-                    diamonds={diamonds}
-                    setDiamonds={setDiamonds}
-                  />
+                  <ClickToEarn />
                 </div>
                 <div>
                   <SpinWheel />
