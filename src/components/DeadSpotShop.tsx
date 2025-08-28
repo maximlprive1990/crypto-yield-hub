@@ -21,15 +21,66 @@ interface CoinPurchase {
 }
 
 const EXCHANGE_RATE = 0.65; // 1 DeadSpot = 0.65 USD
-const BTC_WALLET = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"; // Wallet Bitcoin de dépôt
+
+// Wallets supportés pour les dépôts
+const SUPPORTED_WALLETS = {
+  BTC: {
+    address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+    name: "Bitcoin",
+    symbol: "BTC",
+    price: 45000,
+    memo: false,
+    memoNote: ""
+  },
+  ETH: {
+    address: "0x742d35Cc6e54A0d4C8e7eC6e12345678901234567",
+    name: "Ethereum", 
+    symbol: "ETH",
+    price: 2500,
+    memo: false,
+    memoNote: ""
+  },
+  LTC: {
+    address: "ltc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+    name: "Litecoin",
+    symbol: "LTC", 
+    price: 70,
+    memo: false,
+    memoNote: ""
+  },
+  TRX: {
+    address: "TRX7MEMO123456789EXAMPLE123456789",
+    name: "TRON",
+    symbol: "TRX",
+    price: 0.08,
+    memo: true,
+    memoNote: "Ajoutez le memo: DEADSPOT_[ORDER_ID]"
+  },
+  XLM: {
+    address: "GABC123456789STELLARADDRESS123456789",
+    name: "Stellar Lumens",
+    symbol: "XLM",
+    price: 0.12,
+    memo: true,
+    memoNote: "Memo requis: DEADSPOT_[ORDER_ID]"
+  },
+  USDT_TRC20: {
+    address: "TRX7MEMO123456789EXAMPLE123456789",
+    name: "USDT (TRC20)",
+    symbol: "USDT",
+    price: 1,
+    memo: true,
+    memoNote: "Réseau TRON - Memo: DEADSPOT_[ORDER_ID]"
+  }
+};
 
 const PRESET_AMOUNTS = [
-  { usd: 10, deadspot: Math.floor(10 / EXCHANGE_RATE), btc: (10 / 45000).toFixed(8) },
-  { usd: 25, deadspot: Math.floor(25 / EXCHANGE_RATE), btc: (25 / 45000).toFixed(8) },
-  { usd: 50, deadspot: Math.floor(50 / EXCHANGE_RATE), btc: (50 / 45000).toFixed(8) },
-  { usd: 100, deadspot: Math.floor(100 / EXCHANGE_RATE), btc: (100 / 45000).toFixed(8) },
-  { usd: 250, deadspot: Math.floor(250 / EXCHANGE_RATE), btc: (250 / 45000).toFixed(8) },
-  { usd: 500, deadspot: Math.floor(500 / EXCHANGE_RATE), btc: (500 / 45000).toFixed(8) }
+  { usd: 10, deadspot: Math.floor(10 / EXCHANGE_RATE) },
+  { usd: 25, deadspot: Math.floor(25 / EXCHANGE_RATE) },
+  { usd: 50, deadspot: Math.floor(50 / EXCHANGE_RATE) },
+  { usd: 100, deadspot: Math.floor(100 / EXCHANGE_RATE) },
+  { usd: 250, deadspot: Math.floor(250 / EXCHANGE_RATE) },
+  { usd: 500, deadspot: Math.floor(500 / EXCHANGE_RATE) }
 ];
 
 const POWER_UPS = [
@@ -72,7 +123,7 @@ const DeadSpotShop = () => {
   const [purchases, setPurchases] = useState<CoinPurchase[]>([]);
   const [loading, setLoading] = useState(true);
   const [customAmount, setCustomAmount] = useState("");
-  const [selectedCurrency, setSelectedCurrency] = useState("USD");
+  const [selectedCrypto, setSelectedCrypto] = useState("BTC");
 
   useEffect(() => {
     if (user) {
@@ -102,9 +153,10 @@ const DeadSpotShop = () => {
     return Math.floor(usdAmount / EXCHANGE_RATE);
   };
 
-  const purchaseCoins = async (usdAmount: number, btcAmount?: string) => {
+  const purchaseCoins = async (usdAmount: number, crypto: string = "BTC") => {
     const deadspotAmount = calculateDeadSpot(usdAmount);
     const orderId = `DEADSPOT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const wallet = SUPPORTED_WALLETS[crypto as keyof typeof SUPPORTED_WALLETS];
 
     try {
       // Créer l'enregistrement de l'achat avec statut "waiting_deposit"
@@ -115,15 +167,16 @@ const DeadSpotShop = () => {
           amount_usd: usdAmount,
           amount_deadspot: deadspotAmount,
           exchange_rate: EXCHANGE_RATE,
-          currency: 'BTC',
+          currency: crypto,
           transaction_id: orderId,
           status: 'waiting_deposit',
-          deposit_address: BTC_WALLET
+          deposit_address: wallet.address
         });
 
       if (error) throw error;
 
-      toast.success(`Commande créée ! Déposez ${btcAmount || (usdAmount / 45000).toFixed(8)} BTC au wallet pour recevoir ${deadspotAmount} DeadSpot coins.`);
+      const cryptoAmount = (usdAmount / wallet.price).toFixed(crypto === 'BTC' ? 8 : crypto === 'ETH' ? 6 : 4);
+      toast.success(`Commande créée ! Déposez ${cryptoAmount} ${crypto} au wallet pour recevoir ${deadspotAmount} DeadSpot coins.`);
       fetchPurchases();
     } catch (error) {
       console.error("Erreur création achat:", error);
@@ -134,6 +187,10 @@ const DeadSpotShop = () => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success("Adresse copiée dans le presse-papiers !");
+  };
+
+  const generateMemo = (orderId: string) => {
+    return `DEADSPOT_${orderId.split('_')[1]}`;
   };
 
   const purchaseCustomAmount = () => {
@@ -147,8 +204,7 @@ const DeadSpotShop = () => {
       return;
     }
     
-    const btcAmount = (amount / 45000).toFixed(8);
-    purchaseCoins(amount, btcAmount);
+    purchaseCoins(amount, selectedCrypto);
     setCustomAmount("");
   };
 
@@ -229,66 +285,108 @@ const DeadSpotShop = () => {
               <div className="text-sm">
                 <p className="mb-3">📋 <strong>Instructions:</strong></p>
                 <ol className="list-decimal list-inside space-y-2 text-sm">
-                  <li>Choisissez le montant souhaité ci-dessous</li>
-                  <li>Déposez le montant BTC équivalent à notre wallet</li>
+                  <li>Choisissez votre cryptomonnaie préférée</li>
+                  <li>Sélectionnez le montant souhaité</li>
+                  <li>Déposez le montant crypto équivalent à notre wallet</li>
+                  <li>Ajoutez le memo si requis (TRX, XLM, USDT TRC20)</li>
                   <li>Envoyez-nous votre TXID de transaction</li>
                   <li>Recevez vos DeadSpot coins après confirmation (15min-4h)</li>
                 </ol>
               </div>
+
+              <div className="text-center">
+                <div className="text-xl font-bold">1 DeadSpot = $0.65</div>
+                <div className="text-sm text-muted-foreground">Support multi-crypto avec prix actualisés</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Sélecteur de crypto */}
+          <Card className="gradient-card border-primary/20">
+            <CardHeader>
+              <CardTitle>Choisir une Cryptomonnaie</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {Object.entries(SUPPORTED_WALLETS).map(([key, wallet]) => (
+                  <Button
+                    key={key}
+                    variant={selectedCrypto === key ? "default" : "outline"}
+                    onClick={() => setSelectedCrypto(key)}
+                    className="p-4 h-auto flex flex-col gap-2"
+                  >
+                    <div className="font-bold">{wallet.symbol}</div>
+                    <div className="text-xs">{wallet.name}</div>
+                    <div className="text-xs text-muted-foreground">${wallet.price}</div>
+                    {wallet.memo && (
+                      <Badge variant="secondary" className="text-xs">Memo requis</Badge>
+                    )}
+                  </Button>
+                ))}
+              </div>
               
-              <div className="bg-card/50 p-4 rounded-lg border border-primary/20">
+              {/* Affichage de l'adresse sélectionnée */}
+              <div className="mt-6 bg-card/50 p-4 rounded-lg border border-primary/20">
                 <div className="flex items-center justify-between mb-2">
-                  <Label className="font-semibold">Wallet Bitcoin de dépôt:</Label>
+                  <Label className="font-semibold">Wallet {SUPPORTED_WALLETS[selectedCrypto as keyof typeof SUPPORTED_WALLETS].name}:</Label>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    onClick={() => copyToClipboard(BTC_WALLET)}
+                    onClick={() => copyToClipboard(SUPPORTED_WALLETS[selectedCrypto as keyof typeof SUPPORTED_WALLETS].address)}
                   >
                     <Copy className="w-4 h-4 mr-1" />
                     Copier
                   </Button>
                 </div>
                 <div className="font-mono text-sm bg-secondary/50 p-2 rounded border break-all">
-                  {BTC_WALLET}
+                  {SUPPORTED_WALLETS[selectedCrypto as keyof typeof SUPPORTED_WALLETS].address}
                 </div>
-              </div>
-
-              <div className="text-center">
-                <div className="text-xl font-bold">1 DeadSpot = $0.65</div>
-                <div className="text-sm text-muted-foreground">BTC/USD ≈ $45,000 (prix estimé)</div>
+                {SUPPORTED_WALLETS[selectedCrypto as keyof typeof SUPPORTED_WALLETS].memo && (
+                  <div className="mt-2 text-sm text-warning">
+                    ⚠️ {SUPPORTED_WALLETS[selectedCrypto as keyof typeof SUPPORTED_WALLETS].memoNote}
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
 
           {/* Montants prédéfinis */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {PRESET_AMOUNTS.map((preset, index) => (
-              <Card key={index} className="gradient-card border-primary/20 hover:shadow-neon transition-smooth">
-                <CardContent className="p-6 text-center">
-                  <div className="text-2xl font-bold text-primary mb-2">
-                    {preset.deadspot.toLocaleString()}
-                  </div>
-                  <div className="text-sm text-muted-foreground mb-2">
-                    DeadSpot Coins
-                  </div>
-                  <div className="text-lg font-semibold mb-1">
-                    ${preset.usd}
-                  </div>
-                  <div className="text-sm text-warning font-mono mb-4">
-                    ≈ {preset.btc} BTC
-                  </div>
-                  <Button 
-                    variant="crypto" 
-                    size="sm" 
-                    className="w-full"
-                    onClick={() => purchaseCoins(preset.usd, preset.btc)}
-                  >
-                    <Wallet className="w-4 h-4 mr-2" />
-                    Créer Commande
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+            {PRESET_AMOUNTS.map((preset, index) => {
+              const wallet = SUPPORTED_WALLETS[selectedCrypto as keyof typeof SUPPORTED_WALLETS];
+              const cryptoAmount = (preset.usd / wallet.price).toFixed(
+                selectedCrypto === 'BTC' ? 8 : 
+                selectedCrypto === 'ETH' ? 6 : 4
+              );
+              
+              return (
+                <Card key={index} className="gradient-card border-primary/20 hover:shadow-neon transition-smooth">
+                  <CardContent className="p-6 text-center">
+                    <div className="text-2xl font-bold text-primary mb-2">
+                      {preset.deadspot.toLocaleString()}
+                    </div>
+                    <div className="text-sm text-muted-foreground mb-2">
+                      DeadSpot Coins
+                    </div>
+                    <div className="text-lg font-semibold mb-1">
+                      ${preset.usd}
+                    </div>
+                    <div className="text-sm text-warning font-mono mb-4">
+                      ≈ {cryptoAmount} {wallet.symbol}
+                    </div>
+                    <Button 
+                      variant="crypto" 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => purchaseCoins(preset.usd, selectedCrypto)}
+                    >
+                      <Wallet className="w-4 h-4 mr-2" />
+                      Créer Commande
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
 
           {/* Montant personnalisé */}
@@ -311,9 +409,12 @@ const DeadSpotShop = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label>BTC à déposer</Label>
+                  <Label>Crypto à déposer</Label>
                   <div className="p-2 rounded-md bg-warning/10 border border-warning/20 text-center font-mono font-bold">
-                    {customAmount ? ((parseFloat(customAmount) || 0) / 45000).toFixed(8) : "0.00000000"} BTC
+                    {customAmount ? 
+                      ((parseFloat(customAmount) || 0) / SUPPORTED_WALLETS[selectedCrypto as keyof typeof SUPPORTED_WALLETS].price)
+                        .toFixed(selectedCrypto === 'BTC' ? 8 : selectedCrypto === 'ETH' ? 6 : 4) 
+                      : "0"} {SUPPORTED_WALLETS[selectedCrypto as keyof typeof SUPPORTED_WALLETS].symbol}
                   </div>
                 </div>
                 
@@ -383,52 +484,78 @@ const DeadSpotShop = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {purchases.map((purchase) => (
-                    <div key={purchase.id} className="p-4 rounded-lg border border-primary/20 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <Coins className="w-6 h-6 text-primary" />
-                          <div>
-                            <div className="font-semibold">
-                              {purchase.amount_deadspot.toLocaleString()} DeadSpot Coins
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              ${purchase.amount_usd} ≈ {(purchase.amount_usd / 45000).toFixed(8)} BTC
+                  {purchases.map((purchase) => {
+                    const wallet = SUPPORTED_WALLETS[purchase.currency as keyof typeof SUPPORTED_WALLETS];
+                    if (!wallet) return null;
+                    
+                    const cryptoAmount = (purchase.amount_usd / wallet.price).toFixed(
+                      purchase.currency === 'BTC' ? 8 : 
+                      purchase.currency === 'ETH' ? 6 : 4
+                    );
+                    
+                    return (
+                      <div key={purchase.id} className="p-4 rounded-lg border border-primary/20 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <Coins className="w-6 h-6 text-primary" />
+                            <div>
+                              <div className="font-semibold">
+                                {purchase.amount_deadspot.toLocaleString()} DeadSpot Coins
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                ${purchase.amount_usd} ≈ {cryptoAmount} {wallet.symbol}
+                              </div>
                             </div>
                           </div>
+                          <Badge variant={
+                            purchase.status === 'completed' ? 'default' : 
+                            purchase.status === 'waiting_deposit' ? 'outline' : 'secondary'
+                          }>
+                            {purchase.status === 'completed' ? 'Complété' : 
+                             purchase.status === 'waiting_deposit' ? 'En attente de dépôt' : 'En attente'}
+                          </Badge>
                         </div>
-                        <Badge variant={
-                          purchase.status === 'completed' ? 'default' : 
-                          purchase.status === 'waiting_deposit' ? 'outline' : 'secondary'
-                        }>
-                          {purchase.status === 'completed' ? 'Complété' : 
-                           purchase.status === 'waiting_deposit' ? 'En attente de dépôt' : 'En attente'}
-                        </Badge>
+                        
+                        {purchase.status === 'waiting_deposit' && (
+                          <div className="bg-warning/10 p-3 rounded border border-warning/20">
+                            <div className="text-sm">
+                              <strong>📋 Instructions:</strong>
+                              <ol className="list-decimal list-inside mt-1 space-y-1">
+                                <li>Envoyez <strong>{cryptoAmount} {wallet.symbol}</strong> à l'adresse:</li>
+                                <li className="font-mono text-xs break-all">{purchase.deposit_address}</li>
+                                {wallet.memo && (
+                                  <li className="text-warning">
+                                    <strong>Memo requis:</strong> {generateMemo(purchase.transaction_id || "")}
+                                  </li>
+                                )}
+                                <li>Contactez le support avec votre TXID</li>
+                              </ol>
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => copyToClipboard(purchase.deposit_address || wallet.address)}
+                              >
+                                <Copy className="w-3 h-3 mr-1" />
+                                Copier adresse
+                              </Button>
+                              {wallet.memo && (
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => copyToClipboard(generateMemo(purchase.transaction_id || ""))}
+                                >
+                                  <Copy className="w-3 h-3 mr-1" />
+                                  Copier memo
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      
-                      {purchase.status === 'waiting_deposit' && (
-                        <div className="bg-warning/10 p-3 rounded border border-warning/20">
-                          <div className="text-sm">
-                            <strong>📋 Instructions:</strong>
-                            <ol className="list-decimal list-inside mt-1 space-y-1">
-                              <li>Envoyez <strong>{(purchase.amount_usd / 45000).toFixed(8)} BTC</strong> à l'adresse:</li>
-                              <li className="font-mono text-xs break-all">{purchase.deposit_address}</li>
-                              <li>Contactez le support avec votre TXID</li>
-                            </ol>
-                          </div>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="mt-2"
-                            onClick={() => copyToClipboard(purchase.deposit_address || BTC_WALLET)}
-                          >
-                            <Copy className="w-3 h-3 mr-1" />
-                            Copier adresse
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
