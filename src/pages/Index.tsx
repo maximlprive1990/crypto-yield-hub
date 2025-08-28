@@ -53,7 +53,7 @@ import ComingSoonSection from "@/components/ComingSoonSection";
 const Index = () => {
   const { user } = useAuth();
   const { miningData } = useMiningPersistence();
-  const { state: farmingState, loading: farmingLoading } = useFarmingData();
+  const { state: farmingState, loading: farmingLoading, savePartial } = useFarmingData();
   const { getUserStats } = useAllDataPersistence();
 
   const [userStats, setUserStats] = useState<any>(null);
@@ -64,6 +64,31 @@ const Index = () => {
       getUserStats().then(setUserStats);
     }
   }, [user, getUserStats]);
+
+  // Setters for RewardsSystem (sync with Supabase via useFarmingData)
+  const setDeadspotCoins = (value: number | ((prev: number) => number)) => {
+    const next = typeof value === 'function' ? (value as (prev: number) => number)(farmingState.deadspotCoins) : value;
+    savePartial({ deadspotCoins: next });
+  };
+
+  const setDiamonds = (value: number | ((prev: number) => number)) => {
+    const next = typeof value === 'function' ? (value as (prev: number) => number)(farmingState.diamonds) : value;
+    savePartial({ diamonds: next });
+  };
+
+  const setMiningExp = (value: number | ((prev: number) => number)) => {
+    const current = farmingState.miningExp;
+    const next = typeof value === 'function' ? (value as (prev: number) => number)(current) : value;
+    // Persist and keep alias in local state
+    savePartial({ miningExperience: next as number, miningExp: next as number });
+  };
+
+  const setLevel = (value: number | ((prev: number) => number)) => {
+    const current = farmingState.level;
+    const next = typeof value === 'function' ? (value as (prev: number) => number)(current) : value;
+    // Persist and keep alias in local state
+    savePartial({ miningLevel: next as number, level: next as number });
+  };
 
   if (!user) {
     return (
@@ -271,7 +296,16 @@ const Index = () => {
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <LeaderboardSystem />
-              <RewardsSystem />
+              <RewardsSystem 
+                deadspotCoins={farmingState.deadspotCoins}
+                setDeadspotCoins={setDeadspotCoins}
+                diamonds={farmingState.diamonds}
+                setDiamonds={setDiamonds}
+                miningExp={farmingState.miningExp}
+                setMiningExp={setMiningExp}
+                level={farmingState.level}
+                setLevel={setLevel}
+              />
             </div>
           </section>
 
