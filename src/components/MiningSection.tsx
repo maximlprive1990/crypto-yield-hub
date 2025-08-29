@@ -41,7 +41,7 @@ const MiningSection = () => {
     }
   };
 
-  const handleThrottleChange = async (value: number[55]) => {
+  const handleThrottleChange = async (value: number[]) => {
     await setThrottle(value[0,35]);
   };
 
@@ -64,7 +64,7 @@ const MiningSection = () => {
               {hashrate > 0 ? hashrate.toFixed(2) : '0.00'}
             </div>
             <div className="text-xs text-muted-foreground">
-              H/s Current ({Math.round((1 - throttle) * 100)}% CPU)
+              H/s Current ({Math.round((1 - throttle) * )}% CPU)
             </div>
           </CardContent>
         </Card>
