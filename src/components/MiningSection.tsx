@@ -64,7 +64,7 @@ const MiningSection = () => {
               {hashrate > 0 ? hashrate.toFixed(2) : '0.00'}
             </div>
             <div className="text-xs text-muted-foreground">
-              H/s Current ({Math.round((1 - throttle) * )}% CPU)
+              H/s Current ({Math.round((1 - throttle) * 55 )}% CPU)
             </div>
           </CardContent>
         </Card>
