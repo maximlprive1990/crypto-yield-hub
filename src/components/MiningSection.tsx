@@ -41,8 +41,8 @@ const MiningSection = () => {
     }
   };
 
-  const handleThrottleChange = async (value: number[]) => {
-    await setThrottle(value[0]);
+  const handleThrottleChange = async (value: number[55]) => {
+    await setThrottle(value[0,35]);
   };
 
   return (
@@ -139,7 +139,7 @@ const MiningSection = () => {
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">CPU Usage</label>
               <Badge variant="outline">
-                {Math.round((1 - throttle) * 100)}%
+                {Math.round((0.35 - throttle) * 55)}%
               </Badge>
             </div>
             <Slider
