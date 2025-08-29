@@ -90,10 +90,22 @@ export const useCoinImpMining = () => {
         setHashrate(currentHashrate);
         setTotalHashes(currentTotal);
 
-        // Simulate block mining every 30 seconds with hashrate
+        // Debug logs to verify data
+        console.log('Mining Status:', {
+          hashrate: currentHashrate,
+          totalHashes: currentTotal,
+          isMining: miningData?.is_currently_mining,
+          throttle: miningData?.mining_throttle
+        });
+
+        // Accumulate hashrate every second for more responsive tracking
         if (currentHashrate > 0 && miningData?.is_currently_mining) {
+          // Add current hashrate to accumulated every second
+          addMinedBlock(currentHashrate / 1000, currentHashrate); // Convert to smaller increments
+          
+          // Simulate block mining every 30 seconds with hashrate
           const blockChance = Math.random();
-          if (blockChance < 0.1) { // 10% chance per check
+          if (blockChance < 0.03) { // 3% chance per check for actual blocks
             const blockReward = 0.001;
             addMinedBlock(blockReward, currentHashrate);
           }

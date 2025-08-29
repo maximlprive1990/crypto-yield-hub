@@ -61,9 +61,11 @@ const MiningSection = () => {
               </span>
             </div>
             <div className="text-2xl font-bold text-primary">
-              {hashrate.toFixed(2)}
+              {hashrate > 0 ? hashrate.toFixed(2) : '0.00'}
             </div>
-            <div className="text-xs text-muted-foreground">H/s Current</div>
+            <div className="text-xs text-muted-foreground">
+              H/s Current ({Math.round((1 - throttle) * 100)}% CPU)
+            </div>
           </CardContent>
         </Card>
 
@@ -79,9 +81,11 @@ const MiningSection = () => {
         <Card className="gradient-card border-primary/20">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-warning">
-              {miningData?.accumulated_hashrate?.toLocaleString() || '0'}
+              {miningData?.accumulated_hashrate?.toFixed(6) || '0.000000'}
             </div>
-            <div className="text-xs text-muted-foreground">Accumulated</div>
+            <div className="text-xs text-muted-foreground">
+              Hashrate Accumulé (Blocs: {miningData?.total_blocks_mined || 0})
+            </div>
           </CardContent>
         </Card>
 
