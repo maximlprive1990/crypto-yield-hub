@@ -41,9 +41,10 @@ const MiningSection = () => {
     }
   };
 
-  const handleThrottleChange = async (value: number[]) => {
-    await setThrottle(value[0,35]);
-  };
+const handleThrottleChange = async (value: number[]) => {
+  await setThrottle(value[0]);
+};
+
 
   return (
     <div className="space-y-6">
