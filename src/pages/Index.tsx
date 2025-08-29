@@ -14,7 +14,8 @@ import {
   TrendingUp,
   Shield,
   Gamepad2,
-  Gift
+  Gift,
+  LogOut
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMiningPersistence } from "@/hooks/useMiningPersistence";
@@ -51,7 +52,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import ComingSoonSection from "@/components/ComingSoonSection";
 
 const Index = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { miningData } = useMiningPersistence();
   const { state: farmingState, loading: farmingLoading, savePartial } = useFarmingData();
   const { getUserStats } = useAllDataPersistence();
@@ -142,6 +143,15 @@ const Index = () => {
                   </span>
                 </div>
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={signOut}
+                className="flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Déconnexion</span>
+              </Button>
             </div>
           </div>
         </div>
