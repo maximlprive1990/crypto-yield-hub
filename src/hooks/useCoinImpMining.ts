@@ -1,13 +1,55 @@
 
 import { useEffect, useRef, useState } from 'react';
-import { useMiningPersistence } from './useMiningPersistence';
+import { useLocalMiningPersistence } from './useLocalMiningPersistence';
+
+interface MiningData {
+  accumulated_hashrate: number;
+  deadspot_coins: number;
+  total_blocks_mined: number;
+  total_hashrate_earned: number;
+  current_mining_session_start: string | null;
+  is_currently_mining: boolean;
+  mining_throttle: number;
+}
 
 export const useCoinImpMining = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [hashrate, setHashrate] = useState(0);
   const [totalHashes, setTotalHashes] = useState(0);
   const clientRef = useRef<any>(null);
-  const { miningData, toggleMining, updateThrottle, addMinedBlock } = useMiningPersistence();
+  const { miningData, saveData } = useLocalMiningPersistence();
+
+  // Create helper functions that match the old API
+  const toggleMining = async (newState: boolean) => {
+    const updates: Partial<MiningData> = {
+      is_currently_mining: newState,
+    };
+    if (newState) {
+      updates.current_mining_session_start = new Date().toISOString();
+    } else {
+      updates.current_mining_session_start = null;
+    }
+    await saveData(updates);
+    return true;
+  };
+
+  const updateThrottle = async (newThrottle: number) => {
+    await saveData({ mining_throttle: newThrottle });
+    return true;
+  };
+
+  const addMinedBlock = async (blockReward: number, currentHashrate: number) => {
+    if (!miningData) return false;
+    
+    const updates = {
+      accumulated_hashrate: miningData.accumulated_hashrate + currentHashrate,
+      total_hashrate_earned: miningData.total_hashrate_earned + currentHashrate,
+      total_blocks_mined: miningData.total_blocks_mined + 1,
+      last_block_time: new Date().toISOString(),
+    };
+    await saveData(updates);
+    return true;
+  };
 
   // Initialize CoinIMP client
   useEffect(() => {
