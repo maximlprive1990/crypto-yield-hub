@@ -98,8 +98,17 @@ const Index = () => {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold">Welcome to DeadSpot</CardTitle>
           </CardHeader>
-          <CardContent className="text-center text-muted-foreground">
-            Please sign in to access the platform
+          <CardContent className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              Please sign in to access the platform
+            </p>
+            <Button 
+              onClick={() => window.location.href = '/auth'}
+              className="w-full"
+              size="lg"
+            >
+              Sign In / Sign Up
+            </Button>
           </CardContent>
         </Card>
       </div>
