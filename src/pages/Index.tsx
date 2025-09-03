@@ -17,10 +17,10 @@ import {
   Gift,
   LogOut
 } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { useMiningPersistence } from "@/hooks/useMiningPersistence";
-import { useFarmingData } from "@/hooks/useFarmingData";
-import { useAllDataPersistence } from "@/hooks/useAllDataPersistence";
+import { useLocalAuth } from "@/hooks/useLocalAuth";
+import { useLocalMiningPersistence } from "@/hooks/useLocalMiningPersistence";
+import { useLocalFarmingData } from "@/hooks/useLocalFarmingData";
+import { useLocalAllDataPersistence } from "@/hooks/useLocalAllDataPersistence";
 
 // Components
 import MiningSection from "@/components/MiningSection";
@@ -52,10 +52,10 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import ComingSoonSection from "@/components/ComingSoonSection";
 
 const Index = () => {
-  const { user, signOut } = useAuth();
-  const { miningData } = useMiningPersistence();
-  const { state: farmingState, loading: farmingLoading, savePartial } = useFarmingData();
-  const { getUserStats } = useAllDataPersistence();
+  const { user, signOut, loading } = useLocalAuth();
+  const { miningData } = useLocalMiningPersistence();
+  const { state: farmingState, loading: farmingLoading, savePartial } = useLocalFarmingData();
+  const { getUserStats } = useLocalAllDataPersistence();
 
   const [userStats, setUserStats] = useState<any>(null);
 

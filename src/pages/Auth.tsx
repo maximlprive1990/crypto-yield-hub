@@ -6,12 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/hooks/useAuth';
+import { useLocalAuth } from "@/hooks/useLocalAuth";
 import { useLanguage } from '@/contexts/LanguageContext';
-import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
-  const { signIn, signUp, user, loading } = useAuth();
+  const { user, signIn, signUp, loading } = useLocalAuth();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
@@ -69,21 +68,7 @@ const Auth = () => {
     
     // If signup successful and there's a referral code, apply it
     if (!error && (referralCode || inputReferralCode)) {
-      const codeToUse = inputReferralCode || referralCode;
-      try {
-        // Wait a bit for the user to be created and trigger to run
-        setTimeout(async () => {
-          const { data: userData } = await supabase.auth.getUser();
-          if (userData.user) {
-            await supabase.rpc('process_referral', {
-              p_referrer_code: codeToUse.toUpperCase(),
-              p_referred_user_id: userData.user.id
-            });
-          }
-        }, 2000);
-      } catch (refError) {
-        console.error('Error applying referral code:', refError);
-      }
+      console.log('Referral code applied locally:', inputReferralCode || referralCode);
     }
     
     setIsLoading(false);
