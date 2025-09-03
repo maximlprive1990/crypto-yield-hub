@@ -1,12 +1,11 @@
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuth';
+import { useState, useEffect } from 'react';
+import { useLocalAuth } from './useLocalAuth';
 import { toast } from 'sonner';
 
 export interface MiningData {
-  id: string;
-  user_id: string;
+  id?: string;
+  user_id?: string;
   accumulated_hashrate: number;
   deadspot_coins: number;
   is_currently_mining: boolean;
@@ -15,11 +14,11 @@ export interface MiningData {
   total_hashrate_earned: number;
   total_blocks_mined: number;
   current_mining_session_start: string | null;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
-const DEFAULT_MINING_DATA: Omit<MiningData, 'id' | 'user_id' | 'created_at' | 'updated_at'> = {
+const DEFAULT_MINING_DATA: MiningData = {
   accumulated_hashrate: 0,
   deadspot_coins: 0,
   is_currently_mining: false,
@@ -31,83 +30,64 @@ const DEFAULT_MINING_DATA: Omit<MiningData, 'id' | 'user_id' | 'created_at' | 'u
 };
 
 export const useMiningPersistence = () => {
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
+  const [miningData, setMiningData] = useState<MiningData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useLocalAuth();
 
-  // Charger les données de mining
-  const { data: miningData, isLoading, error } = useQuery({
-    queryKey: ['mining-data', user?.id],
-    queryFn: async () => {
-      if (!user?.id) throw new Error('User not authenticated');
-      
-      const { data, error } = await supabase
-        .from('mining_data')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+  const getStorageKey = () => user ? `miningData_${user.id}` : null;
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error loading mining data:', error);
-        throw error;
+  const loadMiningData = async () => {
+    if (!user) return;
+    
+    setIsLoading(true);
+    try {
+      const storageKey = getStorageKey();
+      if (storageKey) {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) {
+          setMiningData(JSON.parse(stored));
+        } else {
+          setMiningData(DEFAULT_MINING_DATA);
+          localStorage.setItem(storageKey, JSON.stringify(DEFAULT_MINING_DATA));
+        }
       }
+    } catch (error) {
+      console.error('Error loading mining data:', error);
+      setMiningData(DEFAULT_MINING_DATA);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-      if (!data) {
-        // Créer des données par défaut
-        const { data: newData, error: insertError } = await supabase
-          .from('mining_data')
-          .insert({
-            user_id: user.id,
-            ...DEFAULT_MINING_DATA,
-          } as any) // ... keep existing code (cast to any to align with DB shape if needed) the same ...
-          .select()
-          .single();
+  const saveMiningData = async (updates: Partial<MiningData>) => {
+    if (!user || !miningData) return;
+    
+    const storageKey = getStorageKey();
+    if (storageKey && Object.keys(updates).length > 0) {
+      const newData = { ...miningData, ...updates };
+      setMiningData(newData);
+      localStorage.setItem(storageKey, JSON.stringify(newData));
+    }
+  };
 
-        if (insertError) throw insertError;
-        return newData as MiningData;
-      }
-
-      return data as MiningData;
-    },
-    enabled: !!user?.id,
-    staleTime: 30000,
-    retry: 2,
-  });
-
-  // Mutation pour sauvegarder les données
-  const saveMutation = useMutation({
-    mutationFn: async (updates: Partial<MiningData>) => {
-      if (!user?.id || !miningData?.id) throw new Error('Missing user or mining data');
-
-      const { error } = await supabase
-        .from('mining_data')
-        .update(updates as any) // ... keep existing code (cast to any to align with DB shape if needed) the same ...
-        .eq('id', miningData.id);
-
-      if (error) throw error;
-      return updates;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['mining-data', user?.id] });
-    },
-  });
+  useEffect(() => {
+    if (user) {
+      loadMiningData();
+    } else {
+      setMiningData(null);
+    }
+  }, [user]);
 
   // Ajouter un bloc miné
   const addMinedBlock = async (blockReward: number, currentHashrate: number) => {
     if (!miningData) return false;
 
     try {
-      await saveMutation.mutateAsync({
+      await saveMiningData({
         accumulated_hashrate: miningData.accumulated_hashrate + currentHashrate,
         total_hashrate_earned: miningData.total_hashrate_earned + currentHashrate,
         total_blocks_mined: miningData.total_blocks_mined + 1,
         last_block_time: new Date().toISOString(),
-      });
-
-      // Enregistrer le bloc dans l'historique (current_hashrate est la colonne correcte)
-      await supabase.from('mining_blocks').insert({
-        user_id: user?.id as string,
-        block_reward: blockReward,
-        current_hashrate: currentHashrate,
       });
 
       return true;
@@ -131,17 +111,9 @@ export const useMiningPersistence = () => {
     const totalHashrateToExchange = exchangeCount * exchangeRate;
 
     try {
-      await saveMutation.mutateAsync({
+      await saveMiningData({
         accumulated_hashrate: miningData.accumulated_hashrate - totalHashrateToExchange,
         deadspot_coins: miningData.deadspot_coins + coinsEarned,
-      });
-
-      // Enregistrer la transaction (colonnes correctes: hashrate_amount, deadspot_coins_received, exchange_rate)
-      await supabase.from('hashrate_exchanges').insert({
-        user_id: user?.id as string,
-        hashrate_amount: totalHashrateToExchange,
-        deadspot_coins_received: coinsEarned,
-        exchange_rate: exchangeRate,
       });
 
       toast.success(`🎉 Échangé ${totalHashrateToExchange.toLocaleString()} hashrate contre ${coinsEarned} DSC!`);
@@ -168,7 +140,7 @@ export const useMiningPersistence = () => {
         updates.current_mining_session_start = null;
       }
 
-      await saveMutation.mutateAsync(updates);
+      await saveMiningData(updates);
       return true;
     } catch (error) {
       console.error('Error toggling mining:', error);
@@ -181,7 +153,7 @@ export const useMiningPersistence = () => {
     if (!miningData) return false;
 
     try {
-      await saveMutation.mutateAsync({
+      await saveMiningData({
         mining_throttle: newThrottle,
       });
       return true;
@@ -191,27 +163,10 @@ export const useMiningPersistence = () => {
     }
   };
 
-  // Méthodes pour la compatibilité avec useAllDataPersistence
-  const loadMiningData = async () => {
-    queryClient.invalidateQueries({ queryKey: ['mining-data', user?.id] });
-  };
-
-  const saveMiningData = async (updates: Partial<MiningData>) => {
-    if (Object.keys(updates).length > 0) {
-      await saveMutation.mutateAsync(updates);
-    }
-  };
-
   return {
-    miningData: miningData || {
-      ...DEFAULT_MINING_DATA,
-      id: '',
-      user_id: user?.id || '',
-      created_at: '',
-      updated_at: '',
-    } as MiningData,
+    miningData: miningData || DEFAULT_MINING_DATA,
     isLoading,
-    error,
+    error: null,
     addMinedBlock,
     exchangeHashrate,
     toggleMining,
