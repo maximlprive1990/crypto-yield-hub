@@ -58,7 +58,7 @@ export const useCoinImpMining = () => {
         // Check if CoinIMP is available
         if (typeof (window as any).Client !== 'undefined') {
           const client = new (window as any).Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
-            throttle: miningData?.mining_throttle || 0.55,
+            throttle: miningData?.mining_throttle ?? 0.5,
             c: 'w',
             ads: 0
           });
@@ -204,7 +204,7 @@ export const useCoinImpMining = () => {
     hashrate,
     totalHashes,
     isMining: miningData?.is_currently_mining || false,
-    throttle: miningData?.mining_throttle || 0.55,
+    throttle: miningData?.mining_throttle ?? 0.5,
     startMining,
     stopMining,
     setThrottle

