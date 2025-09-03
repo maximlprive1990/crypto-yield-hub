@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, Home, Palette, Crown, Star, Package, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useLocalAuth as useAuth } from '@/hooks/useLocalAuth';
 import { useToast } from '@/hooks/use-toast';
 
 interface Skin {

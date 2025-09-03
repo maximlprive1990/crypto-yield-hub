@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Copy, Share, Users, DollarSign, Gift, Clock, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
+import { useLocalAuth as useAuth } from "@/hooks/useLocalAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 interface ReferralStats {

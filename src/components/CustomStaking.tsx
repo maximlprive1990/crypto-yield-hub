@@ -7,7 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useLocalAuth as useAuth } from "@/hooks/useLocalAuth";
 import { useToast } from "@/hooks/use-toast";
 
 const CustomStaking = () => {

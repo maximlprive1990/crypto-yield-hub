@@ -5,7 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Target, Gift, Clock, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useLocalAuth as useAuth } from '@/hooks/useLocalAuth';
 import { useToast } from '@/hooks/use-toast';
 
 interface Mission {

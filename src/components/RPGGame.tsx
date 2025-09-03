@@ -17,7 +17,7 @@ import { ArrowLeft, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRPGPersistence } from '@/hooks/useRPGPersistence';
-import { useAuth } from '@/hooks/useAuth';
+import { useLocalAuth as useAuth } from '@/hooks/useLocalAuth';
 
 export const RPGGame = ({ onClose }: { onClose: () => void }) => {
   const { user } = useAuth();

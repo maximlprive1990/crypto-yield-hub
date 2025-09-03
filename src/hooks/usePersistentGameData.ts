@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuth';
+import { useLocalAuth as useAuth } from './useLocalAuth';
 import { toast } from 'sonner';
 
 export interface GameDataState {

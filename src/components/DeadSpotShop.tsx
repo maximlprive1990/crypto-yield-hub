@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Coins, CreditCard, TrendingUp, Zap, ShoppingCart, Copy, Wallet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useLocalAuth as useAuth } from "@/hooks/useLocalAuth";
 import { toast } from "sonner";
 
 interface CoinPurchase {

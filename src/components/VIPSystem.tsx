@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp, Star, TrendingUp, Zap, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useLocalAuth as useAuth } from "@/hooks/useLocalAuth";
 import { toast } from "sonner";
 
 interface VIPAccount {

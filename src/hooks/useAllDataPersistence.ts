@@ -1,6 +1,6 @@
 
 import { useCallback } from 'react';
-import { useAuth } from './useAuth';
+import { useLocalAuth as useAuth } from './useLocalAuth';
 import { useMiningPersistence } from './useMiningPersistence';
 import { usePersistentGameData } from './usePersistentGameData';
 import { useTransactionHistory } from './useTransactionHistory';

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Player, Equipment, PlayerStats } from '@/types/rpg';
-import { useAuth } from './useAuth';
+import { useLocalAuth as useAuth } from './useLocalAuth';
 
 export const useRPGPersistence = () => {
   const { user } = useAuth();
